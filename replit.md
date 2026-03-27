@@ -2,7 +2,7 @@
 
 ## Overview
 
-pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
+pnpm workspace monorepo using TypeScript. Main product is **StudyBot** — a Telegram bot that generates academic reports, summaries, lab work, essays and more for students using AI.
 
 ## Stack
 
@@ -14,83 +14,78 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **Database**: PostgreSQL + Drizzle ORM
 - **Validation**: Zod (`zod/v4`), `drizzle-zod`
 - **API codegen**: Orval (from OpenAPI spec)
-- **Build**: esbuild (CJS bundle)
+- **Build**: esbuild (ESM bundle)
+- **Telegram Bot**: Telegraf
+- **AI**: OpenAI via Replit AI Integrations (gpt-5.2)
 
 ## Structure
 
 ```text
 artifacts-monorepo/
 ├── artifacts/              # Deployable applications
-│   └── api-server/         # Express API server
+│   └── api-server/         # Express API server + Telegram Bot
+│       └── src/
+│           └── bot/        # Bot logic
+│               ├── index.ts     # Main bot, handlers, state machine
+│               ├── ai.ts        # OpenAI report generation
+│               ├── db.ts        # DB helpers for bot
+│               ├── keyboards.ts # Inline keyboards
+│               └── messages.ts  # Text templates + content lists
 ├── lib/                    # Shared libraries
 │   ├── api-spec/           # OpenAPI spec + Orval codegen config
 │   ├── api-client-react/   # Generated React Query hooks
 │   ├── api-zod/            # Generated Zod schemas from OpenAPI
 │   └── db/                 # Drizzle ORM schema + DB connection
-├── scripts/                # Utility scripts (single workspace package)
-│   └── src/                # Individual .ts scripts, run via `pnpm --filter @workspace/scripts run <script>`
-├── pnpm-workspace.yaml     # pnpm workspace (artifacts/*, lib/*, lib/integrations/*, scripts)
-├── tsconfig.base.json      # Shared TS options (composite, bundler resolution, es2022)
-├── tsconfig.json           # Root TS project references
-└── package.json            # Root package with hoisted devDeps
+│       └── src/schema/
+│           ├── users.ts    # Users table (balance, freeReportsUsed)
+│           ├── reports.ts  # Generated reports table
+│           └── payments.ts # Payments table
+├── scripts/                # Utility scripts
+├── pnpm-workspace.yaml
+├── tsconfig.base.json
+├── tsconfig.json
+└── package.json
 ```
 
-## TypeScript & Composite Projects
+## Bot Features
 
-Every package extends `tsconfig.base.json` which sets `composite: true`. The root `tsconfig.json` lists all packages as project references. This means:
+- **Free first report** for every new user
+- **6 document types**: Report, Summary, Database, Lab Work, Essay, Tasks
+- **11 subjects**: Programming, Math, Physics, Chemistry, Biology, History, Geography, Databases, Networks, Economics, Other
+- **3 payment methods**: Monobank (250 UAH), Crypto (5 USDT), Telegram Stars (500 XTR)
+- **AI generation**: gpt-5.2 with structured Ukrainian prompts per document type
 
-- **Always typecheck from the root** — run `pnpm run typecheck` (which runs `tsc --build --emitDeclarationOnly`). This builds the full dependency graph so that cross-package imports resolve correctly. Running `tsc` inside a single package will fail if its dependencies haven't been built yet.
-- **`emitDeclarationOnly`** — we only emit `.d.ts` files during typecheck; actual JS bundling is handled by esbuild/tsx/vite...etc, not `tsc`.
-- **Project references** — when package A depends on package B, A's `tsconfig.json` must list B in its `references` array. `tsc --build` uses this to determine build order and skip up-to-date packages.
+## Environment Variables / Secrets
 
-## Root Scripts
+- `TELEGRAM_BOT_TOKEN` — Bot token from @BotFather
+- `DATABASE_URL` — PostgreSQL connection (auto-provisioned by Replit)
+- `AI_INTEGRATIONS_OPENAI_BASE_URL` — Replit AI Integrations proxy URL
+- `AI_INTEGRATIONS_OPENAI_API_KEY` — Replit AI Integrations API key
 
-- `pnpm run build` — runs `typecheck` first, then recursively runs `build` in all packages that define it
-- `pnpm run typecheck` — runs `tsc --build --emitDeclarationOnly` using project references
+## DB Schema
 
-## Packages
+### users
+- `telegram_id` — unique Telegram user ID
+- `balance` — number of remaining reports
+- `free_reports_used` — whether the free report was used
+- `total_reports` — lifetime reports generated
 
-### `artifacts/api-server` (`@workspace/api-server`)
+### reports
+- Stores all generated reports with content, type, subject, topic
 
-Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` for request and response validation and `@workspace/db` for persistence.
+### payments
+- Tracks all payment requests (pending/confirmed)
+- Methods: mono, crypto, stars, manual
 
-- Entry: `src/index.ts` — reads `PORT`, starts Express
-- App setup: `src/app.ts` — mounts CORS, JSON/urlencoded parsing, routes at `/api`
-- Routes: `src/routes/index.ts` mounts sub-routers; `src/routes/health.ts` exposes `GET /health` (full path: `/api/health`)
-- Depends on: `@workspace/db`, `@workspace/api-zod`
-- `pnpm --filter @workspace/api-server run dev` — run the dev server
-- `pnpm --filter @workspace/api-server run build` — production esbuild bundle (`dist/index.cjs`)
-- Build bundles an allowlist of deps (express, cors, pg, drizzle-orm, zod, etc.) and externalizes the rest
+## Development
 
-### `lib/db` (`@workspace/db`)
+- `pnpm --filter @workspace/api-server run dev` — run the dev server + bot
+- `pnpm --filter @workspace/db run push` — push schema changes to DB
+- `pnpm --filter @workspace/api-spec run codegen` — regenerate API types
 
-Database layer using Drizzle ORM with PostgreSQL. Exports a Drizzle client instance and schema models.
+## Bot Commands
 
-- `src/index.ts` — creates a `Pool` + Drizzle instance, exports schema
-- `src/schema/index.ts` — barrel re-export of all models
-- `src/schema/<modelname>.ts` — table definitions with `drizzle-zod` insert schemas (no models definitions exist right now)
-- `drizzle.config.ts` — Drizzle Kit config (requires `DATABASE_URL`, automatically provided by Replit)
-- Exports: `.` (pool, db, schema), `./schema` (schema only)
-
-Production migrations are handled by Replit when publishing. In development, we just use `pnpm --filter @workspace/db run push`, and we fallback to `pnpm --filter @workspace/db run push-force`.
-
-### `lib/api-spec` (`@workspace/api-spec`)
-
-Owns the OpenAPI 3.1 spec (`openapi.yaml`) and the Orval config (`orval.config.ts`). Running codegen produces output into two sibling packages:
-
-1. `lib/api-client-react/src/generated/` — React Query hooks + fetch client
-2. `lib/api-zod/src/generated/` — Zod schemas
-
-Run codegen: `pnpm --filter @workspace/api-spec run codegen`
-
-### `lib/api-zod` (`@workspace/api-zod`)
-
-Generated Zod schemas from the OpenAPI spec (e.g. `HealthCheckResponse`). Used by `api-server` for response validation.
-
-### `lib/api-client-react` (`@workspace/api-client-react`)
-
-Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHealthCheck`, `healthCheck`).
-
-### `scripts` (`@workspace/scripts`)
-
-Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.
+- `/start` — Welcome screen + main menu
+- `/menu` — Main menu
+- `/balance` — Check balance
+- `/help` — Help & instructions
