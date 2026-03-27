@@ -1,5 +1,5 @@
 import { db, usersTable, reportsTable, paymentsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export async function getOrCreateUser(telegramId: number, userData: {
   username?: string;
@@ -63,12 +63,20 @@ export async function useReport(telegramId: number): Promise<void> {
   if (!user.freeReportsUsed) {
     await db
       .update(usersTable)
-      .set({ freeReportsUsed: true, totalReports: user.totalReports + 1, updatedAt: new Date() })
+      .set({
+        freeReportsUsed: true,
+        totalReports: sql`${usersTable.totalReports} + 1`,
+        updatedAt: new Date(),
+      })
       .where(eq(usersTable.telegramId, telegramId));
   } else {
     await db
       .update(usersTable)
-      .set({ balance: user.balance - 1, totalReports: user.totalReports + 1, updatedAt: new Date() })
+      .set({
+        balance: sql`GREATEST(${usersTable.balance} - 1, 0)`,
+        totalReports: sql`${usersTable.totalReports} + 1`,
+        updatedAt: new Date(),
+      })
       .where(eq(usersTable.telegramId, telegramId));
   }
 }

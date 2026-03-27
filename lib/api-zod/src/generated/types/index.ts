@@ -7,3 +7,12 @@
  */
 
 export * from "./healthStatus";
+export * from "./twaAuthBody";
+export * from "./twaGenerateBody";
+export * from "./twaGenerateResponse";
+export * from "./twaGetReportsParams";
+export * from "./twaPaymentBody";
+export * from "./twaPaymentResponse";
+export * from "./twaReportItem";
+export * from "./twaReportList";
+export * from "./twaUser";

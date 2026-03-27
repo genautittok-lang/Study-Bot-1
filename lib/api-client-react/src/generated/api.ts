@@ -5,18 +5,31 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { HealthStatus } from "./api.schemas";
+import type {
+  HealthStatus,
+  TwaAuthBody,
+  TwaGenerateBody,
+  TwaGenerateResponse,
+  TwaGetReportsParams,
+  TwaPaymentBody,
+  TwaPaymentResponse,
+  TwaReportList,
+  TwaUser,
+} from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
-import type { ErrorType } from "../custom-fetch";
+import type { ErrorType, BodyType } from "../custom-fetch";
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
@@ -99,3 +112,355 @@ export function useHealthCheck<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary Authenticate Telegram Web App user
+ */
+export const getTwaAuthUrl = () => {
+  return `/api/twa/auth`;
+};
+
+export const twaAuth = async (
+  twaAuthBody: TwaAuthBody,
+  options?: RequestInit,
+): Promise<TwaUser> => {
+  return customFetch<TwaUser>(getTwaAuthUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(twaAuthBody),
+  });
+};
+
+export const getTwaAuthMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof twaAuth>>,
+    TError,
+    { data: BodyType<TwaAuthBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof twaAuth>>,
+  TError,
+  { data: BodyType<TwaAuthBody> },
+  TContext
+> => {
+  const mutationKey = ["twaAuth"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof twaAuth>>,
+    { data: BodyType<TwaAuthBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return twaAuth(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TwaAuthMutationResult = NonNullable<
+  Awaited<ReturnType<typeof twaAuth>>
+>;
+export type TwaAuthMutationBody = BodyType<TwaAuthBody>;
+export type TwaAuthMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Authenticate Telegram Web App user
+ */
+export const useTwaAuth = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof twaAuth>>,
+    TError,
+    { data: BodyType<TwaAuthBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof twaAuth>>,
+  TError,
+  { data: BodyType<TwaAuthBody> },
+  TContext
+> => {
+  return useMutation(getTwaAuthMutationOptions(options));
+};
+
+/**
+ * @summary Generate a report
+ */
+export const getTwaGenerateUrl = () => {
+  return `/api/twa/generate`;
+};
+
+export const twaGenerate = async (
+  twaGenerateBody: TwaGenerateBody,
+  options?: RequestInit,
+): Promise<TwaGenerateResponse> => {
+  return customFetch<TwaGenerateResponse>(getTwaGenerateUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(twaGenerateBody),
+  });
+};
+
+export const getTwaGenerateMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof twaGenerate>>,
+    TError,
+    { data: BodyType<TwaGenerateBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof twaGenerate>>,
+  TError,
+  { data: BodyType<TwaGenerateBody> },
+  TContext
+> => {
+  const mutationKey = ["twaGenerate"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof twaGenerate>>,
+    { data: BodyType<TwaGenerateBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return twaGenerate(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TwaGenerateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof twaGenerate>>
+>;
+export type TwaGenerateMutationBody = BodyType<TwaGenerateBody>;
+export type TwaGenerateMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Generate a report
+ */
+export const useTwaGenerate = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof twaGenerate>>,
+    TError,
+    { data: BodyType<TwaGenerateBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof twaGenerate>>,
+  TError,
+  { data: BodyType<TwaGenerateBody> },
+  TContext
+> => {
+  return useMutation(getTwaGenerateMutationOptions(options));
+};
+
+/**
+ * @summary Get user report history
+ */
+export const getTwaGetReportsUrl = (params: TwaGetReportsParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/twa/reports?${stringifiedParams}`
+    : `/api/twa/reports`;
+};
+
+export const twaGetReports = async (
+  params: TwaGetReportsParams,
+  options?: RequestInit,
+): Promise<TwaReportList> => {
+  return customFetch<TwaReportList>(getTwaGetReportsUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getTwaGetReportsQueryKey = (params?: TwaGetReportsParams) => {
+  return [`/api/twa/reports`, ...(params ? [params] : [])] as const;
+};
+
+export const getTwaGetReportsQueryOptions = <
+  TData = Awaited<ReturnType<typeof twaGetReports>>,
+  TError = ErrorType<unknown>,
+>(
+  params: TwaGetReportsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof twaGetReports>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getTwaGetReportsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof twaGetReports>>> = ({
+    signal,
+  }) => twaGetReports(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof twaGetReports>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type TwaGetReportsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof twaGetReports>>
+>;
+export type TwaGetReportsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get user report history
+ */
+
+export function useTwaGetReports<
+  TData = Awaited<ReturnType<typeof twaGetReports>>,
+  TError = ErrorType<unknown>,
+>(
+  params: TwaGetReportsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof twaGetReports>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getTwaGetReportsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Create a payment record
+ */
+export const getTwaCreatePaymentUrl = () => {
+  return `/api/twa/payment`;
+};
+
+export const twaCreatePayment = async (
+  twaPaymentBody: TwaPaymentBody,
+  options?: RequestInit,
+): Promise<TwaPaymentResponse> => {
+  return customFetch<TwaPaymentResponse>(getTwaCreatePaymentUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(twaPaymentBody),
+  });
+};
+
+export const getTwaCreatePaymentMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof twaCreatePayment>>,
+    TError,
+    { data: BodyType<TwaPaymentBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof twaCreatePayment>>,
+  TError,
+  { data: BodyType<TwaPaymentBody> },
+  TContext
+> => {
+  const mutationKey = ["twaCreatePayment"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof twaCreatePayment>>,
+    { data: BodyType<TwaPaymentBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return twaCreatePayment(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TwaCreatePaymentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof twaCreatePayment>>
+>;
+export type TwaCreatePaymentMutationBody = BodyType<TwaPaymentBody>;
+export type TwaCreatePaymentMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Create a payment record
+ */
+export const useTwaCreatePayment = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof twaCreatePayment>>,
+    TError,
+    { data: BodyType<TwaPaymentBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof twaCreatePayment>>,
+  TError,
+  { data: BodyType<TwaPaymentBody> },
+  TContext
+> => {
+  return useMutation(getTwaCreatePaymentMutationOptions(options));
+};

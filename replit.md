@@ -77,9 +77,27 @@ artifacts-monorepo/
 - Tracks all payment requests (pending/confirmed)
 - Methods: mono, crypto, stars, manual
 
+## Telegram Mini App (TWA)
+
+The study-app artifact is a React + Vite Telegram Mini App with:
+- **Home page**: greeting, balance card, quick action grid
+- **New Report**: multi-step form (type -> subject -> details -> generate -> done)
+- **History**: list of generated reports with detail viewer
+- **Balance**: payment options (Monobank, Crypto, Telegram Stars)
+- **Bottom tab navigation**: Головна, Створити, Історія, Баланс
+- **All UI in Ukrainian**, light blue/white premium theme
+- **Demo mode**: works outside Telegram with test user (telegramId: 999999999)
+
+### TWA API Routes (mounted at /api/twa)
+- `POST /auth` — authenticate/create user from Telegram data
+- `POST /generate` — generate a report (checks balance, calls AI, saves)
+- `GET /reports?telegram_id=X` — list user's reports
+- `POST /payment` — create a payment request
+
 ## Development
 
 - `pnpm --filter @workspace/api-server run dev` — run the dev server + bot
+- `pnpm --filter @workspace/study-app run dev` — run the Mini App frontend
 - `pnpm --filter @workspace/db run push` — push schema changes to DB
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API types
 

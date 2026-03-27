@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: twa
+    description: Telegram Web App operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,78 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /twa/auth:
+    post:
+      operationId: twaAuth
+      tags: [twa]
+      summary: Authenticate Telegram Web App user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TwaAuthBody"
+      responses:
+        "200":
+          description: User data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TwaUser"
+  /twa/generate:
+    post:
+      operationId: twaGenerate
+      tags: [twa]
+      summary: Generate a report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TwaGenerateBody"
+      responses:
+        "200":
+          description: Generated report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TwaGenerateResponse"
+  /twa/reports:
+    get:
+      operationId: twaGetReports
+      tags: [twa]
+      summary: Get user report history
+      parameters:
+        - name: telegram_id
+          in: query
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: List of reports
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TwaReportList"
+  /twa/payment:
+    post:
+      operationId: twaCreatePayment
+      tags: [twa]
+      summary: Create a payment record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TwaPaymentBody"
+      responses:
+        "200":
+          description: Payment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TwaPaymentResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +107,124 @@ components:
           type: string
       required:
         - status
-
+    TwaAuthBody:
+      type: object
+      properties:
+        initData:
+          type: string
+        telegramId:
+          type: number
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+      required:
+        - telegramId
+    TwaUser:
+      type: object
+      properties:
+        telegramId:
+          type: number
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        balance:
+          type: number
+        freeReportsUsed:
+          type: boolean
+        totalReports:
+          type: number
+      required:
+        - telegramId
+        - balance
+        - freeReportsUsed
+        - totalReports
+    TwaGenerateBody:
+      type: object
+      properties:
+        telegramId:
+          type: number
+        reportType:
+          type: string
+        subject:
+          type: string
+        topic:
+          type: string
+        group:
+          type: string
+      required:
+        - telegramId
+        - reportType
+        - subject
+        - topic
+    TwaGenerateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        content:
+          type: string
+        reportId:
+          type: number
+        remainingBalance:
+          type: number
+        error:
+          type: string
+      required:
+        - success
+    TwaReportItem:
+      type: object
+      properties:
+        id:
+          type: number
+        reportType:
+          type: string
+        subject:
+          type: string
+        topic:
+          type: string
+        group:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - reportType
+        - subject
+        - topic
+        - createdAt
+    TwaReportList:
+      type: object
+      properties:
+        reports:
+          type: array
+          items:
+            $ref: "#/components/schemas/TwaReportItem"
+      required:
+        - reports
+    TwaPaymentBody:
+      type: object
+      properties:
+        telegramId:
+          type: number
+        paymentMethod:
+          type: string
+      required:
+        - telegramId
+        - paymentMethod
+    TwaPaymentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success

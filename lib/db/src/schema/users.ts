@@ -1,9 +1,9 @@
-import { pgTable, bigint, varchar, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, bigint, varchar, integer, boolean, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
 export const usersTable = pgTable("users", {
-  id: bigint("id", { mode: "number" }).primaryKey(),
+  id: serial("id").primaryKey(),
   telegramId: bigint("telegram_id", { mode: "number" }).notNull().unique(),
   username: varchar("username", { length: 255 }),
   firstName: varchar("first_name", { length: 255 }),

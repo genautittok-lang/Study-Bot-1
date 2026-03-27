@@ -23,6 +23,7 @@ import {
   useReport,
   saveReport,
   savePayment,
+  addBalance,
 } from "./db.js";
 
 interface SessionData {
@@ -43,6 +44,13 @@ export const bot = new Telegraf<BotContext>(process.env.TELEGRAM_BOT_TOKEN);
 
 bot.use(session({ defaultSession: (): SessionData => ({}) }));
 
+function getWebAppUrl(): string {
+  const domains = process.env.REPLIT_DOMAINS || process.env.REPLIT_DEV_DOMAIN || "";
+  const domain = domains.split(",")[0]?.trim();
+  if (domain) return `https://${domain}`;
+  return "https://localhost";
+}
+
 async function sendWelcome(ctx: BotContext) {
   const tgUser = ctx.from!;
   await getOrCreateUser(tgUser.id, {
@@ -51,16 +59,52 @@ async function sendWelcome(ctx: BotContext) {
     lastName: tgUser.last_name,
   });
 
+  const webAppUrl = getWebAppUrl();
+
   await ctx.replyWithMarkdown(
     MESSAGES.WELCOME(tgUser.first_name || "Студент"),
-    mainMenuKeyboard
+    {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🚀 Відкрити StudyBot", web_app: { url: webAppUrl } }],
+          [
+            { text: "💰 Баланс", callback_data: "balance" },
+            { text: "ℹ️ Довідка", callback_data: "help" },
+          ],
+        ],
+      },
+    }
   );
 }
 
 bot.start(sendWelcome);
 
 bot.command("menu", async (ctx: BotContext) => {
-  await ctx.replyWithMarkdown("🏠 *Головне меню*\n\nОбери дію:", mainMenuKeyboard);
+  const webAppUrl = getWebAppUrl();
+  await ctx.replyWithMarkdown("🏠 *Головне меню*\n\nОбери дію:", {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "🚀 Відкрити StudyBot", web_app: { url: webAppUrl } }],
+        [{ text: "📄 Новий звіт (тут)", callback_data: "new_report" }],
+        [
+          { text: "💰 Баланс", callback_data: "balance" },
+          { text: "💳 Купити", callback_data: "buy" },
+        ],
+        [{ text: "ℹ️ Довідка", callback_data: "help" }],
+      ],
+    },
+  });
+});
+
+bot.command("app", async (ctx: BotContext) => {
+  const webAppUrl = getWebAppUrl();
+  await ctx.reply("Натисни кнопку нижче, щоб відкрити StudyBot:", {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "🚀 Відкрити StudyBot", web_app: { url: webAppUrl } }],
+      ],
+    },
+  });
 });
 
 bot.command("balance", async (ctx: BotContext) => {
@@ -80,9 +124,19 @@ bot.command("help", async (ctx: BotContext) => {
 bot.action("main_menu", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
   ctx.session = {};
+  const webAppUrl = getWebAppUrl();
   await ctx.editMessageText("🏠 *Головне меню*\n\nОбери дію:", {
     parse_mode: "Markdown",
-    ...mainMenuKeyboard,
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "🚀 Відкрити StudyBot", web_app: { url: webAppUrl } }],
+        [{ text: "📄 Новий звіт (тут)", callback_data: "new_report" }],
+        [
+          { text: "💰 Баланс", callback_data: "balance" },
+          { text: "💳 Купити", callback_data: "buy" },
+        ],
+      ],
+    },
   });
 });
 
@@ -195,9 +249,11 @@ bot.on("successful_payment", async (ctx: BotContext) => {
     externalId: payment.telegram_payment_charge_id,
   });
 
+  await addBalance(ctx.from!.id, 15);
+
   const user = await getUser(ctx.from!.id);
   await ctx.replyWithMarkdown(
-    `✅ *Оплата успішна!*\n\nТвій баланс поповнено на *15 звітів*!\n💰 Поточний баланс: *${(user?.balance || 0) + 15} звітів*`,
+    `✅ *Оплата успішна!*\n\nТвій баланс поповнено на *15 звітів*!\n💰 Поточний баланс: *${user?.balance ?? 15} звітів*`,
     mainMenuKeyboard
   );
 });
@@ -300,7 +356,15 @@ bot.on("text", async (ctx: BotContext) => {
     return;
   }
 
-  await ctx.replyWithMarkdown("🏠 Скористайся меню нижче:", mainMenuKeyboard);
+  const webAppUrl = getWebAppUrl();
+  await ctx.replyWithMarkdown("🏠 Скористайся додатком або меню:", {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "🚀 Відкрити StudyBot", web_app: { url: webAppUrl } }],
+        [{ text: "📄 Новий звіт", callback_data: "new_report" }],
+      ],
+    },
+  });
 });
 
 function splitMessage(text: string, maxLength: number): string[] {

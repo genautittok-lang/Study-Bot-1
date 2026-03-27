@@ -14,3 +14,77 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * @summary Authenticate Telegram Web App user
+ */
+export const TwaAuthBody = zod.object({
+  initData: zod.string().optional(),
+  telegramId: zod.number(),
+  username: zod.string().optional(),
+  firstName: zod.string().optional(),
+  lastName: zod.string().optional(),
+});
+
+export const TwaAuthResponse = zod.object({
+  telegramId: zod.number(),
+  username: zod.string().optional(),
+  firstName: zod.string().optional(),
+  lastName: zod.string().optional(),
+  balance: zod.number(),
+  freeReportsUsed: zod.boolean(),
+  totalReports: zod.number(),
+});
+
+/**
+ * @summary Generate a report
+ */
+export const TwaGenerateBody = zod.object({
+  telegramId: zod.number(),
+  reportType: zod.string(),
+  subject: zod.string(),
+  topic: zod.string(),
+  group: zod.string().optional(),
+});
+
+export const TwaGenerateResponse = zod.object({
+  success: zod.boolean(),
+  content: zod.string().optional(),
+  reportId: zod.number().optional(),
+  remainingBalance: zod.number().optional(),
+  error: zod.string().optional(),
+});
+
+/**
+ * @summary Get user report history
+ */
+export const TwaGetReportsQueryParams = zod.object({
+  telegram_id: zod.coerce.number(),
+});
+
+export const TwaGetReportsResponse = zod.object({
+  reports: zod.array(
+    zod.object({
+      id: zod.number(),
+      reportType: zod.string(),
+      subject: zod.string(),
+      topic: zod.string(),
+      group: zod.string().optional(),
+      content: zod.string().optional(),
+      createdAt: zod.string(),
+    }),
+  ),
+});
+
+/**
+ * @summary Create a payment record
+ */
+export const TwaCreatePaymentBody = zod.object({
+  telegramId: zod.number(),
+  paymentMethod: zod.string(),
+});
+
+export const TwaCreatePaymentResponse = zod.object({
+  success: zod.boolean(),
+  message: zod.string().optional(),
+});

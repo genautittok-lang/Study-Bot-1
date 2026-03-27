@@ -1,0 +1,16 @@
+packages:
+  "framer-motion": "For premium smooth page transitions and micro-interactions"
+  "react-markdown": "To render the AI-generated markdown reports beautifully"
+  "remark-gfm": "To support tables and github flavored markdown in reports"
+  "clsx": "For merging tailwind classes"
+  "tailwind-merge": "For merging tailwind classes safely"
+  "@workspace/api-client-react": "To access the generated React Query hooks"
+
+images:
+  - path: "artifacts/study-app/public/images/bg-glow.png"
+    description: "Soft, premium abstract background with subtle glowing orbs in light blue, periwinkle, and white. Very clean and minimalist, Apple-like aesthetic, soft gradients."
+    aspect_ratio: "16:9"
+
+notes:
+  - This is a Telegram Web App. window.Telegram.WebApp is expected to be available.
+  - The API relies on the `telegram_id` to authenticate and track balances.

@@ -8,3 +8,65 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface TwaAuthBody {
+  initData?: string;
+  telegramId: number;
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+}
+
+export interface TwaUser {
+  telegramId: number;
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  balance: number;
+  freeReportsUsed: boolean;
+  totalReports: number;
+}
+
+export interface TwaGenerateBody {
+  telegramId: number;
+  reportType: string;
+  subject: string;
+  topic: string;
+  group?: string;
+}
+
+export interface TwaGenerateResponse {
+  success: boolean;
+  content?: string;
+  reportId?: number;
+  remainingBalance?: number;
+  error?: string;
+}
+
+export interface TwaReportItem {
+  id: number;
+  reportType: string;
+  subject: string;
+  topic: string;
+  group?: string;
+  content?: string;
+  createdAt: string;
+}
+
+export interface TwaReportList {
+  reports: TwaReportItem[];
+}
+
+export interface TwaPaymentBody {
+  telegramId: number;
+  paymentMethod: string;
+}
+
+export interface TwaPaymentResponse {
+  success: boolean;
+  message?: string;
+}
+
+export type TwaGetReportsParams = {
+  telegram_id: number;
+};
