@@ -29,15 +29,15 @@ export default function History() {
       <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.25, ease }} className="px-5 pt-7 pb-4">
         <motion.button whileTap={{ scale: 0.95 }}
           onClick={() => { hapticFeedback("light"); setSelected(null); }}
-          className="text-white/20 text-[13px] font-semibold mb-4 flex items-center gap-1 active:text-white/50 transition-colors">
+          className="text-[#999] text-[13px] font-semibold mb-4 flex items-center gap-1 active:text-[#666] transition-colors">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
           {t("back")}
         </motion.button>
-        <h2 className="text-[16px] font-bold text-white leading-snug text-balance mb-2.5">{selected.topic}</h2>
+        <h2 className="text-[16px] font-bold text-[#1a1b23] leading-snug text-balance mb-2.5">{selected.topic}</h2>
         <div className="flex items-center gap-1.5 flex-wrap mb-4">
           <span className="badge">{TYPES[selected.reportType]?.icon} {TYPES[selected.reportType]?.label || selected.reportType}</span>
           <span className="badge">{SUBJECTS[selected.subject]?.label || selected.subject}</span>
-          {wc > 0 && <span className="text-[10px] text-white/12 tabular font-medium">{wc.toLocaleString()} words</span>}
+          {wc > 0 && <span className="text-[10px] text-[#999] tabular font-medium">{wc.toLocaleString()} words</span>}
         </div>
         <motion.button whileTap={{ scale: 0.96 }}
           onClick={() => { navigator.clipboard.writeText(selected.content || ""); hapticSuccess(); }}
@@ -45,7 +45,7 @@ export default function History() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
           {t("copy")}
         </motion.button>
-        <div className="g-card-s rounded-xl p-4 max-h-[60vh] overflow-y-auto scrollbar-hide select-text">
+        <div className="g-card rounded-xl p-4 max-h-[60vh] overflow-y-auto scrollbar-hide select-text">
           <MarkdownRenderer content={selected.content || t("contentUnavailable")} />
         </div>
       </motion.div>
@@ -55,13 +55,13 @@ export default function History() {
   return (
     <div className="px-5 pt-7 pb-4">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ease }}>
-        <h2 className="text-[22px] font-extrabold text-white tracking-tight mb-0.5">{t("history")}</h2>
-        <p className="text-[11px] text-white/18 mb-5">{reports.length} {t("total").toLowerCase()}</p>
+        <h2 className="text-[22px] font-extrabold text-[#1a1b23] tracking-tight mb-0.5">{t("history")}</h2>
+        <p className="text-[11px] text-[#888] mb-5">{reports.length} {t("total").toLowerCase()}</p>
       </motion.div>
       {loading ? (
         <div className="space-y-2">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="g-card-s rounded-xl p-3.5 flex gap-3 items-center">
+            <div key={i} className="g-card rounded-xl p-3.5 flex gap-3 items-center">
               <div className="skeleton w-10 h-10 rounded-[12px] shrink-0" />
               <div className="flex-1 space-y-2"><div className="skeleton h-3.5 w-3/4 rounded-lg" /><div className="skeleton h-2.5 w-1/2 rounded-lg" /></div>
             </div>
@@ -72,13 +72,13 @@ export default function History() {
           className="flex flex-col items-center justify-center pt-14 text-center">
           <div className="relative mb-5">
             <div className="w-20 h-20 rounded-2xl flex items-center justify-center"
-              style={{ background: "rgba(124,58,237,0.03)" }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" opacity="0.08">
+              style={{ background: "rgba(124,58,237,0.06)" }}>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="1" opacity="0.3">
                 <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
             </div>
           </div>
-          <h3 className="text-base font-bold text-white mb-1.5">{t("noHistory")}</h3>
-          <p className="text-[12px] text-white/15 max-w-[220px]">{t("noHistoryDesc")}</p>
+          <h3 className="text-base font-bold text-[#1a1b23] mb-1.5">{t("noHistory")}</h3>
+          <p className="text-[12px] text-[#888] max-w-[220px]">{t("noHistoryDesc")}</p>
         </motion.div>
       ) : (
         <div className="space-y-1.5">
@@ -91,18 +91,18 @@ export default function History() {
                 onClick={() => { hapticFeedback("light"); setSelected(r); }}
                 className="w-full g-card rounded-xl p-3.5 text-left flex items-center gap-3">
                 <div className="icon-box text-base"
-                  style={{ background: "rgba(124,58,237,0.04)" }}>
+                  style={{ background: "rgba(124,58,237,0.06)" }}>
                   {TYPES[r.reportType]?.icon || "📄"}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-semibold text-white truncate">{r.topic}</div>
-                  <div className="text-[10px] text-white/15 mt-0.5 flex items-center gap-1">
+                  <div className="text-[13px] font-semibold text-[#1a1b23] truncate">{r.topic}</div>
+                  <div className="text-[10px] text-[#999] mt-0.5 flex items-center gap-1">
                     <span>{TYPES[r.reportType]?.label || r.reportType}</span>
-                    <span className="text-white/6">·</span>
+                    <span className="text-[#ddd]">·</span>
                     <span>{new Date(r.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/5"><polyline points="9 18 15 12 9 6"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[#ccc]"><polyline points="9 18 15 12 9 6"/></svg>
               </motion.button>
             ))}
           </AnimatePresence>

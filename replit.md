@@ -25,11 +25,15 @@ pnpm workspace monorepo using TypeScript. Main product is **StudyPro** — a Tel
 artifacts-monorepo/
 ├── artifacts/
 │   ├── api-server/         # Express API + Telegram Bot
-│   │   └── src/bot/        # Bot logic (index, ai, db, keyboards, messages)
+│   │   └── src/
+│   │       ├── bot/        # Bot logic (index, ai, db, keyboards, messages)
+│   │       └── routes/
+│   │           ├── twa/    # TWA API routes
+│   │           └── admin/  # Admin API routes (stats, users, payments, broadcast)
 │   └── study-app/          # React Vite Mini App (TWA)
 │       └── src/
-│           ├── pages/      # home, new-report, history, balance, profile
-│           └── lib/        # api, store, telegram, i18n
+│           ├── pages/      # home, new-report, history, balance, profile, admin
+│           └── lib/        # api, admin-api, store, telegram, i18n
 ├── lib/
 │   ├── api-spec/           # OpenAPI spec
 │   ├── api-client-react/   # Generated React Query hooks
@@ -53,49 +57,69 @@ artifacts-monorepo/
 
 ## Telegram Mini App (TWA)
 
-Premium React + Vite fintech-grade TWA with animated design system:
+Premium React + Vite fintech-grade TWA with light premium design:
 
-### Design System (CSS Classes)
-- `.hero-card` — Rotating conic gradient border (`@property --card-angle`), glass bg with backdrop-blur, subtle glow overlays, shimmer sweep
-- `.g-card` — Clean glass card with backdrop-filter blur(6px), subtle hover/active states
-- `.g-card-s` — Static glass card (no interaction states)
-- `.btn-main` — Violet gradient (`#8b5cf6→#7c3aed`) with top highlight, clean shadow
+### Design System (Light Theme)
+- **Background**: `#f0f1f5` (light gray)
+- **Cards**: White `#ffffff` with subtle shadows `0 1px 3px rgba(0,0,0,0.04)`
+- **Text**: Primary `#1a1b23`, secondary `#888`/`#999`
+- **Accent**: Violet `#7c3aed`/`#8b5cf6`
+
+#### CSS Classes
+- `.hero-card` — Violet gradient with glass overlays, shimmer sweep
+- `.g-card` — White card with subtle border and shadow
+- `.btn-main` — Violet gradient with top highlight, shadow
 - `.btn-accent` — Green gradient with top highlight
-- `.btn-ghost` — Subtle transparent button
-- `.num-glow` — Gradient text (`white→#c4b5fd→#67e8f9`) with drop-shadow
+- `.btn-ghost` — Light gray button
 - `.gradient-text` — Purple-to-cyan gradient text
 - `.avatar-ring` — Linear gradient border (violet→cyan)
-- `.app-bg` — Subtle aurora blobs with blur(80px) animation
-- `.particles` + `.particle` — Floating particle system (14 dots, subtle opacity)
 - `.badge` / `.badge-g` — Pill badges (violet / green)
-- `.input-field` — Clean focus ring with subtle glow
+- `.input-field` — Clean focus ring with violet glow
 - `.icon-box` — 44px icon container
 - `.section-label` — Uppercase tracking label
-- `.top-line` — Accent line helper for card top edges
-- `.nav-bar` — Frosted glass nav with blur(30px)
+- `.nav-bar` — White frosted glass nav with blur(24px)
+- `.spinner` — Violet loading spinner
 
-**Color scheme**: Primary violet `#7c3aed`/`#8b5cf6`, cyan `#06b6d4`/`#67e8f9`, green `#34d399`, amber `#fbbf24`. Background `#0a0b10`.
-**Design direction**: Clean, simple but premium professional. Subtler effects, reduced opacity, tighter spacing, smaller font sizes, rounded-xl corners (14-16px). Special raised violet Create button in nav.
+**Nav**: Centered raised violet Create (+) button, white frosted glass bar with blur.
 
 ### Pages
-- **Home**: Greeting + Telegram avatar, hero-card balance with animated number + progress bar, 2-column action cards (Create Report + Top Up), 3-column stats, recent reports, referral invite section
-- **Create**: 4-step progress bar with labels, 2-column grid of 11 report types, education level tabs (All/School/College/University) for filtering 17 categories, search within subjects, details form with topic + group, AI generation spinner with percentage
-- **History**: Skeleton loading, detail viewer with word count + copy, empty state
-- **Balance**: Hero balance card, Telegram Stars golden button, Card payment + Crypto USDT tiles, individual payment flows with copy fields, receipt note
-- **Profile**: Hero card with Telegram avatar + username + ID, level progress, 3-column stats, 4 achievements, referral code + copy link, 30-language selector, version footer
+- **Home**: Greeting + Telegram avatar, hero-card balance, 2-column action cards, 3-column stats, recent reports, referral invite
+- **Create**: 4-step progress bar, 11 report types grid, education level tabs, search, details form with photo upload, AI generation spinner
+- **History**: Skeleton loading, detail viewer with Markdown + copy, empty state
+- **Balance**: Hero balance card, Telegram Stars golden button, Card/Crypto tiles, payment flows with copy fields
+- **Profile**: Hero card with avatar + username, level progress, stats, achievements, referral code + copy, 30-language selector
+- **Admin**: Dashboard stats, user management (+balance), payment approval/rejection, broadcast to all users
+
+### Admin Panel
+
+- **Route**: `/admin` (frontend), `/api/admin/*` (backend)
+- **Auth**: Server-side check via `ADMIN_IDS` env var (comma-separated telegram IDs, defaults to `999999999`)
+- **Tabs**:
+  - **Dashboard**: Total users, reports, payments, pending payments count; recent users list
+  - **Users**: Paginated list with search, add balance to any user (notifies via bot)
+  - **Payments**: Filter by status (all/pending/completed/rejected), approve/reject pending payments (notifies users)
+  - **Broadcast**: Send message (HTML formatted) with optional image to all users via Telegram bot
 
 ### i18n
 - 30 languages selectable, 3 full translations (en/ru/uk)
-- CIS languages with Russian fallback: Kazakh, Uzbek, Kyrgyz, Tajik, Turkmen, Azerbaijani, Armenian, Georgian, Belarusian, Moldovan, Mongolian
+- CIS languages with Russian fallback
 - Other languages with English fallback
-- Subject categories: `school_math`, `school_ukr`, `school_science`, `school_history`, `school_langs`, `school_other`, `college_it`, `college_tech`, `uni_math`, `uni_it`, `uni_humanities`, `uni_business`, `uni_law`, `uni_eng`, `uni_medicine`, `other`
 
 ### TWA API Routes (/api/twa)
-- `POST /auth` — authenticate/create user (returns referralCode, referralCount)
-- `POST /generate` — generate report (balance check, AI, save)
+- `POST /auth` — authenticate/create user
+- `POST /generate` — generate report
 - `GET /reports?telegram_id=X` — list reports
-- `POST /payment` — create payment request (card/crypto/stars)
-- `POST /create-invoice` — create Telegram Stars invoice URL
+- `POST /payment` — create payment request
+- `POST /create-invoice` — create Telegram Stars invoice
+
+### Admin API Routes (/api/admin)
+- `GET /stats` — dashboard statistics
+- `GET /users?page=N&search=Q` — paginated users with search
+- `POST /users/:telegramId/balance` — add balance to user
+- `GET /payments?status=S&page=N` — paginated payments with status filter
+- `POST /payments/:id/approve` — approve pending payment
+- `POST /payments/:id/reject` — reject pending payment
+- `POST /broadcast` — send message to all users
 
 ## Environment Variables
 
@@ -103,6 +127,7 @@ Premium React + Vite fintech-grade TWA with animated design system:
 - `DATABASE_URL` — PostgreSQL (auto-provisioned)
 - `AI_INTEGRATIONS_OPENAI_BASE_URL` — Replit AI proxy URL
 - `AI_INTEGRATIONS_OPENAI_API_KEY` — Replit AI proxy key
+- `ADMIN_IDS` — Comma-separated Telegram IDs for admin access (default: `999999999`)
 
 ## DB Schema
 
