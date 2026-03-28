@@ -10,66 +10,61 @@ export default function History() {
   useLang();
   const [reports, setReports] = useState<ReportItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedReport, setSelectedReport] = useState<ReportItem | null>(null);
+  const [selected, setSelected] = useState<ReportItem | null>(null);
+  const [searchQ, setSearchQ] = useState("");
 
-  const REPORT_TYPE_MAP = getReportTypeMap();
-  const SUBJECT_MAP = getSubjectMap();
+  const TYPES = getReportTypeMap();
+  const SUBJECTS = getSubjectMap();
 
   useEffect(() => {
     if (!user) return;
     getReports(user.telegramId)
-      .then((res) => setReports(res.reports))
+      .then(res => setReports(res.reports))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [user]);
 
-  if (selectedReport) {
+  const filtered = searchQ
+    ? reports.filter(r => r.topic.toLowerCase().includes(searchQ.toLowerCase()))
+    : reports;
+
+  if (selected) {
+    const wordCount = selected.content ? selected.content.split(/\s+/).filter(Boolean).length : 0;
     return (
-      <motion.div
-        initial={{ opacity: 0, x: 30 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -30 }}
-        className="px-4 pt-6 pb-4"
-      >
-        <motion.button
-          whileTap={{ scale: 0.96 }}
-          onClick={() => { hapticFeedback("light"); setSelectedReport(null); }}
-          className="text-primary text-sm font-semibold mb-4 flex items-center gap-1"
-        >
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pt-5 pb-4">
+        <motion.button whileTap={{ scale: 0.96 }}
+          onClick={() => { hapticFeedback("light"); setSelected(null); }}
+          className="text-muted-foreground text-[13px] font-medium mb-3 flex items-center gap-1">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
           {t("back")}
         </motion.button>
 
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center">
-            <span className="text-xl">{REPORT_TYPE_MAP[selectedReport.reportType]?.icon || "📄"}</span>
+        <div className="flex items-start gap-3 mb-4">
+          <div className="w-10 h-10 bg-primary/6 rounded-xl flex items-center justify-center shrink-0 text-sm">
+            {TYPES[selected.reportType]?.icon || "~"}
           </div>
-          <h2 className="text-lg font-bold flex-1">{selectedReport.topic}</h2>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-[15px] font-bold text-foreground leading-snug text-balance">{selected.topic}</h2>
+            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+              <span className="badge-pro">{TYPES[selected.reportType]?.label || selected.reportType}</span>
+              <span className="badge-pro">{SUBJECTS[selected.subject]?.label || selected.subject}</span>
+              {wordCount > 0 && <span className="text-[10px] text-muted-foreground">{wordCount} words</span>}
+            </div>
+          </div>
         </div>
 
         <div className="flex gap-2 mb-4">
-          <div className="bg-primary/10 text-primary rounded-lg px-2.5 py-1 text-xs font-semibold">
-            {REPORT_TYPE_MAP[selectedReport.reportType]?.label || selectedReport.reportType}
-          </div>
-          <div className="bg-emerald-50 text-emerald-700 rounded-lg px-2.5 py-1 text-xs font-semibold">
-            {SUBJECT_MAP[selectedReport.subject]?.label || selectedReport.subject}
-          </div>
+          <motion.button whileTap={{ scale: 0.96 }}
+            onClick={() => { if (selected.content) { navigator.clipboard.writeText(selected.content); hapticSuccess(); } }}
+            className="flex-1 premium-btn py-2.5 text-[13px] font-semibold flex items-center justify-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            {t("copyText")}
+          </motion.button>
         </div>
 
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={() => {
-            if (selectedReport.content) { navigator.clipboard.writeText(selectedReport.content); hapticSuccess(); }
-          }}
-          className="w-full premium-btn py-2.5 text-sm font-semibold mb-4 flex items-center justify-center gap-2"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-          {t("copyText")}
-        </motion.button>
-
-        <div className="card-premium rounded-2xl p-4">
-          <div className="prose prose-sm max-w-none text-foreground text-sm leading-relaxed whitespace-pre-wrap break-words select-text">
-            {selectedReport.content || t("contentUnavailable")}
+        <div className="card-elevated rounded-2xl p-4 max-h-[60vh] overflow-y-auto">
+          <div className="prose prose-sm max-w-none text-foreground text-[13px] leading-[1.7] whitespace-pre-wrap break-words select-text">
+            {selected.content || t("contentUnavailable")}
           </div>
         </div>
       </motion.div>
@@ -77,77 +72,86 @@ export default function History() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="px-4 pt-6 pb-4"
-    >
-      <h2 className="text-xl font-bold mb-1">{t("history")}</h2>
-      <p className="text-muted-foreground text-sm mb-5">
-        {reports.length > 0
-          ? `${reports.length} ${t("reportsGenerated")}`
-          : t("docsHere")}
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pt-5 pb-4">
+      <h2 className="text-lg font-bold text-foreground tracking-tight mb-0.5">{t("history")}</h2>
+      <p className="text-[13px] text-muted-foreground mb-4">
+        {reports.length > 0 ? `${reports.length} ${t("reportsGenerated")}` : t("docsHere")}
       </p>
 
-      {loading && (
-        <div className="flex items-center justify-center py-16">
-          <div className="flex gap-1.5">
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15 }}
-                className="w-2 h-2 bg-primary rounded-full"
-              />
-            ))}
-          </div>
+      {reports.length > 3 && (
+        <div className="relative mb-3">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40">
+            <circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/>
+          </svg>
+          <input value={searchQ} onChange={e => setSearchQ(e.target.value)} placeholder={t("history")}
+            aria-label={t("history")}
+            className="w-full bg-muted/50 border border-border rounded-xl pl-9 pr-3 py-2.5 text-[13px] focus:outline-none focus:ring-2 focus:ring-primary/15 focus:border-primary/30 transition-all" />
         </div>
       )}
 
-      {!loading && reports.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center justify-center py-16"
-        >
-          <div className="w-20 h-20 bg-muted rounded-2xl flex items-center justify-center mb-5">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" opacity="0.5"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-          </div>
-          <p className="text-muted-foreground text-sm text-center font-medium">
-            {t("noReportsYet")}
-          </p>
-          <p className="text-muted-foreground/60 text-xs mt-1">{t("createFirst")}</p>
-        </motion.div>
+      {loading && (
+        <div className="space-y-2.5 py-2">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="card-pro rounded-xl p-3.5">
+              <div className="flex items-center gap-3">
+                <div className="skeleton w-9 h-9 shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="skeleton h-3.5 w-3/4" />
+                  <div className="skeleton h-3 w-1/2" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
-      <div className="space-y-2.5">
+      {!loading && filtered.length === 0 && reports.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-16">
+          <div className="w-14 h-14 bg-muted rounded-2xl flex items-center justify-center mb-4">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" opacity="0.4">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </div>
+          <p className="text-[13px] text-muted-foreground font-medium">{t("noReportsYet")}</p>
+          <p className="text-[11px] text-muted-foreground/50 mt-1">{t("createFirst")}</p>
+        </div>
+      )}
+
+      {!loading && filtered.length === 0 && reports.length > 0 && searchQ && (
+        <div className="text-center py-12">
+          <p className="text-[13px] text-muted-foreground">No results for "{searchQ}"</p>
+        </div>
+      )}
+
+      <div className="space-y-2">
         <AnimatePresence>
-          {reports.map((report, i) => (
+          {filtered.map((report, i) => (
             <motion.button
               key={report.id}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
+              transition={{ delay: i * 0.03, duration: 0.2 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => { hapticFeedback("light"); setSelectedReport(report); }}
-              className="w-full card-premium rounded-2xl p-4 text-left"
+              onClick={() => { hapticFeedback("light"); setSelected(report); }}
+              className="w-full card-pro rounded-xl p-3.5 text-left"
             >
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center shrink-0">
-                  <span className="text-lg">{REPORT_TYPE_MAP[report.reportType]?.icon || "📄"}</span>
+                <div className="w-9 h-9 bg-primary/6 rounded-lg flex items-center justify-center shrink-0 text-sm">
+                  {TYPES[report.reportType]?.icon || "~"}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-bold text-sm text-foreground truncate">{report.topic}</div>
-                  <div className="flex gap-1.5 mt-1">
-                    <span className="text-xs text-muted-foreground">{REPORT_TYPE_MAP[report.reportType]?.label || report.reportType}</span>
-                    <span className="text-xs text-muted-foreground">·</span>
-                    <span className="text-xs text-muted-foreground">{SUBJECT_MAP[report.subject]?.label || report.subject}</span>
+                  <div className="font-semibold text-[13px] text-foreground truncate">{report.topic}</div>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className="text-[11px] text-muted-foreground">{TYPES[report.reportType]?.label}</span>
+                    <span className="text-[11px] text-muted-foreground/30">·</span>
+                    <span className="text-[11px] text-muted-foreground">{SUBJECTS[report.subject]?.label || report.subject}</span>
                   </div>
-                  <div className="text-xs text-muted-foreground/50 mt-1">
+                  <div className="text-[10px] text-muted-foreground/40 mt-1 tabular-nums">
                     {new Date(report.createdAt).toLocaleDateString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                   </div>
                 </div>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-muted-foreground/30 mt-2"><polyline points="9 18 15 12 9 6"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-muted-foreground/20 mt-1.5 shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
               </div>
             </motion.button>
           ))}

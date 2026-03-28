@@ -50,16 +50,16 @@ artifacts-monorepo/
 
 ## Telegram Mini App (TWA)
 
-Premium React + Vite app with Framer Motion animations:
-- **Home**: greeting with level icon, gradient balance card with shimmer, 2x2 quick action grid, referral invite banner, quick start CTA
-- **Create**: multi-step form (type -> category -> subject -> details -> generate with progress bar -> done)
-- **History**: animated list of reports with detail viewer and copy
-- **Balance**: gradient balance card, 5 payment methods (Visa/MC, Google Pay, Apple Pay, Crypto, Stars) with individual payment flows
-- **Profile**: dark gradient header with avatar/level, achievements (4 badges), referral system with code/stats/copy link, 3-column stats, language selector (30 langs), account info
+Professional React + Vite app with clean, minimal UI (no childish styling):
+- **Design system**: card-pro, card-elevated, card-highlight, nav-pro, badge-pro, section-label, skeleton loaders, subtle shimmer. Light background (#f5f5f7), white cards, navy gradient accent (#1a1a2e → #0f3460). Inter font, tight tracking.
+- **Home**: greeting with level avatar, dark navy balance card with shimmer, "Create Report" CTA, 3-column quick action grid, recent reports list, referral invite card
+- **Create**: 4-step progress bar (type → category → subject → details), animated transitions, search within subjects, live word/char count, AI generation with stage descriptions + percentage
+- **History**: search/filter, skeleton loading states, detail viewer with word count and copy, date formatting
+- **Balance**: dark navy balance card, 5 payment methods as professional list items with icons and prices, individual payment flows per method
+- **Profile**: dark gradient user card with level progress bar, 3-column stats, 4 achievement badges, referral system with code display, 30-language selector with search
 - **i18n**: 30 languages with IP-based auto-detection and Telegram language_code fallback
-- **Bottom nav**: frosted glass effect with animated indicator (5 tabs)
+- **Bottom nav**: frosted glass backdrop-filter with spring-animated pill indicator and balance badge
 - **Demo mode**: works outside Telegram with test user (telegramId: 999999999)
-- **Premium CSS**: shimmer, glow, float, pulse animations; gradient text; glass effects
 
 ### i18n Languages (30 selectable, 3 full translations)
 Full translations: English (en), Russian (ru), Ukrainian (uk)
