@@ -15,7 +15,7 @@ import Profile from "@/pages/profile";
 import Admin from "@/pages/admin";
 
 const queryClient = new QueryClient();
-const spring = { type: "spring" as const, bounce: 0.18, duration: 0.45 };
+const spring = { type: "spring" as const, bounce: 0.2, duration: 0.5 };
 
 function AmbientBg() {
   return (
@@ -23,6 +23,7 @@ function AmbientBg() {
       <div className="liquid-orb liquid-orb-1" />
       <div className="liquid-orb liquid-orb-2" />
       <div className="liquid-orb liquid-orb-3" />
+      <div className="liquid-orb liquid-orb-4" />
     </div>
   );
 }
@@ -40,7 +41,7 @@ function BottomNav() {
     {
       path: "/", label: t("home"),
       icon: (a: boolean) => (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill={a ? "currentColor" : "none"} stroke="currentColor" strokeWidth={a ? "0" : "1.8"} strokeLinecap="round" strokeLinejoin="round">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill={a ? "currentColor" : "none"} stroke="currentColor" strokeWidth={a ? "0" : "1.8"} strokeLinecap="round" strokeLinejoin="round">
           <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/>
           <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
         </svg>
@@ -49,7 +50,7 @@ function BottomNav() {
     {
       path: "/history", label: t("history"),
       icon: (a: boolean) => (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="10" fill={a ? "currentColor" : "none"}/>
           {!a && <><polyline points="12 6 12 12 16 14"/></>}
         </svg>
@@ -58,7 +59,7 @@ function BottomNav() {
     {
       path: "/new", label: t("letsGo"), special: true,
       icon: () => (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
           <line x1="12" x2="12" y1="5" y2="19"/>
           <line x1="5" x2="19" y1="12" y2="12"/>
         </svg>
@@ -67,7 +68,7 @@ function BottomNav() {
     {
       path: "/balance", label: t("balance"),
       icon: (a: boolean) => (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill={a ? "currentColor" : "none"} stroke="currentColor" strokeWidth={a ? "0" : "1.8"} strokeLinecap="round" strokeLinejoin="round">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill={a ? "currentColor" : "none"} stroke="currentColor" strokeWidth={a ? "0" : "1.8"} strokeLinecap="round" strokeLinejoin="round">
           <rect width="20" height="14" x="2" y="5" rx="2"/>
           {!a && <line x1="2" x2="22" y1="10" y2="10"/>}
         </svg>
@@ -77,7 +78,7 @@ function BottomNav() {
     {
       path: "/profile", label: t("profile"),
       icon: (a: boolean) => (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill={a ? "currentColor" : "none"} stroke="currentColor" strokeWidth={a ? "0" : "1.8"} strokeLinecap="round" strokeLinejoin="round">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill={a ? "currentColor" : "none"} stroke="currentColor" strokeWidth={a ? "0" : "1.8"} strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="8" r="5"/>
           <path d="M20 21a8 8 0 0 0-16 0"/>
         </svg>
@@ -87,7 +88,7 @@ function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
-      <div className="nav-bar px-1 pt-1.5 pb-2">
+      <div className="nav-floating px-2 pt-2 pb-2.5">
         <div className="flex items-end justify-around">
           {tabs.map((tab) => {
             const active = tab.path === "/" ? location === "/" : location.startsWith(tab.path);
@@ -96,14 +97,14 @@ function BottomNav() {
               <button
                 key={tab.path}
                 onClick={() => { hapticFeedback("light"); setLocation(tab.path); }}
-                className={`relative flex flex-col items-center min-w-[56px] ${isSpecial ? 'pb-0' : 'py-1'}`}
+                className={`relative flex flex-col items-center min-w-[52px] ${isSpecial ? 'pb-0' : 'py-1'}`}
               >
                 {isSpecial ? (
                   <motion.div
-                    whileTap={{ scale: 0.85 }}
-                    className="w-[52px] h-[52px] rounded-[17px] flex items-center justify-center -mt-6 create-btn-glow"
+                    whileTap={{ scale: 0.82 }}
+                    className="w-[50px] h-[50px] rounded-[16px] flex items-center justify-center -mt-5 create-btn-glow"
                     style={{
-                      background: "linear-gradient(145deg, #6C5CE7, #5A4BD1, #4834B5)",
+                      background: "linear-gradient(145deg, #7B68EE, #6355D8, #5143C2)",
                     }}>
                     {tab.icon(false)}
                   </motion.div>
@@ -112,28 +113,28 @@ function BottomNav() {
                     {active && (
                       <motion.div
                         layoutId="nav-indicator"
-                        className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-5 h-[3px] rounded-full"
-                        style={{ background: "#6C5CE7" }}
+                        className="absolute -top-1 left-1/2 -translate-x-1/2 w-6 h-[3px] rounded-full"
+                        style={{ background: "linear-gradient(90deg, #7B68EE, #4A90FF)" }}
                         transition={spring}
                       />
                     )}
-                    <span className={`transition-colors duration-150 ${active ? "text-[#6C5CE7]" : "text-[#c4c4d0]"}`}>
+                    <span className={`transition-colors duration-150 ${active ? "text-[#7B68EE]" : "text-[#c4c4d0]"}`}>
                       {tab.icon(active)}
                     </span>
                   </>
                 )}
                 <span className={`text-[10px] font-semibold mt-0.5 transition-colors duration-150 ${
-                  isSpecial ? "text-[#6C5CE7]" : active ? "text-[#6C5CE7]" : "text-[#c4c4d0]"
+                  isSpecial ? "text-[#7B68EE]" : active ? "text-[#7B68EE]" : "text-[#c4c4d0]"
                 }`}>
                   {tab.label}
                 </span>
                 {tab.badge && (
                   <motion.span
                     initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    className="absolute -top-0.5 right-1 text-white text-[8px] font-bold min-w-[16px] h-[16px] flex items-center justify-center rounded-full px-1 z-20"
+                    className="absolute -top-0.5 right-0.5 text-white text-[8px] font-bold min-w-[16px] h-[16px] flex items-center justify-center rounded-full px-1 z-20"
                     style={{
-                      background: "linear-gradient(135deg, #6C5CE7, #0984E3)",
-                      boxShadow: "0 2px 6px rgba(108,92,231,0.3)",
+                      background: "linear-gradient(135deg, #7B68EE, #4A90FF)",
+                      boxShadow: "0 2px 8px rgba(123,104,238,0.35)",
                     }}>
                     {tab.badge}
                   </motion.span>
@@ -149,43 +150,52 @@ function BottomNav() {
 
 function LoadingScreen() {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden" style={{ background: "#F5F5FA" }}>
+    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden" style={{ background: "linear-gradient(160deg, #EEEDF8, #F0F0F8, #EDF5FF)" }}>
       <div className="app-bg">
         <div className="liquid-orb liquid-orb-1" />
         <div className="liquid-orb liquid-orb-2" />
+        <div className="liquid-orb liquid-orb-3" />
       </div>
       <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        initial={{ opacity: 0, y: 24, scale: 0.92 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="flex flex-col items-center relative z-10"
       >
-        <div className="relative mb-7">
+        <div className="relative mb-8">
           <motion.div
-            className="w-[72px] h-[72px] rounded-[22px] flex items-center justify-center"
+            className="w-[80px] h-[80px] rounded-[24px] flex items-center justify-center"
             style={{
-              background: "linear-gradient(145deg, #6C5CE7, #5A4BD1)",
-              boxShadow: "0 8px 32px rgba(108,92,231,0.3), 0 2px 8px rgba(0,0,0,0.08)",
+              background: "linear-gradient(145deg, #7B68EE, #5B4CCF)",
+              boxShadow: "0 12px 40px rgba(123,104,238,0.35), 0 2px 8px rgba(0,0,0,0.08)",
             }}
+            animate={{ rotateY: [0, 5, -5, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           >
-            <span className="text-white font-extrabold text-[28px] tracking-tighter">S</span>
+            <span className="text-white font-extrabold text-[32px] tracking-tighter" style={{ textShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>S</span>
           </motion.div>
           <motion.div
-            className="absolute -inset-3 rounded-[28px]"
-            style={{ border: "1.5px solid rgba(108,92,231,0.15)" }}
-            animate={{ scale: [1, 1.06, 1], opacity: [0.4, 0.1, 0.4] }}
+            className="absolute -inset-4 rounded-[30px]"
+            style={{ border: "1.5px solid rgba(123,104,238,0.12)" }}
+            animate={{ scale: [1, 1.08, 1], opacity: [0.4, 0.08, 0.4] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
+          <motion.div
+            className="absolute -inset-8 rounded-[36px]"
+            style={{ border: "1px solid rgba(123,104,238,0.06)" }}
+            animate={{ scale: [1, 1.05, 1], opacity: [0.2, 0.05, 0.2] }}
+            transition={{ duration: 2.5, repeat: Infinity, delay: 0.3 }}
+          />
         </div>
-        <h1 className="text-[24px] font-extrabold tracking-tight mb-1 gradient-text-animated">StudyPro</h1>
-        <p className="text-[11px] text-[#9ca3af] mb-7 font-medium">{t("subtitle")}</p>
-        <div className="w-32 h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(108,92,231,0.08)" }}>
+        <h1 className="text-[28px] font-extrabold tracking-tight mb-1.5 gradient-text-animated">StudyPro</h1>
+        <p className="text-[12px] text-[#8b90a0] mb-8 font-medium tracking-wide">{t("subtitle")}</p>
+        <div className="w-36 h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(123,104,238,0.06)" }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: "linear-gradient(90deg, #6C5CE7, #0984E3, #00CEC9)" }}
+            style={{ background: "linear-gradient(90deg, #7B68EE, #4A90FF, #00D4AA)" }}
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
-            transition={{ duration: 2, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
+            transition={{ duration: 2.2, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
           />
         </div>
       </motion.div>
@@ -195,16 +205,16 @@ function LoadingScreen() {
 
 function ErrorScreen({ error, retry }: { error: string; retry: () => void }) {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center px-6" style={{ background: "#F5F5FA" }}>
+    <div className="min-h-screen w-full flex items-center justify-center px-6" style={{ background: "linear-gradient(160deg, #EEEDF8, #F0F0F8)" }}>
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center">
         <motion.div
           initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", bounce: 0.4 }}
-          className="w-14 h-14 rounded-[18px] flex items-center justify-center mb-5"
-          style={{ background: "rgba(255,107,107,0.08)" }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+          className="w-16 h-16 rounded-[20px] flex items-center justify-center mb-5"
+          style={{ background: "rgba(255,90,90,0.08)" }}>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5A5A" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
         </motion.div>
         <h1 className="text-lg font-bold mb-1">{t("error")}</h1>
-        <p className="text-sm text-[#9ca3af] mb-6">{error}</p>
+        <p className="text-sm text-[#8b90a0] mb-6">{error}</p>
         <button onClick={retry} className="btn-main px-8 py-3 text-sm">{t("tryAgain")}</button>
       </motion.div>
     </div>
@@ -216,10 +226,10 @@ function AnimatedPage({ children }: { children: React.ReactNode }) {
   return (
     <AnimatePresence mode="wait">
       <motion.div key={location}
-        initial={{ opacity: 0, y: 6 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -4 }}
-        transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}>
+        exit={{ opacity: 0, y: -6 }}
+        transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}>
         {children}
       </motion.div>
     </AnimatePresence>
@@ -240,7 +250,7 @@ function AppContent() {
   return (
     <>
       <AmbientBg />
-      <div className="min-h-screen relative z-10 pb-20">
+      <div className="min-h-screen relative z-10 pb-24">
         <AnimatedPage>
           <Switch>
             <Route path="/" component={Home} />

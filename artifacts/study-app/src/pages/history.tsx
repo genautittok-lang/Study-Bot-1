@@ -59,14 +59,14 @@ export default function History() {
           </motion.button>
           <motion.button whileTap={{ scale: 0.96 }} onClick={() => shareReport(selected)}
             className="py-2.5 px-4 rounded-[14px] text-[13px] font-semibold flex items-center justify-center gap-1.5"
-            style={{ background: "rgba(9,132,227,0.06)", color: "#0984E3" }}>
+            style={{ background: "rgba(74,144,255,0.06)", color: "#4A90FF" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
             {t("shareReport")}
           </motion.button>
         </div>
         <motion.button whileTap={{ scale: 0.97 }} onClick={() => { hapticFeedback("medium"); go("/new"); }}
           className="w-full mb-3 py-2.5 rounded-[14px] text-[13px] font-semibold flex items-center justify-center gap-2"
-          style={{ background: "rgba(108,92,231,0.05)", color: "#6C5CE7" }}>
+          style={{ background: "rgba(123,104,238,0.05)", color: "#7B68EE" }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
           {t("repeatReport")}
         </motion.button>
@@ -97,8 +97,8 @@ export default function History() {
           className="flex flex-col items-center justify-center pt-14 text-center">
           <div className="relative mb-5">
             <div className="w-20 h-20 rounded-[22px] flex items-center justify-center"
-              style={{ background: "rgba(108,92,231,0.04)" }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" strokeWidth="1" opacity="0.3">
+              style={{ background: "rgba(123,104,238,0.04)" }}>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="1" opacity="0.3">
                 <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
             </div>
           </div>
@@ -115,7 +115,7 @@ export default function History() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { hapticFeedback("light"); setSelected(r); }}
                 className="w-full g-card rounded-[14px] p-3.5 text-left flex items-center gap-3">
-                <div className="icon-box text-[16px]" style={{ background: "rgba(108,92,231,0.06)" }}>
+                <div className="icon-box text-[16px]" style={{ background: "rgba(123,104,238,0.06)" }}>
                   {TYPES[r.reportType]?.icon || "📄"}
                 </div>
                 <div className="flex-1 min-w-0">

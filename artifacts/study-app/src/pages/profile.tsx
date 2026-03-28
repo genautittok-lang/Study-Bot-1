@@ -7,7 +7,7 @@ import Icon3D from "@/components/icons-3d";
 
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
-function ProgressRing({ progress, size = 52, stroke = 3.5, color = "#6C5CE7" }: { progress: number; size?: number; stroke?: number; color?: string }) {
+function ProgressRing({ progress, size = 52, stroke = 3.5, color = "#7B68EE" }: { progress: number; size?: number; stroke?: number; color?: string }) {
   const r = (size - stroke) / 2;
   const circ = 2 * Math.PI * r;
   const offset = circ - (progress / 100) * circ;
@@ -43,10 +43,10 @@ export default function Profile() {
   const bal = user ? (!user.freeReportsUsed ? user.balance + 1 : user.balance) : 0;
 
   const achievements = [
-    { icon: "🎯", name: t("firstReportAch"), ok: total >= 1, color: "#6C5CE7", p: total >= 1 ? 100 : (total / 1) * 100 },
+    { icon: "🎯", name: t("firstReportAch"), ok: total >= 1, color: "#7B68EE", p: total >= 1 ? 100 : (total / 1) * 100 },
     { icon: "🔥", name: t("tenReportsAch"), ok: total >= 10, color: "#FF9F43", p: Math.min((total / 10) * 100, 100) },
-    { icon: "💎", name: t("fiftyReportsAch"), ok: total >= 50, color: "#0984E3", p: Math.min((total / 50) * 100, 100) },
-    { icon: "👥", name: t("referralAch"), ok: refCount >= 3, color: "#00B894", p: Math.min((refCount / 3) * 100, 100) },
+    { icon: "💎", name: t("fiftyReportsAch"), ok: total >= 50, color: "#4A90FF", p: Math.min((total / 50) * 100, 100) },
+    { icon: "👥", name: t("referralAch"), ok: refCount >= 3, color: "#00C48C", p: Math.min((refCount / 3) * 100, 100) },
   ];
 
   const refLink = `https://t.me/studypro_bot?start=ref_${refCode}`;
@@ -110,7 +110,7 @@ export default function Profile() {
                 </div>
                 {active && (
                   <div className="w-5 h-5 rounded-full flex items-center justify-center"
-                    style={{ background: "#6C5CE7" }}>
+                    style={{ background: "#7B68EE" }}>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
                   </div>
                 )}
@@ -126,7 +126,7 @@ export default function Profile() {
     <div className="px-4 pt-5 pb-4">
       {/* PROFILE HEADER */}
       <motion.div {...a(0)} className="relative rounded-[28px] overflow-hidden mb-4"
-        style={{ background: "linear-gradient(145deg, #6C5CE7 0%, #5A4BD1 40%, #4834B5 100%)", boxShadow: "0 12px 40px rgba(108,92,231,0.25)" }}>
+        style={{ background: "linear-gradient(145deg, #7B68EE 0%, #5B4CCF 40%, #5143C2 100%)", boxShadow: "0 12px 40px rgba(123,104,238,0.25)" }}>
         <div className="absolute top-0 right-0 w-44 h-44 rounded-full opacity-15"
           style={{ background: "radial-gradient(circle, white 0%, transparent 70%)", transform: "translate(30%, -30%)" }} />
         <div className="p-5 relative z-10">
@@ -168,9 +168,9 @@ export default function Profile() {
       {/* STATS */}
       <motion.div {...a(1)} className="grid grid-cols-3 gap-2 mb-4">
         {[
-          { val: total, label: t("total"), color: "#6C5CE7" },
-          { val: bal, label: t("balance"), color: "#0984E3" },
-          { val: refCount, label: t("invited"), color: "#00B894" },
+          { val: total, label: t("total"), color: "#7B68EE" },
+          { val: bal, label: t("balance"), color: "#4A90FF" },
+          { val: refCount, label: t("invited"), color: "#00C48C" },
         ].map((s, i) => (
           <div key={i} className="g-card rounded-[18px] py-3.5 px-2 text-center">
             <div className="text-[26px] font-extrabold tabular leading-none" style={{ color: s.color }}>{s.val}</div>
@@ -222,7 +222,7 @@ export default function Profile() {
           {[t("referralStep1"), t("referralStep2"), t("referralStep3")].map((step, i) => (
             <div key={i} className="flex items-center gap-1 flex-1">
               <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
-                style={{ background: i === 2 ? "#00B894" : "linear-gradient(135deg, #6C5CE7, #0984E3)" }}>
+                style={{ background: i === 2 ? "#00C48C" : "linear-gradient(135deg, #7B68EE, #4A90FF)" }}>
                 {i + 1}
               </div>
               <span className="text-[8px] text-[#9ca3af] font-medium leading-tight">{step}</span>
@@ -232,28 +232,28 @@ export default function Profile() {
         </div>
 
         <div className="flex gap-2 mb-3">
-          <div className="flex-1 rounded-[12px] py-2.5 px-3 text-center" style={{ background: "rgba(0,184,148,0.05)" }}>
-            <div className="text-[20px] font-extrabold tabular" style={{ color: "#00B894" }}>{refCount}</div>
+          <div className="flex-1 rounded-[12px] py-2.5 px-3 text-center" style={{ background: "rgba(0,196,140,0.05)" }}>
+            <div className="text-[20px] font-extrabold tabular" style={{ color: "#00C48C" }}>{refCount}</div>
             <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-0.5">{t("friendsJoined")}</div>
           </div>
-          <div className="flex-1 rounded-[12px] py-2.5 px-3 text-center" style={{ background: "rgba(108,92,231,0.05)" }}>
-            <div className="text-[20px] font-extrabold tabular" style={{ color: "#6C5CE7" }}>{refCount * 2}</div>
+          <div className="flex-1 rounded-[12px] py-2.5 px-3 text-center" style={{ background: "rgba(123,104,238,0.05)" }}>
+            <div className="text-[20px] font-extrabold tabular" style={{ color: "#7B68EE" }}>{refCount * 2}</div>
             <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-0.5">{t("earnedReports")}</div>
           </div>
         </div>
 
         <div className="flex items-center gap-2 rounded-[14px] p-3 mb-3"
-          style={{ background: "rgba(108,92,231,0.03)", border: "1px solid rgba(108,92,231,0.06)" }}>
+          style={{ background: "rgba(123,104,238,0.03)", border: "1px solid rgba(123,104,238,0.06)" }}>
           <div className="flex-1">
             <div className="text-[8px] text-[#b0b0c0] font-bold uppercase tracking-wider mb-0.5">{t("referralCode")}</div>
             <div className="font-mono text-[16px] font-extrabold tracking-[0.1em] gradient-text">{refCode}</div>
           </div>
           <motion.button whileTap={{ scale: 0.9 }} onClick={copyRef}
             className="w-9 h-9 rounded-[11px] flex items-center justify-center shrink-0"
-            style={{ background: copied ? "rgba(0,184,148,0.06)" : "rgba(108,92,231,0.06)" }}>
+            style={{ background: copied ? "rgba(0,196,140,0.06)" : "rgba(123,104,238,0.06)" }}>
             {copied
-              ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B894" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" strokeWidth="1.8"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>}
+              ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00C48C" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="1.8"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>}
           </motion.button>
         </div>
 
@@ -271,8 +271,8 @@ export default function Profile() {
             label: t("language"),
             desc: `${curLangObj?.flag} ${curLangObj?.nativeName}`,
             action: () => { hapticFeedback("light"); setShowLangs(true); },
-            icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
-            bg: "rgba(108,92,231,0.05)",
+            icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+            bg: "rgba(123,104,238,0.05)",
           },
         ].map((item, i) => (
           <motion.button key={i} whileTap={{ scale: 0.98 }} onClick={item.action}

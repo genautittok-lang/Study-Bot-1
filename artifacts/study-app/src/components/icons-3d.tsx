@@ -1,32 +1,32 @@
 import { motion } from "framer-motion";
 
 const gradients: Record<string, [string, string]> = {
-  report: ["#6C5CE7", "#5A4BD1"],
-  summary: ["#FF9F43", "#E67E22"],
-  database: ["#0984E3", "#0773C7"],
-  lab: ["#00CEC9", "#00B894"],
-  essay: ["#FD79A8", "#E84393"],
-  tasks: ["#00B894", "#00A381"],
-  coursework: ["#6C5CE7", "#4834B5"],
-  diploma: ["#FF9F43", "#F39C12"],
-  presentation: ["#0984E3", "#0562AB"],
-  test: ["#00CEC9", "#00A381"],
-  notes: ["#A29BFE", "#6C5CE7"],
-  topup: ["#00CEC9", "#0984E3"],
-  history: ["#FF9F43", "#E67E22"],
-  profile: ["#6C5CE7", "#FD79A8"],
-  invite: ["#00B894", "#00CEC9"],
-  balance: ["#0984E3", "#00CEC9"],
-  star: ["#FF9F43", "#FFA502"],
-  card: ["#6C5CE7", "#5A4BD1"],
-  crypto: ["#00B894", "#00A381"],
-  share: ["#0984E3", "#00CEC9"],
-  repeat: ["#6C5CE7", "#A29BFE"],
-  copy: ["#00B894", "#00CEC9"],
+  report: ["#7B68EE", "#5B4CCF"],
+  summary: ["#FF8A50", "#E67E22"],
+  database: ["#4A90FF", "#3D7FE8"],
+  lab: ["#00D4AA", "#00C48C"],
+  essay: ["#FF6B9D", "#E84393"],
+  tasks: ["#00C48C", "#00A87A"],
+  coursework: ["#7B68EE", "#5143C2"],
+  diploma: ["#FFB347", "#F39C12"],
+  presentation: ["#4A90FF", "#2F6ECF"],
+  test: ["#00D4AA", "#00A87A"],
+  notes: ["#A29BFE", "#7B68EE"],
+  topup: ["#00D4AA", "#4A90FF"],
+  history: ["#FF8A50", "#E67E22"],
+  profile: ["#7B68EE", "#FF6B9D"],
+  invite: ["#00C48C", "#00D4AA"],
+  balance: ["#4A90FF", "#00D4AA"],
+  star: ["#FFB347", "#FFA502"],
+  card: ["#7B68EE", "#5B4CCF"],
+  crypto: ["#00C48C", "#00A87A"],
+  share: ["#4A90FF", "#00D4AA"],
+  repeat: ["#7B68EE", "#A29BFE"],
+  copy: ["#00C48C", "#00D4AA"],
 };
 
 function Icon3D({ id, size = 44 }: { id: string; size?: number }) {
-  const [c1, c2] = gradients[id] || ["#6C5CE7", "#5A4BD1"];
+  const [c1, c2] = gradients[id] || ["#7B68EE", "#5B4CCF"];
   const inner = Math.round(size * 0.52);
   const gid = `g3d_${id}_${size}`;
 
@@ -36,9 +36,10 @@ function Icon3D({ id, size = 44 }: { id: string; size?: number }) {
       style={{
         width: size,
         height: size,
-        borderRadius: size * 0.3,
-        background: `linear-gradient(145deg, ${c1}12, ${c2}08)`,
-        boxShadow: `0 2px 8px ${c1}15, inset 0 1px 0 rgba(255,255,255,0.5)`,
+        borderRadius: size * 0.32,
+        background: `linear-gradient(145deg, ${c1}14, ${c2}0A)`,
+        boxShadow: `0 2px 10px ${c1}12, inset 0 1px 0 rgba(255,255,255,0.6)`,
+        border: `1px solid ${c1}10`,
       }}
     >
       <svg width={inner} height={inner} viewBox="0 0 24 24" fill="none">

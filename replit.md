@@ -60,35 +60,44 @@ artifacts-monorepo/
 
 Premium React + Vite fintech-grade TWA with light premium design:
 
-### Design System (Light Theme)
-- **Background**: `#F5F5FA` (light lavender-gray)
-- **Cards**: `rgba(255,255,255,0.72)` with `backdrop-filter: blur(24px) saturate(180%)`, border `rgba(255,255,255,0.6)`, shadow `0 4px 16px rgba(0,0,0,0.03)`
-- **Text**: Primary `#1a1a2e`, secondary `#6b7280`, tertiary `#9ca3af`
-- **Primary**: `#6C5CE7` (purple), `#0984E3` (blue), `#00CEC9` (cyan), `#00B894` (green), `#FF9F43` (orange)
-- **Hero cards**: Gradient backgrounds (purple 145deg, blue 145deg) with radial glow overlays
+### Design System (Light Premium Theme — v2)
+- **Background**: `#F0F0F8` with gradient overlay `(#EEEDF8 → #F0F0F8 → #EDF5FF → #F0F8F4)`
+- **Cards**: `rgba(255,255,255,0.75)` with `backdrop-filter: blur(28px) saturate(200%)`, border `rgba(255,255,255,0.7)`, dual shadow layers
+- **Text**: Primary `#12122a`, secondary `#5a5f72`, tertiary `#8b90a0`
+- **Color Palette**: Purple `#7B68EE` (deep `#5B4CCF`), Blue `#4A90FF`, Cyan `#00D4AA`, Green `#00C48C`, Pink `#FF6B9D`, Orange `#FF8A50`
+- **Hero cards**: Gradient backgrounds (purple 145deg) with radial glow overlays + diagonal stripe pattern
 - **Interactive**: 3D tilt cards (perspective transform on pointer move), animated progress rings (SVG), animated counters
+- **Ambient**: 4 floating liquid orbs with blur(90px) + subtle noise texture overlay
+- **Accessibility**: `@media (prefers-reduced-motion: reduce)` disables animations and hides orbs
 
 #### CSS Classes
 - `.hero-card` — Gradient card with radial glow overlays (`.hero-purple`, `.hero-blue`, `.hero-dark`)
 - `.hero-shimmer` — Animated shimmer sweep on hero cards
-- `.g-card` — White frosted glass card with backdrop-blur
-- `.btn-main` — Purple gradient with shadow
-- `.btn-accent` — Green gradient
+- `.g-card` — White frosted glass card with backdrop-blur (22px radius)
+- `.g-card-glow` — Glass card with purple border glow
+- `.g-card-s` — Smaller glass card variant
+- `.btn-main` — Purple gradient with shadow and glass highlight
+- `.btn-accent` — Green gradient with glow
 - `.btn-ghost` — Transparent with border
-- `.gradient-text` — Purple→cyan gradient text
+- `.btn-outline` — Transparent with strong border
+- `.gradient-text` — Purple→blue→cyan gradient text
+- `.gradient-text-animated` — Animated flowing gradient text
+- `.gradient-border` — Animated gradient border using mask
 - `.avatar-ring` — Holographic spinning border ring (CSS `@property --holo-angle`)
-- `.badge` / `.badge-g` / `.badge-blue` — Pill badges
-- `.input-field` — Clean focus ring with purple glow
-- `.icon-box` — 38px icon container
-- `.section-label` — Uppercase tracking label
-- `.nav-bar` — White frosted glass nav with blur(24px)
+- `.badge` / `.badge-g` / `.badge-blue` / `.badge-orange` — Pill badges
+- `.input-field` — Clean focus ring with purple glow (16px radius)
+- `.icon-box` — 44px icon container (15px radius)
+- `.icon-box-sm` — 36px icon container
+- `.section-label` — Uppercase tracking label (11px, 750 weight)
+- `.nav-floating` — Floating pill nav bar (24px radius, blur 40px, elevated shadow)
 - `.spinner` — Purple loading spinner
 - `.progress-bar` — White/translucent progress bar
 - `.skeleton` — Animated shimmer loading placeholder
-- Ambient orbs: Floating colored circles in background
-- Water ripple tap effect
+- `.glass-strong` — Heavy glassmorphism (blur 40px)
+- `.slide-up` / `.pop-in` — Entry animations
+- `.create-btn-glow` — Pulsing glow animation for create button
 
-**Nav**: Centered raised purple Create (+) button with glow, white frosted glass bar, active tab has purple dot indicator.
+**Nav**: Floating pill-shaped bar with 24px border-radius, centered raised purple Create (+) button with glow animation, animated gradient indicator line on active tab.
 
 ### 3D Icon System
 - `Icon3D` component in `src/components/icons-3d.tsx` — 22+ icon types with gradient SVG fills
