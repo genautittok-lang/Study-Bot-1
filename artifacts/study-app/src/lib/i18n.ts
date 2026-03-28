@@ -217,6 +217,20 @@ type TranslationKeys = {
   sendInvite: string;
   friendsJoined: string;
   earnedReports: string;
+  cardPaymentDesc: string;
+  cryptoPaymentDesc: string;
+  starsPaymentDesc: string;
+  sendScreenshot: string;
+  sendScreenshotCrypto: string;
+  paymentVerification: string;
+  payStep1Card: string;
+  payStep2Card: string;
+  payStep3Card: string;
+  payStep1Crypto: string;
+  payStep2Crypto: string;
+  payStep3Crypto: string;
+  adminWillCheck: string;
+  uahOnly: string;
 };
 
 const translations: Record<string, TranslationKeys> = {
@@ -370,7 +384,7 @@ const translations: Record<string, TranslationKeys> = {
     choosePaymentMethod: "Payment methods",
     currentBalance: "Current balance",
     paymentSent: "I paid",
-    paymentNote: "Balance will be credited within 15 minutes after verification.",
+    paymentNote: "After admin verification, your balance will be credited. Usually within 1-24 hours.",
     noHistory: "No reports yet",
     noHistoryDesc: "Create your first report to see it here",
     progress: "Progress",
@@ -399,6 +413,20 @@ const translations: Record<string, TranslationKeys> = {
     sendInvite: "Send invite via Telegram",
     friendsJoined: "friends joined",
     earnedReports: "reports earned",
+    cardPaymentDesc: "Transfer 250 UAH to the card and send a screenshot",
+    cryptoPaymentDesc: "Send 5 USDT via TRC-20 network",
+    starsPaymentDesc: "Instant payment via Telegram",
+    sendScreenshot: "After payment, send a screenshot of the receipt to @studypro_support — the admin will verify and credit your balance",
+    sendScreenshotCrypto: "After transfer, send a screenshot of the transaction to @studypro_support — the admin will verify and credit your balance",
+    paymentVerification: "Manual verification by admin",
+    payStep1Card: "Transfer 250 UAH to the card",
+    payStep2Card: "Send screenshot to @studypro_support",
+    payStep3Card: "Admin verifies and credits 15 reports",
+    payStep1Crypto: "Send 5 USDT (TRC-20) to the address",
+    payStep2Crypto: "Send screenshot to @studypro_support",
+    payStep3Crypto: "Admin verifies and credits 15 reports",
+    adminWillCheck: "Admin will verify your payment manually",
+    uahOnly: "Ukraine only",
   },
   ru: {
     appName: "StudyPro",
@@ -550,7 +578,7 @@ const translations: Record<string, TranslationKeys> = {
     choosePaymentMethod: "Способы оплаты",
     currentBalance: "Текущий баланс",
     paymentSent: "Я оплатил",
-    paymentNote: "Баланс будет зачислен в течение 15 минут после проверки.",
+    paymentNote: "После проверки админом баланс будет зачислен. Обычно в течение 1-24 часов.",
     noHistory: "Нет отчётов",
     noHistoryDesc: "Создайте первый отчёт, чтобы увидеть его здесь",
     progress: "Прогресс",
@@ -579,6 +607,20 @@ const translations: Record<string, TranslationKeys> = {
     sendInvite: "Отправить через Telegram",
     friendsJoined: "друзей пришло",
     earnedReports: "отчётов заработано",
+    cardPaymentDesc: "Переведи 250 грн на карту и отправь скриншот",
+    cryptoPaymentDesc: "Отправь 5 USDT по сети TRC-20",
+    starsPaymentDesc: "Моментальная оплата через Telegram",
+    sendScreenshot: "После оплаты отправь скриншот чека в @studypro_support — админ проверит и зачислит баланс",
+    sendScreenshotCrypto: "После перевода отправь скриншот транзакции в @studypro_support — админ проверит и зачислит баланс",
+    paymentVerification: "Ручная проверка админом",
+    payStep1Card: "Переведи 250 грн на карту",
+    payStep2Card: "Отправь скриншот в @studypro_support",
+    payStep3Card: "Админ проверит и зачислит 15 отчётов",
+    payStep1Crypto: "Отправь 5 USDT (TRC-20) на адрес",
+    payStep2Crypto: "Отправь скриншот в @studypro_support",
+    payStep3Crypto: "Админ проверит и зачислит 15 отчётов",
+    adminWillCheck: "Админ проверит оплату вручную",
+    uahOnly: "Только Украина",
   },
   uk: {
     appName: "StudyPro",
@@ -730,7 +772,7 @@ const translations: Record<string, TranslationKeys> = {
     choosePaymentMethod: "Способи оплати",
     currentBalance: "Поточний баланс",
     paymentSent: "Я оплатив",
-    paymentNote: "Баланс буде зараховано протягом 15 хвилин після перевірки.",
+    paymentNote: "Після перевірки адміном баланс буде зараховано. Зазвичай протягом 1-24 годин.",
     noHistory: "Немає звітів",
     noHistoryDesc: "Створіть перший звіт, щоб побачити його тут",
     progress: "Прогрес",
@@ -759,6 +801,20 @@ const translations: Record<string, TranslationKeys> = {
     sendInvite: "Надіслати через Telegram",
     friendsJoined: "друзів приєдналось",
     earnedReports: "звітів зароблено",
+    cardPaymentDesc: "Переведи 250 грн на картку та надішли скріншот",
+    cryptoPaymentDesc: "Надішли 5 USDT через мережу TRC-20",
+    starsPaymentDesc: "Миттєва оплата через Telegram",
+    sendScreenshot: "Після оплати надішли скріншот чеку в @studypro_support — адмін перевірить та зарахує баланс",
+    sendScreenshotCrypto: "Після переказу надішли скріншот транзакції в @studypro_support — адмін перевірить та зарахує баланс",
+    paymentVerification: "Ручна перевірка адміном",
+    payStep1Card: "Переведи 250 грн на картку",
+    payStep2Card: "Надішли скріншот в @studypro_support",
+    payStep3Card: "Адмін перевірить та зарахує 15 звітів",
+    payStep1Crypto: "Надішли 5 USDT (TRC-20) на адресу",
+    payStep2Crypto: "Надішли скріншот в @studypro_support",
+    payStep3Crypto: "Адмін перевірить та зарахує 15 звітів",
+    adminWillCheck: "Адмін перевірить оплату вручну",
+    uahOnly: "Тільки Україна",
   },
 };
 
