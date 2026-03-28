@@ -77,3 +77,10 @@ export async function createPayment(data: {
     body: JSON.stringify(data),
   });
 }
+
+export async function createInvoice(telegramId: number): Promise<{ success: boolean; invoiceUrl?: string; error?: string }> {
+  return request<{ success: boolean; invoiceUrl?: string; error?: string }>("/create-invoice", {
+    method: "POST",
+    body: JSON.stringify({ telegramId }),
+  });
+}

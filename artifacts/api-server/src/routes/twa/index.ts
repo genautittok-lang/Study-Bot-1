@@ -18,6 +18,7 @@ import {
   savePayment,
 } from "../../bot/db.js";
 import { generateReport } from "../../bot/ai.js";
+import { bot } from "../../bot/index.js";
 import { db, reportsTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
 
@@ -160,6 +161,28 @@ router.post("/payment", async (req, res) => {
   } catch (err) {
     req.log.error({ err }, "TWA payment error");
     res.status(400).json({ success: false, message: "Invalid request" });
+  }
+});
+
+router.post("/create-invoice", async (req, res) => {
+  try {
+    const { telegramId } = req.body as { telegramId: number };
+    if (!telegramId) {
+      return res.status(400).json({ success: false, error: "Missing telegramId" });
+    }
+
+    const invoiceLink = await bot.telegram.createInvoiceLink({
+      title: "📚 15 звітів StudyPro",
+      description: "Пакет із 15 AI-згенерованих звітів, конспектів або лабораторних",
+      payload: `stars_${telegramId}_${Date.now()}`,
+      currency: "XTR",
+      prices: [{ label: "15 звітів", amount: 500 }],
+    });
+
+    res.json({ success: true, invoiceUrl: invoiceLink });
+  } catch (err) {
+    req.log.error({ err }, "TWA create-invoice error");
+    res.status(500).json({ success: false, error: "Failed to create invoice" });
   }
 });
 

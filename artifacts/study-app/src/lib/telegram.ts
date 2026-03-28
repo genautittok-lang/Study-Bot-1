@@ -56,6 +56,7 @@ declare global {
         viewportHeight: number;
         viewportStableHeight: number;
         platform: string;
+        openInvoice: (url: string, callback?: (status: string) => void) => void;
       };
     };
   }

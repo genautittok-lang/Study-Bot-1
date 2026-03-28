@@ -17,6 +17,21 @@ export function setUser(u: UserData) {
   notify();
 }
 
+export async function refreshUser() {
+  const current = userSignal.value;
+  if (!current) return;
+  try {
+    const { authUser } = await import("./api");
+    const fresh = await authUser({
+      telegramId: current.telegramId,
+      username: current.username,
+      firstName: current.firstName,
+      lastName: current.lastName,
+    });
+    setUser(fresh);
+  } catch {}
+}
+
 export function updateBalance(balance: number) {
   if (globalUser) {
     globalUser = { ...globalUser, balance };
