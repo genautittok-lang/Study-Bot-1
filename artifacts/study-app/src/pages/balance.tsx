@@ -20,14 +20,14 @@ function CopyField({ label, value }: { label: string; value: string }) {
       <motion.button whileTap={{ scale: 0.97 }}
         onClick={() => { navigator.clipboard.writeText(value.replace(/\s/g, "")).then(() => { hapticSuccess(); setOk(true); setTimeout(() => setOk(false), 2000); }).catch(() => {}); }}
         className="w-full rounded-[14px] p-3.5 flex items-center gap-3"
-        style={{ background: "rgba(255,255,255,0.7)", border: "1.5px solid rgba(123,104,238,0.1)", backdropFilter: "blur(10px)" }}>
+        style={{ background: "rgba(255,255,255,0.7)", border: "1.5px solid rgba(124,92,252,0.1)", backdropFilter: "blur(10px)" }}>
         <code className="text-[13px] font-mono font-bold text-[#1a1a2e] flex-1 text-left break-all select-all tracking-wider">{value}</code>
         <motion.div animate={{ scale: ok ? [1, 1.2, 1] : 1 }}
           className="shrink-0 w-8 h-8 rounded-[10px] flex items-center justify-center"
-          style={{ background: ok ? "rgba(0,196,140,0.12)" : "rgba(123,104,238,0.08)" }}>
+          style={{ background: ok ? "rgba(0,196,140,0.12)" : "rgba(124,92,252,0.08)" }}>
           {ok
             ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00C48C" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
-            : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="1.8"><rect width="14" height="14" x="8" y="8" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>}
+            : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.8"><rect width="14" height="14" x="8" y="8" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>}
         </motion.div>
       </motion.button>
     </div>
@@ -38,7 +38,7 @@ function BackBtn({ onClick }: { onClick: () => void }) {
   return (
     <motion.button whileTap={{ scale: 0.95 }} onClick={() => { hapticFeedback("light"); onClick(); }}
       className="flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-full text-[12px] font-semibold"
-      style={{ background: "rgba(123,104,238,0.07)", color: "#7B68EE" }}>
+      style={{ background: "rgba(124,92,252,0.07)", color: "#7C5CFC" }}>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6" /></svg>
       {t("back")}
     </motion.button>
@@ -51,7 +51,7 @@ function StepIndicator({ step }: { step: number }) {
       {[1, 2, 3].map((i) => (
         <motion.div key={i} animate={{ opacity: i <= step ? 1 : 0.3, scale: i === step ? 1.1 : 1 }}
           className="h-1.5 rounded-full flex-1 transition-all"
-          style={{ background: i <= step ? "linear-gradient(90deg, #7B68EE, #4A90FF)" : "rgba(0,0,0,0.08)" }} />
+          style={{ background: i <= step ? "linear-gradient(90deg, #7C5CFC, #3B82F6)" : "rgba(0,0,0,0.08)" }} />
       ))}
     </div>
   );
@@ -66,7 +66,7 @@ function FloatingParticles() {
           style={{
             width: [6, 4, 8, 5, 7, 4, 6, 5][i],
             height: [6, 4, 8, 5, 7, 4, 6, 5][i],
-            background: ["rgba(123,104,238,0.3)", "rgba(74,144,255,0.3)", "rgba(0,196,140,0.3)", "rgba(255,159,67,0.3)", "rgba(123,104,238,0.2)", "rgba(74,144,255,0.2)", "rgba(0,196,140,0.2)", "rgba(255,159,67,0.2)"][i],
+            background: ["rgba(124,92,252,0.3)", "rgba(74,144,255,0.3)", "rgba(0,196,140,0.3)", "rgba(255,159,67,0.3)", "rgba(124,92,252,0.2)", "rgba(74,144,255,0.2)", "rgba(0,196,140,0.2)", "rgba(255,159,67,0.2)"][i],
             left: `${[15, 75, 45, 85, 25, 60, 35, 70][i]}%`,
             top: `${[20, 60, 80, 30, 70, 15, 45, 55][i]}%`,
           }}
@@ -142,7 +142,7 @@ export default function Balance() {
     const isStars = method === "stars";
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative px-4 pt-14 pb-6 flex flex-col items-center min-h-[75vh] justify-center overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(123,104,238,0.08) 0%, transparent 70%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(124,92,252,0.08) 0%, transparent 70%)" }} />
 
         <motion.div
           initial={{ scale: 0, rotate: -20 }}
@@ -158,7 +158,7 @@ export default function Balance() {
             <motion.div key={i}
               className="absolute w-2 h-2 rounded-full"
               style={{
-                background: ["#7B68EE", "#00C48C", "#4A90FF", "#FF9F43", "#7B68EE", "#00C48C"][i],
+                background: ["#7C5CFC", "#00C48C", "#3B82F6", "#FF9F43", "#7C5CFC", "#00C48C"][i],
                 top: "50%", left: "50%",
               }}
               initial={{ scale: 0, x: 0, y: 0 }}
@@ -180,13 +180,13 @@ export default function Balance() {
         {!isStars && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
             className="w-full max-w-[300px] rounded-[18px] p-4 mb-5"
-            style={{ background: "linear-gradient(135deg, rgba(123,104,238,0.06), rgba(74,144,255,0.04))", border: "1px solid rgba(123,104,238,0.1)" }}>
+            style={{ background: "linear-gradient(135deg, rgba(124,92,252,0.06), rgba(74,144,255,0.04))", border: "1px solid rgba(124,92,252,0.1)" }}>
             <div className="flex items-center gap-2 mb-2">
               <div className="w-6 h-6 rounded-full flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, #7B68EE, #4A90FF)" }}>
+                style={{ background: "linear-gradient(135deg, #7C5CFC, #3B82F6)" }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
               </div>
-              <span className="text-[11px] font-bold text-[#7B68EE]">{t("adminReviewing")}</span>
+              <span className="text-[11px] font-bold text-[#7C5CFC]">{t("adminReviewing")}</span>
             </div>
             <p className="text-[11px] text-[#6b7280] leading-relaxed">
               Ми отримали твій скріншот. Адмін перевірить та зарахує <strong>15 звітів</strong> протягом 1-24 годин.
@@ -197,7 +197,7 @@ export default function Balance() {
         <motion.button whileTap={{ scale: 0.97 }} onClick={reset}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}
           className="px-8 py-3.5 rounded-[16px] text-[13px] font-bold"
-          style={{ background: "linear-gradient(135deg, #7B68EE, #4A90FF)", color: "white", boxShadow: "0 8px 20px rgba(123,104,238,0.3)" }}>
+          style={{ background: "linear-gradient(135deg, #7C5CFC, #3B82F6)", color: "white", boxShadow: "0 8px 20px rgba(124,92,252,0.3)" }}>
           {t("goBack")}
         </motion.button>
       </motion.div>
@@ -216,8 +216,8 @@ export default function Balance() {
         <div className="text-center mb-6">
           <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", bounce: 0.4 }}
             className="w-16 h-16 rounded-[20px] mx-auto mb-3 flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, rgba(123,104,238,0.12), rgba(74,144,255,0.08))", border: "1.5px solid rgba(123,104,238,0.15)" }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="1.8">
+            style={{ background: "linear-gradient(135deg, rgba(124,92,252,0.12), rgba(74,144,255,0.08))", border: "1.5px solid rgba(124,92,252,0.15)" }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.8">
               <rect width="18" height="18" x="3" y="3" rx="3" />
               <circle cx="8.5" cy="8.5" r="1.5" />
               <polyline points="21 15 16 10 5 21" />
@@ -234,8 +234,8 @@ export default function Balance() {
           onClick={() => { hapticFeedback("light"); fileInputRef.current?.click(); }}
           className="w-full rounded-[20px] p-5 flex flex-col items-center justify-center gap-3 mb-3 relative overflow-hidden"
           style={{
-            background: screenshot ? "rgba(0,196,140,0.04)" : "rgba(123,104,238,0.03)",
-            border: `2px dashed ${screenshot ? "rgba(0,196,140,0.35)" : screenshotError ? "rgba(239,68,68,0.4)" : "rgba(123,104,238,0.2)"}`,
+            background: screenshot ? "rgba(0,196,140,0.04)" : "rgba(124,92,252,0.03)",
+            border: `2px dashed ${screenshot ? "rgba(0,196,140,0.35)" : screenshotError ? "rgba(239,68,68,0.4)" : "rgba(124,92,252,0.2)"}`,
             minHeight: 120,
           }}>
           {screenshot ? (
@@ -249,13 +249,13 @@ export default function Balance() {
                 <div className="text-[13px] font-bold text-[#00C48C]">{t("screenshotUploaded")}</div>
                 <div className="text-[10px] text-[#9ca3af] mt-0.5 max-w-[200px] truncate">{screenshotName}</div>
               </div>
-              <div className="text-[11px] font-semibold text-[#7B68EE]">{t("changeScreenshot")}</div>
+              <div className="text-[11px] font-semibold text-[#7C5CFC]">{t("changeScreenshot")}</div>
             </>
           ) : (
             <>
               <div className="w-12 h-12 rounded-[14px] flex items-center justify-center"
-                style={{ background: screenshotError ? "rgba(239,68,68,0.06)" : "rgba(123,104,238,0.07)" }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={screenshotError ? "#EF4444" : "#7B68EE"} strokeWidth="1.8">
+                style={{ background: screenshotError ? "rgba(239,68,68,0.06)" : "rgba(124,92,252,0.07)" }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={screenshotError ? "#EF4444" : "#7C5CFC"} strokeWidth="1.8">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                   <polyline points="17 8 12 3 7 8" />
                   <line x1="12" y1="3" x2="12" y2="15" />
@@ -284,9 +284,9 @@ export default function Balance() {
         <motion.button whileTap={{ scale: 0.97 }} onClick={submit} disabled={submitting}
           className="w-full py-[15px] rounded-[18px] text-[14px] font-bold flex items-center justify-center gap-2"
           style={{
-            background: screenshot ? "linear-gradient(135deg, #7B68EE, #4A90FF)" : "rgba(123,104,238,0.4)",
+            background: screenshot ? "linear-gradient(135deg, #7C5CFC, #3B82F6)" : "rgba(124,92,252,0.4)",
             color: "white",
-            boxShadow: screenshot ? "0 8px 24px rgba(123,104,238,0.3)" : "none",
+            boxShadow: screenshot ? "0 8px 24px rgba(124,92,252,0.3)" : "none",
           }}>
           {submitting
             ? <><div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />{t("submitting")}</>
@@ -328,7 +328,7 @@ export default function Balance() {
           <div className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-10"
             style={{ background: "radial-gradient(circle, white, transparent 70%)", transform: "translate(30%, -30%)" }} />
           <div className="absolute bottom-0 left-0 w-28 h-28 rounded-full opacity-5"
-            style={{ background: "radial-gradient(circle, #7B68EE, transparent 70%)", transform: "translate(-20%, 20%)" }} />
+            style={{ background: "radial-gradient(circle, #7C5CFC, transparent 70%)", transform: "translate(-20%, 20%)" }} />
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[9px] text-white/30 font-bold uppercase tracking-wider">{t("paymentAmount")}</span>
@@ -349,10 +349,10 @@ export default function Balance() {
         )}
 
         {!isStars && (
-          <div className="rounded-[16px] p-3.5 mb-4" style={{ background: "rgba(123,104,238,0.03)", border: "1px solid rgba(123,104,238,0.07)" }}>
+          <div className="rounded-[16px] p-3.5 mb-4" style={{ background: "rgba(124,92,252,0.03)", border: "1px solid rgba(124,92,252,0.07)" }}>
             <div className="flex items-center gap-2 mb-2.5">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
-              <span className="text-[10px] font-bold text-[#7B68EE] uppercase tracking-wider">{t("howItWorks")}</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+              <span className="text-[10px] font-bold text-[#7C5CFC] uppercase tracking-wider">{t("howItWorks")}</span>
             </div>
             {[
               isCrypto ? t("payStep1Crypto") : t("payStep1Card"),
@@ -361,7 +361,7 @@ export default function Balance() {
             ].map((step, i) => (
               <div key={i} className="flex items-start gap-2.5 mb-2 last:mb-0">
                 <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0 mt-0.5"
-                  style={{ background: i === 2 ? "#00C48C" : "linear-gradient(135deg, #7B68EE, #4A90FF)" }}>
+                  style={{ background: i === 2 ? "#00C48C" : "linear-gradient(135deg, #7C5CFC, #3B82F6)" }}>
                   {i + 1}
                 </div>
                 <span className="text-[12px] text-[#6b7280] leading-relaxed">{step}</span>
@@ -379,7 +379,7 @@ export default function Balance() {
         {!isStars && (
           <motion.button whileTap={{ scale: 0.97 }} onClick={() => { hapticFeedback("light"); setStep("screenshot"); }}
             className="w-full py-[15px] rounded-[18px] text-[14px] font-bold flex items-center justify-center gap-2"
-            style={{ background: "linear-gradient(135deg, #7B68EE, #4A90FF)", color: "white", boxShadow: "0 8px 24px rgba(123,104,238,0.28)" }}>
+            style={{ background: "linear-gradient(135deg, #7C5CFC, #3B82F6)", color: "white", boxShadow: "0 8px 24px rgba(124,92,252,0.28)" }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
             {t("iPaid")}
           </motion.button>
@@ -399,13 +399,13 @@ export default function Balance() {
     <div className="px-4 pt-5 pb-6">
       <motion.div {...a(0)} className="relative rounded-[28px] p-5 mb-5 overflow-hidden"
         style={{
-          background: "linear-gradient(145deg, #4A90FF, #3D7FE8, #7B68EE)",
-          boxShadow: "0 16px 48px rgba(74,144,255,0.35), 0 4px 12px rgba(123,104,238,0.2)",
+          background: "linear-gradient(145deg, #3B82F6, #3D7FE8, #7C5CFC)",
+          boxShadow: "0 16px 48px rgba(74,144,255,0.35), 0 4px 12px rgba(124,92,252,0.2)",
         }}>
         <div className="absolute top-0 right-0 w-52 h-52 rounded-full opacity-15"
           style={{ background: "radial-gradient(circle, white 0%, transparent 70%)", transform: "translate(30%, -30%)" }} />
         <div className="absolute bottom-0 left-0 w-36 h-36 rounded-full opacity-10"
-          style={{ background: "radial-gradient(circle, #00D4AA 0%, transparent 70%)", transform: "translate(-20%, 20%)" }} />
+          style={{ background: "radial-gradient(circle, #06D6A0 0%, transparent 70%)", transform: "translate(-20%, 20%)" }} />
         <div className="absolute top-3 right-4 flex gap-1.5">
           {["💜", "💙", "🟢"].map((c, i) => (
             <motion.span key={i} animate={{ y: [0, -3, 0] }} transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
@@ -417,8 +417,8 @@ export default function Balance() {
           <div className="flex items-center justify-between mb-5">
             <span className="text-[10px] text-white/40 font-bold tracking-wider uppercase">{t("currentBalance")}</span>
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.1)" }}>
-              <div className="w-1.5 h-1.5 rounded-full bg-[#00D4AA] animate-pulse" />
-              <span className="text-[9px] text-white/60 font-semibold">SmartStudy</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-[#06D6A0] animate-pulse" />
+              <span className="text-[9px] text-white/60 font-semibold">StudyFlush</span>
             </div>
           </div>
 
@@ -442,7 +442,7 @@ export default function Balance() {
           )}
 
           <div className="flex items-center justify-between mt-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-            <span className="text-[10px] text-white/25 font-medium">SmartStudy</span>
+            <span className="text-[10px] text-white/25 font-medium">StudyFlush</span>
             <span className="text-[10px] text-white/20 font-medium tabular">{t("total")}: {user?.totalReports || 0}</span>
           </div>
         </div>
@@ -450,7 +450,7 @@ export default function Balance() {
 
       <motion.div {...a(1)} className="mb-3">
         <div className="flex items-center gap-2 mb-2.5 px-0.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#7B68EE] animate-pulse" />
+          <div className="w-1.5 h-1.5 rounded-full bg-[#7C5CFC] animate-pulse" />
           <span className="text-[11px] font-bold text-[#9ca3af] uppercase tracking-wider">{t("choosePaymentMethod")}</span>
         </div>
       </motion.div>
@@ -494,12 +494,12 @@ export default function Balance() {
                 <div className="font-bold text-[14px] leading-tight flex items-center gap-2">
                   {t("cardPayment")}
                   <span className="text-[8px] font-bold px-2 py-0.5 rounded-full"
-                    style={{ background: "linear-gradient(135deg, rgba(123,104,238,0.12), rgba(74,144,255,0.08))", color: "#7B68EE" }}>
+                    style={{ background: "linear-gradient(135deg, rgba(124,92,252,0.12), rgba(74,144,255,0.08))", color: "#7C5CFC" }}>
                     {t("popular")}
                   </span>
                 </div>
                 <div className="text-[11px] text-[#9ca3af] mt-0.5 font-medium">{t("cardPaymentDesc")}</div>
-                <div className="text-[10px] text-[#7B68EE] mt-0.5 font-bold">250 UAH · 15 {t("reportsAvailable").toLowerCase()}</div>
+                <div className="text-[10px] text-[#7C5CFC] mt-0.5 font-bold">250 UAH · 15 {t("reportsAvailable").toLowerCase()}</div>
               </div>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
             </motion.button>
@@ -523,8 +523,8 @@ export default function Balance() {
       </div>
 
       <motion.div {...a(isUkraine ? 5 : 4)} className="mt-4 rounded-[14px] p-3 flex items-start gap-2.5"
-        style={{ background: "rgba(123,104,238,0.03)", border: "1px solid rgba(123,104,238,0.07)" }}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="1.5" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="16" y2="12" /><line x1="12" x2="12.01" y1="8" y2="8" /></svg>
+        style={{ background: "rgba(124,92,252,0.03)", border: "1px solid rgba(124,92,252,0.07)" }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.5" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="16" y2="12" /><line x1="12" x2="12.01" y1="8" y2="8" /></svg>
         <div>
           <p className="text-[11px] text-[#6b7280] leading-relaxed">{t("paymentNote")}</p>
           <p className="text-[10px] text-[#9ca3af] mt-1">{t("adminWillCheck")}</p>

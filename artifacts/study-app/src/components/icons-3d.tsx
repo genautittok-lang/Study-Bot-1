@@ -1,32 +1,32 @@
 import { motion } from "framer-motion";
 
 const gradients: Record<string, [string, string]> = {
-  report: ["#7B68EE", "#5B4CCF"],
+  report: ["#7C5CFC", "#6336F5"],
   summary: ["#FF8A50", "#E67E22"],
-  database: ["#4A90FF", "#3D7FE8"],
-  lab: ["#00D4AA", "#00C48C"],
+  database: ["#3B82F6", "#3D7FE8"],
+  lab: ["#06D6A0", "#00C48C"],
   essay: ["#FF6B9D", "#E84393"],
   tasks: ["#00C48C", "#00A87A"],
-  coursework: ["#7B68EE", "#5143C2"],
+  coursework: ["#7C5CFC", "#5143C2"],
   diploma: ["#FFB347", "#F39C12"],
-  presentation: ["#4A90FF", "#2F6ECF"],
-  test: ["#00D4AA", "#00A87A"],
-  notes: ["#A29BFE", "#7B68EE"],
-  topup: ["#00D4AA", "#4A90FF"],
+  presentation: ["#3B82F6", "#2F6ECF"],
+  test: ["#06D6A0", "#00A87A"],
+  notes: ["#A29BFE", "#7C5CFC"],
+  topup: ["#06D6A0", "#3B82F6"],
   history: ["#FF8A50", "#E67E22"],
-  profile: ["#7B68EE", "#FF6B9D"],
-  invite: ["#00C48C", "#00D4AA"],
-  balance: ["#4A90FF", "#00D4AA"],
+  profile: ["#7C5CFC", "#FF6B9D"],
+  invite: ["#00C48C", "#06D6A0"],
+  balance: ["#3B82F6", "#06D6A0"],
   star: ["#FFB347", "#FFA502"],
-  card: ["#7B68EE", "#5B4CCF"],
+  card: ["#7C5CFC", "#6336F5"],
   crypto: ["#00C48C", "#00A87A"],
-  share: ["#4A90FF", "#00D4AA"],
-  repeat: ["#7B68EE", "#A29BFE"],
-  copy: ["#00C48C", "#00D4AA"],
+  share: ["#3B82F6", "#06D6A0"],
+  repeat: ["#7C5CFC", "#A29BFE"],
+  copy: ["#00C48C", "#06D6A0"],
 };
 
 function Icon3D({ id, size = 44 }: { id: string; size?: number }) {
-  const [c1, c2] = gradients[id] || ["#7B68EE", "#5B4CCF"];
+  const [c1, c2] = gradients[id] || ["#7C5CFC", "#6336F5"];
   const inner = Math.round(size * 0.52);
   const gid = `g3d_${id}_${size}`;
 

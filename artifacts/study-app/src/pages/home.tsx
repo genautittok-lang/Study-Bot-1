@@ -28,7 +28,7 @@ function ProgressRing({ progress, size = 56, stroke = 4 }: { progress: number; s
   const offset = circ - (progress / 100) * circ;
   return (
     <svg width={size} height={size} className="-rotate-90">
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(123,104,238,0.08)" strokeWidth={stroke} />
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(124,92,252,0.08)" strokeWidth={stroke} />
       <motion.circle cx={size/2} cy={size/2} r={r} fill="none" stroke="url(#ringGradHome)" strokeWidth={stroke}
         strokeLinecap="round"
         initial={{ strokeDashoffset: circ }}
@@ -37,8 +37,8 @@ function ProgressRing({ progress, size = 56, stroke = 4 }: { progress: number; s
         strokeDasharray={circ} />
       <defs>
         <linearGradient id="ringGradHome" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#7B68EE" />
-          <stop offset="100%" stopColor="#00D4AA" />
+          <stop offset="0%" stopColor="#7C5CFC" />
+          <stop offset="100%" stopColor="#06D6A0" />
         </linearGradient>
       </defs>
     </svg>
@@ -111,7 +111,7 @@ export default function Home() {
     getReports(user.telegramId).then(r => setRecent(r.reports.slice(0, 2))).catch(() => {});
   }, [user]);
 
-  const refLink = `https://t.me/smartstudy_bot?start=ref_${user?.referralCode || "---"}`;
+  const refLink = `https://t.me/studyflush_bot?start=ref_${user?.referralCode || "---"}`;
 
   function copyRef() {
     navigator.clipboard.writeText(refLink)
@@ -136,7 +136,7 @@ export default function Home() {
             <img src={photo} alt="" className="w-[42px] h-[42px] rounded-full object-cover" />
           ) : (
             <div className="w-[42px] h-[42px] rounded-full flex items-center justify-center text-sm font-bold text-white"
-              style={{ background: "linear-gradient(135deg, #7B68EE, #5B4CCF)" }}>
+              style={{ background: "linear-gradient(135deg, #7C5CFC, #6336F5)" }}>
               {(user?.firstName || "S")[0].toUpperCase()}
             </div>
           )}
@@ -153,8 +153,8 @@ export default function Home() {
         <motion.button whileTap={{ scale: 0.9 }} onClick={() => { hapticFeedback("light"); go("/balance"); }}
           className="relative shrink-0">
           <div className="w-10 h-10 rounded-[12px] flex items-center justify-center"
-            style={{ background: "rgba(123,104,238,0.06)", border: "1px solid rgba(123,104,238,0.08)" }}>
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="1.8">
+            style={{ background: "rgba(124,92,252,0.06)", border: "1px solid rgba(124,92,252,0.08)" }}>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.8">
               <rect width="20" height="14" x="2" y="5" rx="2"/>
               <line x1="2" x2="22" y1="10" y2="10"/>
             </svg>
@@ -162,7 +162,7 @@ export default function Home() {
           {bal > 0 && (
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", bounce: 0.5 }}
               className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 text-[8px] font-bold text-white"
-              style={{ background: "linear-gradient(135deg, #7B68EE, #4A90FF)", boxShadow: "0 2px 8px rgba(123,104,238,0.4)" }}>
+              style={{ background: "linear-gradient(135deg, #7C5CFC, #3B82F6)", boxShadow: "0 2px 8px rgba(124,92,252,0.4)" }}>
               {bal}
             </motion.div>
           )}
@@ -174,14 +174,14 @@ export default function Home() {
           onClick={() => { hapticFeedback("medium"); go("/new"); }}
           className="relative rounded-[22px] p-4 mb-3 cursor-pointer overflow-hidden w-full text-left"
           style={{
-            background: "linear-gradient(145deg, #7B68EE 0%, #6355D8 35%, #5143C2 70%, #4A3AB8 100%)",
-            boxShadow: "0 10px 36px rgba(123,104,238,0.3), 0 3px 10px rgba(0,0,0,0.06)",
+            background: "linear-gradient(145deg, #7C5CFC 0%, #6355D8 35%, #5143C2 70%, #4A3AB8 100%)",
+            boxShadow: "0 10px 36px rgba(124,92,252,0.3), 0 3px 10px rgba(0,0,0,0.06)",
           }}
         >
           <div className="absolute top-0 right-0 w-36 h-36 rounded-full opacity-20"
             style={{ background: "radial-gradient(circle, white 0%, transparent 70%)", transform: "translate(25%, -35%)" }} />
           <div className="absolute bottom-0 left-0 w-28 h-28 rounded-full opacity-12"
-            style={{ background: "radial-gradient(circle, #00D4AA 0%, transparent 70%)", transform: "translate(-25%, 25%)" }} />
+            style={{ background: "radial-gradient(circle, #06D6A0 0%, transparent 70%)", transform: "translate(-25%, 25%)" }} />
           
           <div className="relative z-10 flex items-center gap-3">
             <div className="flex-1 min-w-0">
@@ -204,7 +204,7 @@ export default function Home() {
             <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
               className="relative z-10 mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full"
               style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.08)" }}>
-              <div className="w-1.5 h-1.5 rounded-full bg-[#00D4AA] animate-pulse" />
+              <div className="w-1.5 h-1.5 rounded-full bg-[#06D6A0] animate-pulse" />
               <span className="text-[9px] font-semibold text-white/75">{t("firstReportFree")}</span>
             </motion.div>
           )}
@@ -237,10 +237,10 @@ export default function Home() {
       <motion.div {...anim(3)} className="mb-3">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-0.5 -mx-3.5 px-3.5">
           {[
-            { iconId: "topup", label: t("topUp"), desc: "15 rep", go: "/balance", accent: "#00D4AA" },
+            { iconId: "topup", label: t("topUp"), desc: "15 rep", go: "/balance", accent: "#06D6A0" },
             { iconId: "history", label: t("history"), desc: `${user?.totalReports || 0} ${t("total").toLowerCase()}`, go: "/history", accent: "#FF8A50" },
-            { iconId: "profile", label: t("profile"), desc: lvl.name, go: "/profile", accent: "#7B68EE" },
-            { iconId: "invite", label: t("inviteFriends"), desc: `+2`, go: "#ref", accent: "#00C48C" },
+            { iconId: "profile", label: t("profile"), desc: lvl.name, go: "/profile", accent: "#7C5CFC" },
+            { iconId: "invite", label: t("inviteFriends"), desc: `+2`, go: "#ref", accent: "#10B981" },
           ].map((item, i) => (
             <motion.button key={i}
               initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
@@ -271,7 +271,7 @@ export default function Home() {
       {recentItems.length > 0 && (
         <motion.div {...anim(4)} className="mb-3">
           <div className="flex items-center gap-1.5 mb-2 px-0.5">
-            <div className="w-1 h-1 rounded-full animate-pulse" style={{ background: "#7B68EE" }} />
+            <div className="w-1 h-1 rounded-full animate-pulse" style={{ background: "#7C5CFC" }} />
             <span className="text-[10px] font-bold text-[#8b90a0] uppercase tracking-[0.08em]">{t("recentSubjects")}</span>
           </div>
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-0.5 -mx-3.5 px-3.5">
@@ -295,9 +295,9 @@ export default function Home() {
 
       <motion.div {...anim(4)} className="grid grid-cols-3 gap-2 mb-3">
         {[
-          { val: user?.totalReports || 0, label: t("total"), gradient: "linear-gradient(135deg, #7B68EE, #5B4CCF)" },
-          { val: bal, label: t("balance"), gradient: "linear-gradient(135deg, #4A90FF, #3D7FE8)" },
-          { val: 0, label: lvl.name, isIcon: true, icon: lvl.icon, gradient: "linear-gradient(135deg, #00D4AA, #00C48C)" },
+          { val: user?.totalReports || 0, label: t("total"), gradient: "linear-gradient(135deg, #7C5CFC, #6336F5)" },
+          { val: bal, label: t("balance"), gradient: "linear-gradient(135deg, #3B82F6, #3D7FE8)" },
+          { val: 0, label: lvl.name, isIcon: true, icon: lvl.icon, gradient: "linear-gradient(135deg, #06D6A0, #10B981)" },
         ].map((s, i) => (
           <motion.button key={i} whileTap={{ scale: 0.94 }}
             onClick={() => { hapticFeedback("light"); go(i === 0 ? "/history" : i === 1 ? "/balance" : "/profile"); }}
@@ -319,11 +319,11 @@ export default function Home() {
         <motion.div {...anim(5)} className="mb-3">
           <div className="flex items-center justify-between mb-2 px-0.5">
             <div className="flex items-center gap-1.5">
-              <div className="w-1 h-1 rounded-full bg-[#00C48C] animate-pulse" />
+              <div className="w-1 h-1 rounded-full bg-[#10B981] animate-pulse" />
               <span className="text-[10px] font-bold text-[#8b90a0] uppercase tracking-[0.08em]">{t("history")}</span>
             </div>
             <motion.button whileTap={{ scale: 0.95 }} onClick={() => { hapticFeedback("light"); go("/history"); }}
-              className="text-[10px] font-semibold text-[#7B68EE] flex items-center gap-0.5">
+              className="text-[10px] font-semibold text-[#7C5CFC] flex items-center gap-0.5">
               {t("allSubjects")}
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
             </motion.button>
@@ -336,7 +336,7 @@ export default function Home() {
               onClick={() => { hapticFeedback("light"); go("/history"); }}
               className="w-full g-card rounded-[14px] p-3 mb-1.5 flex items-center gap-2.5 text-left">
               <div className="w-[38px] h-[38px] rounded-[12px] flex items-center justify-center text-[16px] shrink-0"
-                style={{ background: "rgba(123,104,238,0.05)" }}>
+                style={{ background: "rgba(124,92,252,0.05)" }}>
                 {TYPES[r.reportType]?.icon || "📄"}
               </div>
               <div className="flex-1 min-w-0">
@@ -350,7 +350,7 @@ export default function Home() {
       )}
 
       <motion.div {...anim(6)} className="g-card-glow rounded-[20px] p-3.5 overflow-hidden relative">
-        <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: "linear-gradient(90deg, #00C48C, #00D4AA, #4A90FF)" }} />
+        <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: "linear-gradient(90deg, #10B981, #06D6A0, #3B82F6)" }} />
         
         <div className="flex items-center gap-2.5 mb-3">
           <Icon3D id="invite" size={38} />
@@ -368,7 +368,7 @@ export default function Home() {
           ].map((s, i) => (
             <div key={i} className="flex-1 text-center">
               <div className="w-6 h-6 rounded-full mx-auto mb-1 flex items-center justify-center text-[9px] font-bold text-white"
-                style={{ background: i === 2 ? "linear-gradient(135deg, #00C48C, #00D4AA)" : "linear-gradient(135deg, #7B68EE, #4A90FF)" }}>
+                style={{ background: i === 2 ? "linear-gradient(135deg, #10B981, #06D6A0)" : "linear-gradient(135deg, #7C5CFC, #3B82F6)" }}>
                 {s.num}
               </div>
               <div className="text-[7px] text-[#8b90a0] font-medium leading-tight px-0.5">{s.text}</div>
@@ -378,10 +378,10 @@ export default function Home() {
 
         <div className="flex gap-2 mb-3">
           <div className="flex-1 rounded-[12px] py-2 px-2.5 text-center" style={{ background: "rgba(0,196,140,0.05)", border: "1px solid rgba(0,196,140,0.08)" }}>
-            <div className="text-[18px] font-extrabold tabular" style={{ color: "#00C48C" }}>{user?.referralCount || 0}</div>
+            <div className="text-[18px] font-extrabold tabular" style={{ color: "#10B981" }}>{user?.referralCount || 0}</div>
             <div className="text-[7px] text-[#8b90a0] font-bold uppercase tracking-[0.06em] mt-0.5">{t("friendsJoined")}</div>
           </div>
-          <div className="flex-1 rounded-[12px] py-2 px-2.5 text-center" style={{ background: "rgba(123,104,238,0.04)", border: "1px solid rgba(123,104,238,0.08)" }}>
+          <div className="flex-1 rounded-[12px] py-2 px-2.5 text-center" style={{ background: "rgba(124,92,252,0.04)", border: "1px solid rgba(124,92,252,0.08)" }}>
             <div className="text-[18px] font-extrabold tabular gradient-text">{(user?.referralCount || 0) * 2}</div>
             <div className="text-[7px] text-[#8b90a0] font-bold uppercase tracking-[0.06em] mt-0.5">{t("earnedReports")}</div>
           </div>
@@ -395,9 +395,9 @@ export default function Home() {
           </motion.button>
           <motion.button whileTap={{ scale: 0.96 }} onClick={copyRef}
             className="py-[10px] px-3.5 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1 transition-all shrink-0"
-            style={{ background: copied ? "rgba(0,196,140,0.06)" : "rgba(0,0,0,0.03)", color: copied ? "#00C48C" : "#6b7280", border: `1px solid ${copied ? "rgba(0,196,140,0.12)" : "rgba(0,0,0,0.04)"}` }}>
+            style={{ background: copied ? "rgba(0,196,140,0.06)" : "rgba(0,0,0,0.03)", color: copied ? "#10B981" : "#6b7280", border: `1px solid ${copied ? "rgba(0,196,140,0.12)" : "rgba(0,0,0,0.04)"}` }}>
             {copied
-              ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00C48C" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>}
             {copied ? "✓" : t("copyLink")}
           </motion.button>

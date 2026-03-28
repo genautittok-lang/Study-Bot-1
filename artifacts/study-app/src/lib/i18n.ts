@@ -259,7 +259,7 @@ type TranslationKeys = {
 
 const translations: Record<string, TranslationKeys> = {
   en: {
-    appName: "SmartStudy",
+    appName: "StudyFlush",
     welcome: "Hello",
     subtitle: "Your smart study assistant",
     yourBalance: "Your balance",
@@ -347,7 +347,7 @@ const translations: Record<string, TranslationKeys> = {
     cardPayment: "Card payment",
     cardNumber: "Card number:",
     cardNote: "In the payment comment, specify your ID:",
-    receiptNote: "After payment, send a screenshot of the receipt to the moderator @smartstudy_support",
+    receiptNote: "After payment, send a screenshot of the receipt to the moderator @studyflush_support",
     payAmount: "Pay",
     choosePayment: "Choose payment method",
     popular: "Popular",
@@ -403,7 +403,7 @@ const translations: Record<string, TranslationKeys> = {
     walletAddress: "Wallet address",
     cryptoPayment: "Crypto USDT",
     starsDesc: "Pay via Telegram Stars",
-    starsInstructions: "Send the Stars to @smartstudy_support bot and press confirm below.",
+    starsInstructions: "Send the Stars to @studyflush_support bot and press confirm below.",
     supportContact: "Support",
     choosePaymentMethod: "Payment methods",
     currentBalance: "Current balance",
@@ -424,7 +424,7 @@ const translations: Record<string, TranslationKeys> = {
     seconds: "sec",
     repeatReport: "Repeat",
     shareReport: "Share",
-    shareText: "Generated with SmartStudy Bot",
+    shareText: "Generated with StudyFlush Bot",
     recentSubjects: "Recent",
     continueWith: "Continue",
     shareWithFriend: "Share with a friend",
@@ -440,14 +440,14 @@ const translations: Record<string, TranslationKeys> = {
     cardPaymentDesc: "Transfer 250 UAH to the card and send a screenshot",
     cryptoPaymentDesc: "Send 5 USDT via TRC-20 network",
     starsPaymentDesc: "Instant payment via Telegram",
-    sendScreenshot: "After payment, send a screenshot of the receipt to @smartstudy_support — the admin will verify and credit your balance",
-    sendScreenshotCrypto: "After transfer, send a screenshot of the transaction to @smartstudy_support — the admin will verify and credit your balance",
+    sendScreenshot: "After payment, send a screenshot of the receipt to @studyflush_support — the admin will verify and credit your balance",
+    sendScreenshotCrypto: "After transfer, send a screenshot of the transaction to @studyflush_support — the admin will verify and credit your balance",
     paymentVerification: "Manual verification by admin",
     payStep1Card: "Transfer 250 UAH to the card",
-    payStep2Card: "Send screenshot to @smartstudy_support",
+    payStep2Card: "Send screenshot to @studyflush_support",
     payStep3Card: "Admin verifies and credits 15 reports",
     payStep1Crypto: "Send 5 USDT (TRC-20) to the address",
-    payStep2Crypto: "Send screenshot to @smartstudy_support",
+    payStep2Crypto: "Send screenshot to @studyflush_support",
     payStep3Crypto: "Admin verifies and credits 15 reports",
     adminWillCheck: "Admin will verify your payment manually",
     uahOnly: "Ukraine only",
@@ -477,7 +477,7 @@ const translations: Record<string, TranslationKeys> = {
     genTip6: "Almost ready!",
   },
   ru: {
-    appName: "SmartStudy",
+    appName: "StudyFlush",
     welcome: "Привет",
     subtitle: "Твой умный помощник в учёбе",
     yourBalance: "Твой баланс",
@@ -565,7 +565,7 @@ const translations: Record<string, TranslationKeys> = {
     cardPayment: "Оплата картой",
     cardNumber: "Номер карты:",
     cardNote: "В комментарии к переводу укажи свой ID:",
-    receiptNote: "После оплаты отправь скриншот чека модератору @smartstudy_support",
+    receiptNote: "После оплаты отправь скриншот чека модератору @studyflush_support",
     payAmount: "Оплатить",
     choosePayment: "Выбери способ оплаты",
     popular: "Популярное",
@@ -621,7 +621,7 @@ const translations: Record<string, TranslationKeys> = {
     walletAddress: "Адрес кошелька",
     cryptoPayment: "Крипто USDT",
     starsDesc: "Оплата через Telegram Stars",
-    starsInstructions: "Отправьте Stars боту @smartstudy_support и нажмите подтвердить.",
+    starsInstructions: "Отправьте Stars боту @studyflush_support и нажмите подтвердить.",
     supportContact: "Поддержка",
     choosePaymentMethod: "Способы оплаты",
     currentBalance: "Текущий баланс",
@@ -642,7 +642,7 @@ const translations: Record<string, TranslationKeys> = {
     seconds: "сек",
     repeatReport: "Повторить",
     shareReport: "Поделиться",
-    shareText: "Сгенерировано в SmartStudy Bot",
+    shareText: "Сгенерировано в StudyFlush Bot",
     recentSubjects: "Недавние",
     continueWith: "Продолжить",
     shareWithFriend: "Поделись с другом",
@@ -658,14 +658,14 @@ const translations: Record<string, TranslationKeys> = {
     cardPaymentDesc: "Переведи 250 грн на карту и отправь скриншот",
     cryptoPaymentDesc: "Отправь 5 USDT по сети TRC-20",
     starsPaymentDesc: "Моментальная оплата через Telegram",
-    sendScreenshot: "После оплаты отправь скриншот чека в @smartstudy_support — админ проверит и зачислит баланс",
-    sendScreenshotCrypto: "После перевода отправь скриншот транзакции в @smartstudy_support — админ проверит и зачислит баланс",
+    sendScreenshot: "После оплаты отправь скриншот чека в @studyflush_support — админ проверит и зачислит баланс",
+    sendScreenshotCrypto: "После перевода отправь скриншот транзакции в @studyflush_support — админ проверит и зачислит баланс",
     paymentVerification: "Ручная проверка админом",
     payStep1Card: "Переведи 250 грн на карту",
-    payStep2Card: "Отправь скриншот в @smartstudy_support",
+    payStep2Card: "Отправь скриншот в @studyflush_support",
     payStep3Card: "Админ проверит и зачислит 15 отчётов",
     payStep1Crypto: "Отправь 5 USDT (TRC-20) на адрес",
-    payStep2Crypto: "Отправь скриншот в @smartstudy_support",
+    payStep2Crypto: "Отправь скриншот в @studyflush_support",
     payStep3Crypto: "Админ проверит и зачислит 15 отчётов",
     adminWillCheck: "Админ проверит оплату вручную",
     uahOnly: "Только Украина",
@@ -695,7 +695,7 @@ const translations: Record<string, TranslationKeys> = {
     genTip6: "Почти готово!",
   },
   uk: {
-    appName: "SmartStudy",
+    appName: "StudyFlush",
     welcome: "Привіт",
     subtitle: "Твій розумний помічник для навчання",
     yourBalance: "Твій баланс",
@@ -783,7 +783,7 @@ const translations: Record<string, TranslationKeys> = {
     cardPayment: "Оплата карткою",
     cardNumber: "Номер картки:",
     cardNote: "В коментарі до переказу вкажи свій ID:",
-    receiptNote: "Після оплати надішли скріншот чеку модератору @smartstudy_support",
+    receiptNote: "Після оплати надішли скріншот чеку модератору @studyflush_support",
     payAmount: "Оплатити",
     choosePayment: "Вибери спосіб оплати",
     popular: "Популярне",
@@ -839,7 +839,7 @@ const translations: Record<string, TranslationKeys> = {
     walletAddress: "Адреса гаманця",
     cryptoPayment: "Крипто USDT",
     starsDesc: "Оплата через Telegram Stars",
-    starsInstructions: "Надішліть Stars боту @smartstudy_support та натисніть підтвердити.",
+    starsInstructions: "Надішліть Stars боту @studyflush_support та натисніть підтвердити.",
     supportContact: "Підтримка",
     choosePaymentMethod: "Способи оплати",
     currentBalance: "Поточний баланс",
@@ -860,7 +860,7 @@ const translations: Record<string, TranslationKeys> = {
     seconds: "сек",
     repeatReport: "Повторити",
     shareReport: "Поділитися",
-    shareText: "Згенеровано в SmartStudy Bot",
+    shareText: "Згенеровано в StudyFlush Bot",
     recentSubjects: "Нещодавні",
     continueWith: "Продовжити",
     shareWithFriend: "Поділись з другом",
@@ -876,14 +876,14 @@ const translations: Record<string, TranslationKeys> = {
     cardPaymentDesc: "Переведи 250 грн на картку та надішли скріншот",
     cryptoPaymentDesc: "Надішли 5 USDT через мережу TRC-20",
     starsPaymentDesc: "Миттєва оплата через Telegram",
-    sendScreenshot: "Після оплати надішли скріншот чеку в @smartstudy_support — адмін перевірить та зарахує баланс",
-    sendScreenshotCrypto: "Після переказу надішли скріншот транзакції в @smartstudy_support — адмін перевірить та зарахує баланс",
+    sendScreenshot: "Після оплати надішли скріншот чеку в @studyflush_support — адмін перевірить та зарахує баланс",
+    sendScreenshotCrypto: "Після переказу надішли скріншот транзакції в @studyflush_support — адмін перевірить та зарахує баланс",
     paymentVerification: "Ручна перевірка адміном",
     payStep1Card: "Переведи 250 грн на картку",
-    payStep2Card: "Надішли скріншот в @smartstudy_support",
+    payStep2Card: "Надішли скріншот в @studyflush_support",
     payStep3Card: "Адмін перевірить та зарахує 15 звітів",
     payStep1Crypto: "Надішли 5 USDT (TRC-20) на адресу",
-    payStep2Crypto: "Надішли скріншот в @smartstudy_support",
+    payStep2Crypto: "Надішли скріншот в @studyflush_support",
     payStep3Crypto: "Адмін перевірить та зарахує 15 звітів",
     adminWillCheck: "Адмін перевірить оплату вручну",
     uahOnly: "Тільки Україна",
@@ -926,7 +926,7 @@ let currentLang = "en";
 const langListeners = new Set<() => void>();
 
 export function initLanguage() {
-  const saved = localStorage.getItem("smartstudy_lang");
+  const saved = localStorage.getItem("studyflush_lang");
   if (saved) {
     currentLang = saved;
     return;
@@ -943,7 +943,7 @@ export function initLanguage() {
 }
 
 export async function detectLanguageByIP() {
-  const saved = localStorage.getItem("smartstudy_lang");
+  const saved = localStorage.getItem("studyflush_lang");
   if (saved) return;
 
   try {
@@ -969,7 +969,7 @@ export function getLang(): string {
 
 export function setLang(code: string) {
   currentLang = code;
-  localStorage.setItem("smartstudy_lang", code);
+  localStorage.setItem("studyflush_lang", code);
   langListeners.forEach((l) => l());
 }
 

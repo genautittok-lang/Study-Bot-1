@@ -23,7 +23,7 @@ function StepBar({ step }: { step: Step }) {
         {STEPS.map((_, i) => (
           <div key={i} className="flex-1 h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(0,0,0,0.05)" }}>
             <motion.div className="h-full rounded-full"
-              style={{ background: i <= idx ? "linear-gradient(90deg, #7B68EE, #4A90FF)" : "transparent" }}
+              style={{ background: i <= idx ? "linear-gradient(90deg, #7C5CFC, #3B82F6)" : "transparent" }}
               initial={{ width: "0%" }} animate={{ width: i <= idx ? "100%" : "0%" }}
               transition={{ duration: 0.35, delay: i * 0.06 }} />
           </div>
@@ -32,7 +32,7 @@ function StepBar({ step }: { step: Step }) {
       <div className="flex justify-between">
         {labels.map((l, i) => (
           <span key={i} className="text-[7px] font-semibold uppercase tracking-wider"
-            style={{ color: i <= idx ? "#7B68EE" : "#d1d5db" }}>{l}</span>
+            style={{ color: i <= idx ? "#7C5CFC" : "#d1d5db" }}>{l}</span>
         ))}
       </div>
     </div>
@@ -175,12 +175,12 @@ export default function NewReport() {
         <div className="relative mb-8">
           <motion.div
             className="w-28 h-28 rounded-full"
-            style={{ border: "3px solid rgba(0,0,0,0.04)", borderTopColor: "#7B68EE", borderRightColor: "#4A90FF" }}
+            style={{ border: "3px solid rgba(0,0,0,0.04)", borderTopColor: "#7C5CFC", borderRightColor: "#3B82F6" }}
             animate={{ rotate: 360 }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }} />
           <motion.div
             className="absolute inset-2 rounded-full"
-            style={{ border: "2px solid rgba(0,0,0,0.02)", borderTopColor: "#00D4AA", borderLeftColor: "#00C48C" }}
+            style={{ border: "2px solid rgba(0,0,0,0.02)", borderTopColor: "#06D6A0", borderLeftColor: "#00C48C" }}
             animate={{ rotate: -360 }}
             transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }} />
           <div className="absolute inset-0 flex items-center justify-center flex-col">
@@ -194,7 +194,7 @@ export default function NewReport() {
 
         <div className="w-56 h-[4px] rounded-full overflow-hidden mb-5" style={{ background: "rgba(0,0,0,0.05)" }}>
           <motion.div className="h-full rounded-full"
-            style={{ background: "linear-gradient(90deg, #7B68EE, #4A90FF, #00D4AA)" }}
+            style={{ background: "linear-gradient(90deg, #7C5CFC, #3B82F6, #06D6A0)" }}
             animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
         </div>
 
@@ -211,13 +211,13 @@ export default function NewReport() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.3 }}
             className="flex items-center gap-2 px-4 py-2.5 rounded-[14px]"
-            style={{ background: "rgba(123,104,238,0.04)", border: "1px solid rgba(123,104,238,0.08)" }}>
+            style={{ background: "rgba(124,92,252,0.04)", border: "1px solid rgba(124,92,252,0.08)" }}>
             <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="2">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="2">
                 <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
               </svg>
             </motion.div>
-            <span className="text-[11px] font-medium text-[#7B68EE]">{GEN_TIPS[tipIdx]}</span>
+            <span className="text-[11px] font-medium text-[#7C5CFC]">{GEN_TIPS[tipIdx]}</span>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -249,7 +249,7 @@ export default function NewReport() {
           </motion.button>
           <motion.button whileTap={{ scale: 0.96 }} onClick={shareResult}
             className="py-3 px-4 rounded-[14px] text-[13px] font-semibold flex items-center justify-center gap-1.5"
-            style={{ background: "rgba(74,144,255,0.06)", color: "#4A90FF" }}>
+            style={{ background: "rgba(74,144,255,0.06)", color: "#3B82F6" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
           </motion.button>
           <motion.button whileTap={{ scale: 0.96 }} onClick={reset}
@@ -413,7 +413,7 @@ export default function NewReport() {
                   boxShadow: length === opt.id ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
                 }}>
                 <div className="text-[11px] font-bold">{opt.label}</div>
-                <div className="text-[9px] mt-0.5" style={{ color: length === opt.id ? "#7B68EE" : "#b0b0c0" }}>{opt.desc}</div>
+                <div className="text-[9px] mt-0.5" style={{ color: length === opt.id ? "#7C5CFC" : "#b0b0c0" }}>{opt.desc}</div>
               </motion.button>
             ))}
           </div>
@@ -437,7 +437,7 @@ export default function NewReport() {
           <AnimatePresence mode="wait">
             {imagePreview ? (
               <motion.div key="preview" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
-                className="rounded-[14px] overflow-hidden relative border" style={{ borderColor: "rgba(123,104,238,0.15)" }}>
+                className="rounded-[14px] overflow-hidden relative border" style={{ borderColor: "rgba(124,92,252,0.15)" }}>
                 <img src={imagePreview} alt="Task" className="w-full max-h-[180px] object-contain rounded-[14px]" style={{ background: "#f9fafb" }} />
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-3 py-2"
                   style={{ background: "linear-gradient(transparent, rgba(0,0,0,0.6))" }}>
@@ -455,15 +455,15 @@ export default function NewReport() {
             ) : (
               <motion.label key="upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 className="flex flex-col items-center justify-center gap-2 py-5 rounded-[14px] cursor-pointer transition-all active:scale-[0.98]"
-                style={{ background: "rgba(123,104,238,0.03)", border: "1.5px dashed rgba(123,104,238,0.15)" }}>
+                style={{ background: "rgba(124,92,252,0.03)", border: "1.5px dashed rgba(124,92,252,0.15)" }}>
                 <input type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
-                <div className="w-10 h-10 rounded-[12px] flex items-center justify-center" style={{ background: "rgba(123,104,238,0.06)" }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="1.5">
+                <div className="w-10 h-10 rounded-[12px] flex items-center justify-center" style={{ background: "rgba(124,92,252,0.06)" }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.5">
                     <rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
                   </svg>
                 </div>
                 <div className="text-center">
-                  <div className="text-[12px] font-semibold text-[#7B68EE]">{t("attachPhoto")}</div>
+                  <div className="text-[12px] font-semibold text-[#7C5CFC]">{t("attachPhoto")}</div>
                   <div className="text-[10px] text-[#9ca3af] mt-0.5">{t("attachPhotoDesc")}</div>
                   <div className="text-[9px] text-[#c4c4d0] mt-0.5">{t("maxFileSize")}</div>
                 </div>

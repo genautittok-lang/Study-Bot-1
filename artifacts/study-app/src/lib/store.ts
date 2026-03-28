@@ -13,7 +13,7 @@ export interface RecentItem {
   ts: number;
 }
 
-const RECENT_KEY = "smartstudy_recent";
+const RECENT_KEY = "studyflush_recent";
 const MAX_RECENT = 4;
 
 export function getRecentItems(): RecentItem[] {

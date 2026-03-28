@@ -2,7 +2,7 @@
 
 ## Overview
 
-pnpm workspace monorepo using TypeScript. Main product is **SmartStudy** — a Telegram bot + Mini App that generates academic reports, summaries, lab work, essays and more for students using AI. Supports 30 languages with CIS focus.
+pnpm workspace monorepo using TypeScript. Main product is **StudyFlush** — a Telegram bot + Mini App that generates academic reports, summaries, lab work, essays and more for students using AI. Supports 30 languages with CIS focus.
 
 ## Stack
 
@@ -49,7 +49,7 @@ artifacts-monorepo/
 - **Education level filter**: All / School / College / University tabs in category selection
 - **3 payment methods**: Card (250 UAH, card 5232 4410 5654 6307 — Ukraine only), Crypto USDT (5 USDT TRC-20, address TRYbty4Ew9knf61brdrixeY5M34mQTt3zY), Telegram Stars (500 XTR)
 - **Card visibility**: Card payment only shown when user language is "uk" (Ukrainian); all other users see Stars + Crypto only
-- **Receipt flow**: After card/crypto payment, user sends screenshot to @smartstudy_support admin for manual verification
+- **Receipt flow**: After card/crypto payment, user sends screenshot to @studyflush_support admin for manual verification
 - **AI generation**: gpt-5.2 with structured prompts per document type (specific prompts for all 11 types), vision support for photo attachments
 - **File upload**: Users can attach photos of tasks from textbooks (base64, max 5MB, JPG/PNG), AI reads the image via vision
 - **Referral system**: +2 reports for referrer and invitee, unique codes per user
@@ -179,5 +179,5 @@ Premium React + Vite fintech-grade TWA with light premium design:
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API types
 
 ## Support
-- Telegram: @smartstudy_support
-- Payment recipient: SmartStudy
+- Telegram: @studyflush_support
+- Payment recipient: StudyFlush

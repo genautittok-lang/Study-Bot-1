@@ -104,7 +104,7 @@ function BottomNav() {
                     whileTap={{ scale: 0.82 }}
                     className="w-[46px] h-[46px] rounded-[14px] flex items-center justify-center -mt-4 create-btn-glow"
                     style={{
-                      background: "linear-gradient(145deg, #7B68EE, #6355D8, #5143C2)",
+                      background: "linear-gradient(145deg, #7C5CFC, #6336F5, #5226E8)",
                     }}>
                     {tab.icon(false)}
                   </motion.div>
@@ -114,17 +114,17 @@ function BottomNav() {
                       <motion.div
                         layoutId="nav-indicator"
                         className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-5 h-[2.5px] rounded-full"
-                        style={{ background: "linear-gradient(90deg, #7B68EE, #4A90FF)" }}
+                        style={{ background: "linear-gradient(90deg, #7C5CFC, #3B82F6)" }}
                         transition={spring}
                       />
                     )}
-                    <span className={`transition-colors duration-150 ${active ? "text-[#7B68EE]" : "text-[#c4c4d0]"}`}>
+                    <span className={`transition-colors duration-150 ${active ? "text-[#7C5CFC]" : "text-[#c4c4d0]"}`}>
                       {tab.icon(active)}
                     </span>
                   </>
                 )}
                 <span className={`text-[9px] font-semibold mt-0.5 transition-colors duration-150 ${
-                  isSpecial ? "text-[#7B68EE]" : active ? "text-[#7B68EE]" : "text-[#c4c4d0]"
+                  isSpecial ? "text-[#7C5CFC]" : active ? "text-[#7C5CFC]" : "text-[#c4c4d0]"
                 }`}>
                   {tab.label}
                 </span>
@@ -133,8 +133,8 @@ function BottomNav() {
                     initial={{ scale: 0 }} animate={{ scale: 1 }}
                     className="absolute -top-0.5 right-0 text-white text-[7px] font-bold min-w-[15px] h-[15px] flex items-center justify-center rounded-full px-1 z-20"
                     style={{
-                      background: "linear-gradient(135deg, #7B68EE, #4A90FF)",
-                      boxShadow: "0 2px 8px rgba(123,104,238,0.35)",
+                      background: "linear-gradient(135deg, #7C5CFC, #3B82F6)",
+                      boxShadow: "0 2px 8px rgba(124,92,252,0.35)",
                     }}>
                     {tab.badge}
                   </motion.span>
@@ -166,8 +166,8 @@ function LoadingScreen() {
           <motion.div
             className="w-[80px] h-[80px] rounded-[24px] flex items-center justify-center"
             style={{
-              background: "linear-gradient(145deg, #7B68EE, #5B4CCF)",
-              boxShadow: "0 12px 40px rgba(123,104,238,0.35), 0 2px 8px rgba(0,0,0,0.08)",
+              background: "linear-gradient(145deg, #7C5CFC, #6336F5)",
+              boxShadow: "0 12px 40px rgba(124,92,252,0.35), 0 2px 8px rgba(0,0,0,0.08)",
             }}
             animate={{ rotateY: [0, 5, -5, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -176,23 +176,23 @@ function LoadingScreen() {
           </motion.div>
           <motion.div
             className="absolute -inset-4 rounded-[30px]"
-            style={{ border: "1.5px solid rgba(123,104,238,0.12)" }}
+            style={{ border: "1.5px solid rgba(124,92,252,0.12)" }}
             animate={{ scale: [1, 1.08, 1], opacity: [0.4, 0.08, 0.4] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
           <motion.div
             className="absolute -inset-8 rounded-[36px]"
-            style={{ border: "1px solid rgba(123,104,238,0.06)" }}
+            style={{ border: "1px solid rgba(124,92,252,0.06)" }}
             animate={{ scale: [1, 1.05, 1], opacity: [0.2, 0.05, 0.2] }}
             transition={{ duration: 2.5, repeat: Infinity, delay: 0.3 }}
           />
         </div>
-        <h1 className="text-[28px] font-extrabold tracking-tight mb-1.5 gradient-text-animated">SmartStudy</h1>
+        <h1 className="text-[28px] font-extrabold tracking-tight mb-1.5 gradient-text-animated">StudyFlush</h1>
         <p className="text-[12px] text-[#8b90a0] mb-8 font-medium tracking-wide">{t("subtitle")}</p>
-        <div className="w-36 h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(123,104,238,0.06)" }}>
+        <div className="w-36 h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(124,92,252,0.06)" }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: "linear-gradient(90deg, #7B68EE, #4A90FF, #00D4AA)" }}
+            style={{ background: "linear-gradient(90deg, #7C5CFC, #3B82F6, #06D6A0)" }}
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
             transition={{ duration: 2.2, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}

@@ -119,6 +119,6 @@ export function hideBackButton(cb: () => void) {
 
 export function shareViaTelegram(text: string) {
   const encoded = encodeURIComponent(text);
-  const url = `https://t.me/share/url?url=${encodeURIComponent("https://t.me/smartstudy_bot")}&text=${encoded}`;
+  const url = `https://t.me/share/url?url=${encodeURIComponent("https://t.me/studyflush_bot")}&text=${encoded}`;
   window.open(url, "_blank");
 }
