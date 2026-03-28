@@ -2,7 +2,7 @@
 
 ## Overview
 
-pnpm workspace monorepo using TypeScript. Main product is **StudyBot** — a Telegram bot that generates academic reports, summaries, lab work, essays and more for students using AI.
+pnpm workspace monorepo using TypeScript. Main product is **StudyPro** — a Telegram bot + Mini App that generates academic reports, summaries, lab work, essays and more for students using AI. Supports 30 languages with CIS focus.
 
 ## Stack
 
@@ -17,34 +17,24 @@ pnpm workspace monorepo using TypeScript. Main product is **StudyBot** — a Tel
 - **Build**: esbuild (ESM bundle)
 - **Telegram Bot**: Telegraf
 - **AI**: OpenAI via Replit AI Integrations (gpt-5.2)
+- **Frontend**: React + Vite + Framer Motion + Tailwind CSS
 
 ## Structure
 
 ```text
 artifacts-monorepo/
-├── artifacts/              # Deployable applications
-│   └── api-server/         # Express API server + Telegram Bot
+├── artifacts/
+│   ├── api-server/         # Express API + Telegram Bot
+│   │   └── src/bot/        # Bot logic (index, ai, db, keyboards, messages)
+│   └── study-app/          # React Vite Mini App (TWA)
 │       └── src/
-│           └── bot/        # Bot logic
-│               ├── index.ts     # Main bot, handlers, state machine
-│               ├── ai.ts        # OpenAI report generation
-│               ├── db.ts        # DB helpers for bot
-│               ├── keyboards.ts # Inline keyboards
-│               └── messages.ts  # Text templates + content lists
-├── lib/                    # Shared libraries
-│   ├── api-spec/           # OpenAPI spec + Orval codegen config
+│           ├── pages/      # home, new-report, history, balance, profile
+│           └── lib/        # api, store, telegram, i18n, constants
+├── lib/
+│   ├── api-spec/           # OpenAPI spec
 │   ├── api-client-react/   # Generated React Query hooks
-│   ├── api-zod/            # Generated Zod schemas from OpenAPI
-│   └── db/                 # Drizzle ORM schema + DB connection
-│       └── src/schema/
-│           ├── users.ts    # Users table (balance, freeReportsUsed)
-│           ├── reports.ts  # Generated reports table
-│           └── payments.ts # Payments table
-├── scripts/                # Utility scripts
-├── pnpm-workspace.yaml
-├── tsconfig.base.json
-├── tsconfig.json
-└── package.json
+│   ├── api-zod/            # Generated Zod schemas
+│   └── db/                 # Drizzle schema (users, reports, payments)
 ```
 
 ## Bot Features
@@ -53,57 +43,53 @@ artifacts-monorepo/
 - **6 document types**: Report, Summary, Database, Lab Work, Essay, Tasks
 - **11 subjects**: Programming, Math, Physics, Chemistry, Biology, History, Geography, Databases, Networks, Economics, Other
 - **3 payment methods**: Monobank (250 UAH), Crypto (5 USDT), Telegram Stars (500 XTR)
-- **AI generation**: gpt-5.2 with structured Ukrainian prompts per document type
+- **AI generation**: gpt-5.2 with structured prompts per document type
 
-## Environment Variables / Secrets
+## Telegram Mini App (TWA)
+
+Premium React + Vite app with Framer Motion animations:
+- **Home**: greeting, gradient balance card, quick action grid, quick start CTA
+- **Create**: multi-step form (type -> subject -> details -> generate with progress bar -> done)
+- **History**: animated list of reports with detail viewer and copy
+- **Balance**: gradient payment cards (Monobank, Crypto, Telegram Stars)
+- **Profile**: user card, language selection (30 languages), statistics
+- **i18n**: 30 languages with IP-based auto-detection and Telegram language_code fallback
+- **Bottom nav**: frosted glass effect with animated indicator (5 tabs)
+- **Demo mode**: works outside Telegram with test user (telegramId: 999999999)
+
+### i18n Languages (30 selectable, 3 full translations)
+Full translations: English (en), Russian (ru), Ukrainian (uk)
+CIS languages with Russian fallback: Kazakh, Uzbek, Kyrgyz, Tajik, Turkmen, Azerbaijani, Armenian, Georgian, Belarusian, Moldovan, Mongolian
+Other languages with English fallback: Turkish, Polish, German, French, Spanish, Portuguese, Italian, Romanian, Czech, Bulgarian, Serbian, Croatian, Arabic, Hindi, Chinese, Japanese
+
+### TWA API Routes (/api/twa)
+- `POST /auth` — authenticate/create user
+- `POST /generate` — generate report (balance check, AI, save)
+- `GET /reports?telegram_id=X` — list reports
+- `POST /payment` — create payment request
+
+## Environment Variables
 
 - `TELEGRAM_BOT_TOKEN` — Bot token from @BotFather
-- `DATABASE_URL` — PostgreSQL connection (auto-provisioned by Replit)
-- `AI_INTEGRATIONS_OPENAI_BASE_URL` — Replit AI Integrations proxy URL
-- `AI_INTEGRATIONS_OPENAI_API_KEY` — Replit AI Integrations API key
+- `DATABASE_URL` — PostgreSQL (auto-provisioned)
+- `AI_INTEGRATIONS_OPENAI_BASE_URL` — Replit AI proxy URL
+- `AI_INTEGRATIONS_OPENAI_API_KEY` — Replit AI proxy key
 
 ## DB Schema
 
 ### users
-- `telegram_id` — unique Telegram user ID
-- `balance` — number of remaining reports
-- `free_reports_used` — whether the free report was used
-- `total_reports` — lifetime reports generated
+- `id` serial PK, `telegram_id` unique bigint, `username`, `first_name`, `last_name`
+- `balance` int, `free_reports_used` bool, `total_reports` int, timestamps
 
 ### reports
-- Stores all generated reports with content, type, subject, topic
+- Generated reports with content, type, subject, topic, group, status
 
 ### payments
-- Tracks all payment requests (pending/confirmed)
-- Methods: mono, crypto, stars, manual
-
-## Telegram Mini App (TWA)
-
-The study-app artifact is a React + Vite Telegram Mini App with:
-- **Home page**: greeting, balance card, quick action grid
-- **New Report**: multi-step form (type -> subject -> details -> generate -> done)
-- **History**: list of generated reports with detail viewer
-- **Balance**: payment options (Monobank, Crypto, Telegram Stars)
-- **Bottom tab navigation**: Головна, Створити, Історія, Баланс
-- **All UI in Ukrainian**, light blue/white premium theme
-- **Demo mode**: works outside Telegram with test user (telegramId: 999999999)
-
-### TWA API Routes (mounted at /api/twa)
-- `POST /auth` — authenticate/create user from Telegram data
-- `POST /generate` — generate a report (checks balance, calls AI, saves)
-- `GET /reports?telegram_id=X` — list user's reports
-- `POST /payment` — create a payment request
+- Payment requests: amount, currency, method (mono/crypto/stars/manual), status
 
 ## Development
 
-- `pnpm --filter @workspace/api-server run dev` — run the dev server + bot
-- `pnpm --filter @workspace/study-app run dev` — run the Mini App frontend
-- `pnpm --filter @workspace/db run push` — push schema changes to DB
+- `pnpm --filter @workspace/api-server run dev` — API server + bot
+- `pnpm --filter @workspace/study-app run dev` — Mini App frontend
+- `pnpm --filter @workspace/db run push` — push schema to DB
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API types
-
-## Bot Commands
-
-- `/start` — Welcome screen + main menu
-- `/menu` — Main menu
-- `/balance` — Check balance
-- `/help` — Help & instructions

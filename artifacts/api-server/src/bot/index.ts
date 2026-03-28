@@ -66,7 +66,7 @@ async function sendWelcome(ctx: BotContext) {
     {
       reply_markup: {
         inline_keyboard: [
-          [{ text: "🚀 Відкрити StudyBot", web_app: { url: webAppUrl } }],
+          [{ text: "🚀 Відкрити StudyPro", web_app: { url: webAppUrl } }],
           [
             { text: "💰 Баланс", callback_data: "balance" },
             { text: "ℹ️ Довідка", callback_data: "help" },
@@ -84,7 +84,7 @@ bot.command("menu", async (ctx: BotContext) => {
   await ctx.replyWithMarkdown("🏠 *Головне меню*\n\nОбери дію:", {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "🚀 Відкрити StudyBot", web_app: { url: webAppUrl } }],
+        [{ text: "🚀 Відкрити StudyPro", web_app: { url: webAppUrl } }],
         [{ text: "📄 Новий звіт (тут)", callback_data: "new_report" }],
         [
           { text: "💰 Баланс", callback_data: "balance" },
@@ -98,10 +98,10 @@ bot.command("menu", async (ctx: BotContext) => {
 
 bot.command("app", async (ctx: BotContext) => {
   const webAppUrl = getWebAppUrl();
-  await ctx.reply("Натисни кнопку нижче, щоб відкрити StudyBot:", {
+  await ctx.reply("Натисни кнопку нижче, щоб відкрити StudyPro:", {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "🚀 Відкрити StudyBot", web_app: { url: webAppUrl } }],
+        [{ text: "🚀 Відкрити StudyPro", web_app: { url: webAppUrl } }],
       ],
     },
   });
@@ -129,7 +129,7 @@ bot.action("main_menu", async (ctx: BotContext) => {
     parse_mode: "Markdown",
     reply_markup: {
       inline_keyboard: [
-        [{ text: "🚀 Відкрити StudyBot", web_app: { url: webAppUrl } }],
+        [{ text: "🚀 Відкрити StudyPro", web_app: { url: webAppUrl } }],
         [{ text: "📄 Новий звіт (тут)", callback_data: "new_report" }],
         [
           { text: "💰 Баланс", callback_data: "balance" },
@@ -199,7 +199,7 @@ bot.action("buy", async (ctx: BotContext) => {
 
 bot.action("pay_mono", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
-  const text = `💳 *Оплата через Monobank*\n\nСума: *250 грн* за 15 звітів\n\n📲 Переведи 250 грн на картку:\n\`\`\`\n5375 4141 2121 2120\n\`\`\`\nОтримувач: *StudyBot*\n\n⚠️ *ВАЖЛИВО:* В коментарі до переказу вкажи свій Telegram ID:\n\`${ctx.from!.id}\`\n\nПісля оплати натисни кнопку нижче:`;
+  const text = `💳 *Оплата через Monobank*\n\nСума: *250 грн* за 15 звітів\n\n📲 Переведи 250 грн на картку:\n\`\`\`\n5375 4141 2121 2120\n\`\`\`\nОтримувач: *StudyPro*\n\n⚠️ *ВАЖЛИВО:* В коментарі до переказу вкажи свій Telegram ID:\n\`${ctx.from!.id}\`\n\nПісля оплати натисни кнопку нижче:`;
 
   await ctx.editMessageText(text, {
     parse_mode: "Markdown",
@@ -221,7 +221,7 @@ bot.action("pay_stars", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
   try {
     await ctx.replyWithInvoice({
-      title: "📚 15 звітів StudyBot",
+      title: "📚 15 звітів StudyPro",
       description: "Пакет із 15 AI-згенерованих звітів, конспектів або лабораторних",
       payload: `stars_${ctx.from!.id}_${Date.now()}`,
       currency: "XTR",
@@ -349,7 +349,7 @@ bot.on("text", async (ctx: BotContext) => {
       logger.error({ err }, "Failed to generate report");
       await ctx.telegram.deleteMessage(ctx.chat.id, loadingMsg.message_id);
       await ctx.replyWithMarkdown(
-        "❌ *Помилка генерації*\n\nСпробуй ще раз. Якщо проблема не вирішується — напиши @studybot_support",
+        "❌ *Помилка генерації*\n\nСпробуй ще раз. Якщо проблема не вирішується — напиши @studypro_support",
         mainMenuKeyboard
       );
     }
@@ -360,7 +360,7 @@ bot.on("text", async (ctx: BotContext) => {
   await ctx.replyWithMarkdown("🏠 Скористайся додатком або меню:", {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "🚀 Відкрити StudyBot", web_app: { url: webAppUrl } }],
+        [{ text: "🚀 Відкрити StudyPro", web_app: { url: webAppUrl } }],
         [{ text: "📄 Новий звіт", callback_data: "new_report" }],
       ],
     },

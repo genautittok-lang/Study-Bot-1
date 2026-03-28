@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import type { UserData } from "./api";
 import { authUser } from "./api";
 import { getTelegramUser, initTelegramApp } from "./telegram";
+import { initLanguage, detectLanguageByIP, subscribeLang } from "./i18n";
 
 let globalUser: UserData | null = null;
 const listeners = new Set<() => void>();
@@ -34,6 +35,14 @@ export function useUser() {
   return globalUser;
 }
 
+export function useLang() {
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    return subscribeLang(() => setTick((t) => t + 1));
+  }, []);
+}
+
 export function useInitApp() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,8 +50,11 @@ export function useInitApp() {
   const init = useCallback(async () => {
     try {
       initTelegramApp();
+      initLanguage();
+      detectLanguageByIP();
+
       const tgUser = getTelegramUser();
-      
+
       let telegramId = tgUser?.id ?? 0;
       let firstName = tgUser?.first_name;
       let username = tgUser?.username;
@@ -50,7 +62,7 @@ export function useInitApp() {
 
       if (telegramId === 0) {
         telegramId = 999999999;
-        firstName = "Студент";
+        firstName = "Student";
         username = "demo_user";
       }
 
@@ -65,7 +77,7 @@ export function useInitApp() {
       setLoading(false);
     } catch (err) {
       console.error("Init error:", err);
-      setError("Не вдалося завантажити. Спробуй ще раз.");
+      setError("Failed to load. Try again.");
       setLoading(false);
     }
   }, []);
