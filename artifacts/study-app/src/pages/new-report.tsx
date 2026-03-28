@@ -152,30 +152,74 @@ export default function NewReport() {
 
   function removeImage() { hapticFeedback("light"); setImageData(null); setImagePreview(null); }
 
+  const GEN_TIPS = [
+    t("genTip1") || "AI is analyzing your topic...",
+    t("genTip2") || "Building document structure...",
+    t("genTip3") || "Generating content sections...",
+    t("genTip4") || "Adding references & sources...",
+    t("genTip5") || "Formatting & polishing...",
+    t("genTip6") || "Almost ready!",
+  ];
+
+  const [tipIdx, setTipIdx] = useState(0);
+  useEffect(() => {
+    if (step !== "generating") return;
+    const iv = setInterval(() => setTipIdx(i => (i + 1) % GEN_TIPS.length), 3000);
+    return () => clearInterval(iv);
+  }, [step]);
+
   if (step === "generating") {
+    const selType = TYPES.find(rt => rt.id === reportType);
     return (
-      <div className="px-4 pt-16 pb-4 flex flex-col items-center justify-center min-h-[70vh]">
-        <div className="relative mb-6">
-          <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-            className="w-24 h-24 rounded-full"
-            style={{ border: "3px solid rgba(0,0,0,0.04)", borderTopColor: "#7B68EE", borderRightColor: "#4A90FF" }} />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[20px] font-extrabold tabular gradient-text">{Math.round(progress)}%</span>
+      <div className="px-4 pt-10 pb-4 flex flex-col items-center justify-center min-h-[70vh]">
+        <div className="relative mb-8">
+          <motion.div
+            className="w-28 h-28 rounded-full"
+            style={{ border: "3px solid rgba(0,0,0,0.04)", borderTopColor: "#7B68EE", borderRightColor: "#4A90FF" }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }} />
+          <motion.div
+            className="absolute inset-2 rounded-full"
+            style={{ border: "2px solid rgba(0,0,0,0.02)", borderTopColor: "#00D4AA", borderLeftColor: "#00C48C" }}
+            animate={{ rotate: -360 }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }} />
+          <div className="absolute inset-0 flex items-center justify-center flex-col">
+            <span className="text-[24px] font-extrabold tabular gradient-text leading-none">{Math.round(progress)}%</span>
           </div>
         </div>
+
         <motion.h2 initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-          className="text-lg font-bold mb-1">{t("generating")}...</motion.h2>
-        <p className="text-[12px] text-[#9ca3af] mb-5 text-center px-8">{t("generatingDesc")}</p>
-        <div className="w-52 h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(0,0,0,0.05)" }}>
+          className="text-lg font-bold mb-1">{t("generating")}</motion.h2>
+        <p className="text-[12px] text-[#9ca3af] mb-4 text-center px-8">{t("generatingDesc")}</p>
+
+        <div className="w-56 h-[4px] rounded-full overflow-hidden mb-5" style={{ background: "rgba(0,0,0,0.05)" }}>
           <motion.div className="h-full rounded-full"
             style={{ background: "linear-gradient(90deg, #7B68EE, #4A90FF, #00D4AA)" }}
             animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
         </div>
-        <div className="mt-5 flex gap-2 flex-wrap justify-center">
-          {[t("reportReport"), getSubjectName(subject)].filter(Boolean).map((tag, i) => (
+
+        <div className="flex gap-2 flex-wrap justify-center mb-5">
+          {[selType?.icon + " " + (selType?.label || ""), getSubjectName(subject)].filter(Boolean).map((tag, i) => (
             <span key={i} className="badge text-[10px]">{tag}</span>
           ))}
         </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div key={tipIdx}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3 }}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-[14px]"
+            style={{ background: "rgba(123,104,238,0.04)", border: "1px solid rgba(123,104,238,0.08)" }}>
+            <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="2">
+                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+              </svg>
+            </motion.div>
+            <span className="text-[11px] font-medium text-[#7B68EE]">{GEN_TIPS[tipIdx]}</span>
+          </motion.div>
+        </AnimatePresence>
       </div>
     );
   }

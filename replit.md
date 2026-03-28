@@ -54,7 +54,7 @@ artifacts-monorepo/
 - **File upload**: Users can attach photos of tasks from textbooks (base64, max 5MB, JPG/PNG), AI reads the image via vision
 - **Referral system**: +2 reports for referrer and invitee, unique codes per user
 - **Level progression**: Beginner (0-5), Student (6-20), Expert (21-50), Master (51-100), Legend (101+)
-- **Achievements**: First Step, Expert, Master, Networker
+- **Achievements**: First Step, Expert, Master, Networker, Speed Runner, Legend
 
 ## Telegram Mini App (TWA)
 
@@ -106,10 +106,10 @@ Premium React + Vite fintech-grade TWA with light premium design:
 
 ### Pages
 - **Home**: Time-based greeting with avatar, 3D tilt CTA card "Create Report" with rotating sparkle icon, balance card with SVG progress ring, horizontal scroll quick actions (with 3D icons), bento stats grid, recent subjects horizontal scroll, referral section with step-by-step flow + stats cards + Telegram share CTA
-- **Create**: 4-step gradient progress bar, 11 report types grid with 3D icons, education level segmented tabs, search with clear, details form with photo upload/preview, AI generation spinner with percent
-- **History**: Skeleton loading, detail viewer with Markdown + copy + word count, share via Telegram, repeat button, empty state
+- **Create**: 4-step gradient progress bar, 11 report types grid with 3D icons, education level segmented tabs, search with clear, details form with photo upload/preview, dual-ring AI generation animation with localized tips carousel + progress bar
+- **History**: Search bar with clear, report type filter tabs (dynamic), skeleton loading, detail viewer with Markdown + copy + word count, share via Telegram, repeat button, better empty state with CTA
 - **Balance**: Credit-card style blue gradient balance display, featured Telegram Stars button with HOT badge, Card/Crypto tiles with 3D icons, unified payment flow with dark package card
-- **Profile**: Purple gradient header card with avatar + level progress, stats grid, achievements with SVG progress rings, referral section with step-by-step flow + stats + Telegram share as primary CTA, language selector
+- **Profile**: Purple gradient header card with avatar + level progress, stats grid, 6 achievements with SVG progress rings, Settings section (Language/Support/Rate App), About section (Telegram ID/Version), referral section with step-by-step flow + stats + Telegram share as primary CTA
 - **Admin**: Dashboard stats, user management (+balance), payment approval/rejection, broadcast to all users
 
 ### Admin Panel
@@ -122,10 +122,16 @@ Premium React + Vite fintech-grade TWA with light premium design:
   - **Payments**: Filter by status (all/pending/completed/rejected), approve/reject pending payments (notifies users)
   - **Broadcast**: Send message (HTML formatted) with optional image to all users via Telegram bot
 
+### Telegram BackButton
+- Native Telegram BackButton shown on all sub-pages (History, Profile, Balance, New Report, Admin)
+- Hidden on home page; navigates back to home on press with haptic feedback
+- Gracefully handles unsupported Telegram versions
+
 ### i18n
-- 30 languages selectable, 3 full translations (en/ru/uk)
+- 39 languages selectable, 3 full translations (en/ru/uk)
 - CIS languages with Russian fallback
 - Other languages with English fallback
+- Generating tips (genTip1-6) localized in EN/RU/UK
 
 ### TWA API Routes (/api/twa)
 - `POST /auth` — authenticate/create user

@@ -97,6 +97,26 @@ export function hapticError() {
   } catch {}
 }
 
+export function showBackButton(cb: () => void) {
+  try {
+    const tg = getTelegramWebApp();
+    if (tg?.BackButton) {
+      tg.BackButton.onClick(cb);
+      tg.BackButton.show();
+    }
+  } catch {}
+}
+
+export function hideBackButton(cb: () => void) {
+  try {
+    const tg = getTelegramWebApp();
+    if (tg?.BackButton) {
+      tg.BackButton.offClick(cb);
+      tg.BackButton.hide();
+    }
+  } catch {}
+}
+
 export function shareViaTelegram(text: string) {
   const encoded = encodeURIComponent(text);
   const url = `https://t.me/share/url?url=${encodeURIComponent("https://t.me/studypro_bot")}&text=${encoded}`;

@@ -240,6 +240,21 @@ type TranslationKeys = {
   paymentSubmitted: string;
   paymentSubmittedDesc: string;
   adminReviewing: string;
+  searchReports: string;
+  settings: string;
+  support: string;
+  rateApp: string;
+  rateAppDesc: string;
+  about: string;
+  version: string;
+  speedAch: string;
+  hundredReportsAch: string;
+  genTip1: string;
+  genTip2: string;
+  genTip3: string;
+  genTip4: string;
+  genTip5: string;
+  genTip6: string;
 };
 
 const translations: Record<string, TranslationKeys> = {
@@ -445,6 +460,21 @@ const translations: Record<string, TranslationKeys> = {
     paymentSubmitted: "Request sent!",
     paymentSubmittedDesc: "Admin will verify your payment and credit balance within 1-24 hours. You'll get a notification in the bot!",
     adminReviewing: "Under review",
+    searchReports: "Search reports...",
+    settings: "Settings",
+    support: "Support",
+    rateApp: "Rate App",
+    rateAppDesc: "Leave a review",
+    about: "About",
+    version: "Version",
+    speedAch: "Speed Runner",
+    hundredReportsAch: "Legend",
+    genTip1: "AI is analyzing your topic...",
+    genTip2: "Building document structure...",
+    genTip3: "Generating content sections...",
+    genTip4: "Adding references & sources...",
+    genTip5: "Formatting & polishing...",
+    genTip6: "Almost ready!",
   },
   ru: {
     appName: "StudyPro",
@@ -648,6 +678,21 @@ const translations: Record<string, TranslationKeys> = {
     paymentSubmitted: "Заявка отправлена!",
     paymentSubmittedDesc: "Админ проверит оплату и зачислит баланс в течение 1-24 часов. Ты получишь уведомление в боте!",
     adminReviewing: "На проверке",
+    searchReports: "Поиск работ...",
+    settings: "Настройки",
+    support: "Поддержка",
+    rateApp: "Оценить",
+    rateAppDesc: "Оставить отзыв",
+    about: "О приложении",
+    version: "Версия",
+    speedAch: "Скоростной",
+    hundredReportsAch: "Легенда",
+    genTip1: "ИИ анализирует тему...",
+    genTip2: "Формируем структуру документа...",
+    genTip3: "Генерация основного контента...",
+    genTip4: "Добавляем источники и ссылки...",
+    genTip5: "Форматирование и шлифовка...",
+    genTip6: "Почти готово!",
   },
   uk: {
     appName: "StudyPro",
@@ -851,6 +896,21 @@ const translations: Record<string, TranslationKeys> = {
     paymentSubmitted: "Запит надіслано!",
     paymentSubmittedDesc: "Адмін перевірить оплату та зарахує баланс протягом 1-24 годин. Ти отримаєш сповіщення в боті!",
     adminReviewing: "На перевірці",
+    searchReports: "Пошук робіт...",
+    settings: "Налаштування",
+    support: "Підтримка",
+    rateApp: "Оцінити",
+    rateAppDesc: "Залишити відгук",
+    about: "Про додаток",
+    version: "Версія",
+    speedAch: "Швидкий старт",
+    hundredReportsAch: "Легенда",
+    genTip1: "ШІ аналізує тему...",
+    genTip2: "Формуємо структуру документа...",
+    genTip3: "Генерація основного контенту...",
+    genTip4: "Додаємо джерела та посилання...",
+    genTip5: "Форматування та фінальна обробка...",
+    genTip6: "Майже готово!",
   },
 };
 

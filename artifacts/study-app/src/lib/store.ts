@@ -45,15 +45,14 @@ export function setUser(u: UserData) {
 }
 
 export async function refreshUser() {
-  const current = userSignal.value;
-  if (!current) return;
+  if (!globalUser) return;
   try {
     const { authUser } = await import("./api");
     const fresh = await authUser({
-      telegramId: current.telegramId,
-      username: current.username,
-      firstName: current.firstName,
-      lastName: current.lastName,
+      telegramId: globalUser.telegramId,
+      username: globalUser.username,
+      firstName: globalUser.firstName,
+      lastName: globalUser.lastName,
     });
     setUser(fresh);
   } catch {}

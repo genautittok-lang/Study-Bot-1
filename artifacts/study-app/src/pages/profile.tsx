@@ -47,6 +47,8 @@ export default function Profile() {
     { icon: "🔥", name: t("tenReportsAch"), ok: total >= 10, color: "#FF9F43", p: Math.min((total / 10) * 100, 100) },
     { icon: "💎", name: t("fiftyReportsAch"), ok: total >= 50, color: "#4A90FF", p: Math.min((total / 50) * 100, 100) },
     { icon: "👥", name: t("referralAch"), ok: refCount >= 3, color: "#00C48C", p: Math.min((refCount / 3) * 100, 100) },
+    { icon: "⚡", name: t("speedAch") || "Speed Runner", ok: total >= 5, color: "#FF6B9D", p: Math.min((total / 5) * 100, 100) },
+    { icon: "🏆", name: t("hundredReportsAch") || "Legend", ok: total >= 100, color: "#FFD700", p: Math.min((total / 100) * 100, 100) },
   ];
 
   const refLink = `https://t.me/studypro_bot?start=ref_${refCode}`;
@@ -124,7 +126,6 @@ export default function Profile() {
 
   return (
     <div className="px-4 pt-5 pb-4">
-      {/* PROFILE HEADER */}
       <motion.div {...a(0)} className="relative rounded-[28px] overflow-hidden mb-4"
         style={{ background: "linear-gradient(145deg, #7B68EE 0%, #5B4CCF 40%, #5143C2 100%)", boxShadow: "0 12px 40px rgba(123,104,238,0.25)" }}>
         <div className="absolute top-0 right-0 w-44 h-44 rounded-full opacity-15"
@@ -165,7 +166,6 @@ export default function Profile() {
         </div>
       </motion.div>
 
-      {/* STATS */}
       <motion.div {...a(1)} className="grid grid-cols-3 gap-2 mb-4">
         {[
           { val: total, label: t("total"), color: "#7B68EE" },
@@ -179,11 +179,11 @@ export default function Profile() {
         ))}
       </motion.div>
 
-      {/* ACHIEVEMENTS WITH PROGRESS RINGS */}
       <motion.div {...a(2)} className="mb-4">
         <div className="flex items-center gap-2 mb-2.5 px-0.5">
           <div className="w-1.5 h-1.5 rounded-full bg-[#FF9F43] animate-pulse" />
           <span className="text-[11px] font-bold text-[#9ca3af] uppercase tracking-wider">{t("achievements")}</span>
+          <span className="text-[9px] text-[#d1d5db] font-medium ml-auto">{achievements.filter(a => a.ok).length}/{achievements.length}</span>
         </div>
         <div className="grid grid-cols-2 gap-2">
           {achievements.map((ac, i) => (
@@ -208,7 +208,6 @@ export default function Profile() {
         </div>
       </motion.div>
 
-      {/* REFERRAL */}
       <motion.div {...a(3)} className="g-card rounded-[22px] p-4 mb-3">
         <div className="flex items-center gap-3 mb-3">
           <Icon3D id="invite" size={42} />
@@ -264,8 +263,11 @@ export default function Profile() {
         </motion.button>
       </motion.div>
 
-      {/* SETTINGS */}
-      <motion.div {...a(4)} className="space-y-1.5">
+      <motion.div {...a(4)} className="space-y-1.5 mb-3">
+        <div className="flex items-center gap-2 mb-1 px-0.5">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#4A90FF]" />
+          <span className="text-[11px] font-bold text-[#9ca3af] uppercase tracking-wider">{t("settings") || "Settings"}</span>
+        </div>
         {[
           {
             label: t("language"),
@@ -273,6 +275,20 @@ export default function Profile() {
             action: () => { hapticFeedback("light"); setShowLangs(true); },
             icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B68EE" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
             bg: "rgba(123,104,238,0.05)",
+          },
+          {
+            label: t("support") || "Support",
+            desc: "@studypro_support",
+            action: () => { hapticFeedback("light"); window.open("https://t.me/studypro_support", "_blank"); },
+            icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A90FF" strokeWidth="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+            bg: "rgba(74,144,255,0.05)",
+          },
+          {
+            label: t("rateApp") || "Rate App",
+            desc: t("rateAppDesc") || "Leave a review",
+            action: () => { hapticFeedback("light"); window.open("https://t.me/studypro_bot", "_blank"); },
+            icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF9F43" strokeWidth="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01Z"/></svg>,
+            bg: "rgba(255,159,67,0.05)",
           },
         ].map((item, i) => (
           <motion.button key={i} whileTap={{ scale: 0.98 }} onClick={item.action}
@@ -288,8 +304,25 @@ export default function Profile() {
         ))}
       </motion.div>
 
-      <div className="text-center pt-5 pb-2">
-        <p className="text-[9px] text-[#d1d5db] font-medium">StudyPro v2.0</p>
+      <motion.div {...a(5)} className="g-card rounded-[18px] p-3.5 mb-3">
+        <div className="flex items-center gap-2 mb-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <span className="text-[11px] font-bold text-[#9ca3af] uppercase tracking-wider">{t("about") || "About"}</span>
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[12px] text-[#6b7280]">Telegram ID</span>
+            <span className="text-[12px] font-mono font-semibold text-[#1a1a2e]">{user?.telegramId || "—"}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-[12px] text-[#6b7280]">{t("version") || "Version"}</span>
+            <span className="text-[12px] font-mono font-semibold text-[#1a1a2e]">2.1.0</span>
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="text-center pt-3 pb-2">
+        <p className="text-[9px] text-[#d1d5db] font-medium">StudyPro v2.1 · Made with 💜</p>
       </div>
     </div>
   );

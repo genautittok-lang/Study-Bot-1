@@ -1,10 +1,10 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useCallback } from "react";
 import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useInitApp, useUser, useLang } from "@/lib/store";
-import { hapticFeedback } from "@/lib/telegram";
+import { hapticFeedback, showBackButton, hideBackButton } from "@/lib/telegram";
 import { t } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import Home from "@/pages/home";
@@ -236,9 +236,28 @@ function AnimatedPage({ children }: { children: React.ReactNode }) {
   );
 }
 
+function useBackButton() {
+  const [location, setLocation] = useLocation();
+  const isHome = location === "/" || location === "";
+  const goHome = useCallback(() => {
+    hapticFeedback("light");
+    setLocation("/");
+  }, [setLocation]);
+
+  useEffect(() => {
+    if (isHome) {
+      hideBackButton(goHome);
+    } else {
+      showBackButton(goHome);
+    }
+    return () => hideBackButton(goHome);
+  }, [isHome, goHome]);
+}
+
 function AppContent() {
   const { loading, error, retry } = useInitApp();
   useLang();
+  useBackButton();
 
   useEffect(() => {
     document.documentElement.style.colorScheme = 'light';
