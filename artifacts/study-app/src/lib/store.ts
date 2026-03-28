@@ -5,6 +5,7 @@ import { getTelegramUser, initTelegramApp } from "./telegram";
 import { initLanguage, detectLanguageByIP, subscribeLang } from "./i18n";
 
 let globalUser: UserData | null = null;
+let globalPhotoUrl: string | null = null;
 const listeners = new Set<() => void>();
 
 function notify() {
@@ -33,6 +34,10 @@ export function useUser() {
   }, []);
 
   return globalUser;
+}
+
+export function usePhotoUrl() {
+  return globalPhotoUrl;
 }
 
 export function useLang() {
@@ -65,6 +70,8 @@ export function useInitApp() {
         firstName = "Student";
         username = "demo_user";
       }
+
+      globalPhotoUrl = tgUser?.photo_url || null;
 
       const userData = await authUser({
         telegramId,

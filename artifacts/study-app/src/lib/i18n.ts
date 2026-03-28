@@ -161,6 +161,20 @@ type TranslationKeys = {
   reportLabDesc: string;
   reportEssayDesc: string;
   reportTasksDesc: string;
+  transferDescription: string;
+  paymentAmount: string;
+  walletAddress: string;
+  cryptoPayment: string;
+  starsDesc: string;
+  starsInstructions: string;
+  supportContact: string;
+  choosePaymentMethod: string;
+  currentBalance: string;
+  paymentSent: string;
+  paymentNote: string;
+  noHistory: string;
+  noHistoryDesc: string;
+  progress: string;
 };
 
 const translations: Record<string, TranslationKeys> = {
@@ -287,6 +301,20 @@ const translations: Record<string, TranslationKeys> = {
     reportLabDesc: "Complete lab work",
     reportEssayDesc: "Detailed essay",
     reportTasksDesc: "Problem solving",
+    transferDescription: "Transfer to the card below and press confirm",
+    paymentAmount: "Amount",
+    walletAddress: "Wallet address",
+    cryptoPayment: "Crypto USDT",
+    starsDesc: "Pay via Telegram Stars",
+    starsInstructions: "Send the Stars to @studypro_support bot and press confirm below.",
+    supportContact: "Support",
+    choosePaymentMethod: "Payment methods",
+    currentBalance: "Current balance",
+    paymentSent: "I paid",
+    paymentNote: "Balance will be credited within 15 minutes after verification.",
+    noHistory: "No reports yet",
+    noHistoryDesc: "Create your first report to see it here",
+    progress: "Progress",
   },
   ru: {
     appName: "StudyPro",
@@ -411,6 +439,20 @@ const translations: Record<string, TranslationKeys> = {
     reportLabDesc: "Полная лабораторная работа",
     reportEssayDesc: "Развёрнутый реферат",
     reportTasksDesc: "Решение задач",
+    transferDescription: "Переведите на карту ниже и нажмите подтвердить",
+    paymentAmount: "Сумма",
+    walletAddress: "Адрес кошелька",
+    cryptoPayment: "Крипто USDT",
+    starsDesc: "Оплата через Telegram Stars",
+    starsInstructions: "Отправьте Stars боту @studypro_support и нажмите подтвердить.",
+    supportContact: "Поддержка",
+    choosePaymentMethod: "Способы оплаты",
+    currentBalance: "Текущий баланс",
+    paymentSent: "Я оплатил",
+    paymentNote: "Баланс будет зачислен в течение 15 минут после проверки.",
+    noHistory: "Нет отчётов",
+    noHistoryDesc: "Создайте первый отчёт, чтобы увидеть его здесь",
+    progress: "Прогресс",
   },
   uk: {
     appName: "StudyPro",
@@ -535,6 +577,20 @@ const translations: Record<string, TranslationKeys> = {
     reportLabDesc: "Повна лабораторна робота",
     reportEssayDesc: "Розгорнутий реферат",
     reportTasksDesc: "Розв'язання задач",
+    transferDescription: "Переведіть на картку нижче та натисніть підтвердити",
+    paymentAmount: "Сума",
+    walletAddress: "Адреса гаманця",
+    cryptoPayment: "Крипто USDT",
+    starsDesc: "Оплата через Telegram Stars",
+    starsInstructions: "Надішліть Stars боту @studypro_support та натисніть підтвердити.",
+    supportContact: "Підтримка",
+    choosePaymentMethod: "Способи оплати",
+    currentBalance: "Поточний баланс",
+    paymentSent: "Я оплатив",
+    paymentNote: "Баланс буде зараховано протягом 15 хвилин після перевірки.",
+    noHistory: "Немає звітів",
+    noHistoryDesc: "Створіть перший звіт, щоб побачити його тут",
+    progress: "Прогрес",
   },
 };
 

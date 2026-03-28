@@ -50,17 +50,18 @@ artifacts-monorepo/
 
 ## Telegram Mini App (TWA)
 
-Professional React + Vite app with clean, minimal UI:
-- **Design system**: card-pro, card-elevated, card-highlight, nav-pro (frosted glass), badge-pro, section-label, skeleton loaders, shimmer-subtle, input-pro, spinner, success-pop animation. Light bg (hsl 220 14% 96%), white cards, navy gradient accent (#1a1a2e → #0f3460). Inter font, tight tracking (-0.011em).
-- **Dark mode**: Full dark theme via .dark class, auto-synced with Telegram colorScheme. Dark card bg (hsl 224 25% 11%), adjusted borders/shadows/text.
-- **Page transitions**: AnimatePresence with fade+slide variants between all pages.
-- **Home**: greeting with animated level avatar, dark navy balance card with shimmer + animated number counter, "Create Report" CTA, 3-column stats grid, recent reports list, referral invite card with copy feedback.
+Premium React + Vite fintech-grade TWA:
+- **Design system**: CSS classes — `hero-card` (deep navy gradient with radial glow + shimmer), `card` / `card-interactive` (white/dark, 20px radius, border, tap scale), `btn-primary` (gradient #667eea→#764ba2 with inner highlight + shadow), `btn-success` (green gradient), `btn-ghost`, `badge` / `badge-success`, `section-title` (uppercase tracking), `input-field` (focus ring), `nav-glass` (backdrop-filter blur), `avatar-ring` (gradient border), `glass`, `skeleton`, `spinner`, `pop-in`, `stat-value`, `progress-bar`. Primary = `hsl(239 84% 67%)`. Gradients: `linear-gradient(135deg, #667eea, #764ba2)`.
+- **Dark mode**: Full dark theme via .dark class, auto-synced with Telegram colorScheme every 1s. Dark bg `hsl(224 71% 4%)`, cards `hsl(224 50% 7%)`.
+- **Telegram integration**: `photo_url` pulled from WebApp.initDataUnsafe.user, stored in globalPhotoUrl, displayed in profile and home page avatars with gradient ring. Username and ID displayed in profile hero card.
+- **Page transitions**: AnimatePresence with fade+slide variants, staggered item animations.
+- **Home**: greeting + avatar (Telegram photo), hero-card balance with shimmer + AnimatedNumber, progress bar to next level, "Create Report" CTA, 3-column stats, recent reports, referral invite section.
 - **Create**: 4-step animated progress bar (type → category → subject → details), staggered list animations, search within subjects, char count, AI generation spinner with percentage + progress bar.
-- **History**: search/filter, skeleton loading states, detail viewer with word count, copy with visual feedback (button color change), date formatting.
-- **Balance**: dark navy balance card with shimmer, 5 payment methods as list items with branded icons and prices, individual payment flows per method, success-pop animation on confirmation.
-- **Profile**: dark gradient user card with level progress bar animation, 3-column stats with count-up, 4 achievement badges, referral code with copy, 30-language selector with search.
-- **i18n**: 30 languages with IP-based auto-detection and Telegram language_code fallback.
-- **Bottom nav**: frosted glass backdrop-filter with spring-animated pill indicator, filled icons for active tab, balance badge.
+- **History**: skeleton loading states, detail viewer with word count, copy with feedback, empty state with icon.
+- **Balance**: hero-card balance with shimmer, 5 payment methods as card-interactive tiles with branded icons, individual payment flows (card copy, crypto address, stars instructions), CopyField component with visual feedback.
+- **Profile**: hero-card with Telegram avatar (photo_url), username (@user), ID display, level progress bar, 3-column stats, emoji achievements, referral system with code + copy link, 30-language selector with search.
+- **i18n**: 30 languages with IP-based auto-detection and Telegram language_code fallback. Full translations: en/ru/uk.
+- **Bottom nav**: frosted glass backdrop-filter with spring-animated gradient pill indicator, filled icons for active tab, balance badge.
 - **Demo mode**: works outside Telegram with test user (telegramId: 999999999).
 
 ### i18n Languages (30 selectable, 3 full translations)
