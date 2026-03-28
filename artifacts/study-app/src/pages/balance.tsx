@@ -5,7 +5,7 @@ import { hapticFeedback, hapticSuccess, hapticError, getTelegramWebApp } from "@
 import { t } from "@/lib/i18n";
 import { motion } from "framer-motion";
 
-type Method = "card" | "google_pay" | "apple_pay" | "crypto" | "stars" | null;
+type Method = "card" | "crypto" | "stars" | null;
 const CARD = "5375 4141 2121 2120";
 const CRYPTO = "TLdH6NMj7g3jKcB6pnEPr5wfbUjqTe5GxP";
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
@@ -112,19 +112,21 @@ export default function Balance() {
     );
   }
 
-  if (method === "card" || method === "google_pay" || method === "apple_pay") {
+  if (method === "card") {
     return (
       <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, ease }} className="px-5 pt-8 pb-4">
         <BackBtn onClick={() => setMethod(null)} />
-        <h2 className="text-[24px] font-black text-white tracking-tight mb-1">
-          {method === "card" ? t("cardPayment") : method === "google_pay" ? t("googlePay") : t("applePay")}
-        </h2>
+        <h2 className="text-[24px] font-black text-white tracking-tight mb-1">{t("cardPayment")}</h2>
         <p className="text-[14px] text-white/20 mb-6">{t("transferDescription")}</p>
         <PkgCard />
         <CopyField label={t("cardNumber")} value={CARD} />
-        <div className="g-card-s rounded-2xl p-4 flex items-center gap-3">
+        <div className="g-card-s rounded-2xl p-4 flex items-center gap-3 mb-3">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>
           <p className="text-[11px] text-white/20 leading-relaxed">{t("cardNote")} <span className="font-mono font-bold text-[#67e8f9]">{user?.telegramId}</span></p>
+        </div>
+        <div className="g-card-s rounded-2xl p-4 flex items-center gap-3" style={{ background: "rgba(251,191,36,0.03)", borderColor: "rgba(251,191,36,0.08)" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="1.5"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+          <p className="text-[11px] text-white/25 leading-relaxed">{t("receiptNote")}</p>
         </div>
         <motion.button whileTap={{ scale: 0.97 }} onClick={confirm} disabled={confirming}
           className="mt-6 w-full btn-main py-[18px] text-[15px] flex items-center justify-center gap-2">
@@ -225,10 +227,6 @@ export default function Balance() {
         {[
           { m: "card" as Method, title: t("cardPayment"), price: "250 UAH", tag: t("popular"), color: "#a78bfa",
             icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="1.7"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg> },
-          { m: "google_pay" as Method, title: t("googlePay"), price: "250 UAH", color: "#67e8f9",
-            icon: <span className="text-lg font-black" style={{ color: "#67e8f9" }}>G</span> },
-          { m: "apple_pay" as Method, title: t("applePay"), price: "250 UAH", color: "#e2e2e2",
-            icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e2e2e2" strokeWidth="1.7"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg> },
           { m: "crypto" as Method, title: t("cryptoPayment"), price: "5 USDT (TRC-20)", color: "#34d399",
             icon: <span className="text-lg font-black" style={{ color: "#34d399" }}>₮</span> },
         ].map((item, i) => (
