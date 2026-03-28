@@ -57,6 +57,7 @@ export async function generateReport(data: {
   subject: string;
   topic: string;
   group?: string;
+  imageData?: string;
 }): Promise<GenerateResponse> {
   return request<GenerateResponse>("/generate", {
     method: "POST",

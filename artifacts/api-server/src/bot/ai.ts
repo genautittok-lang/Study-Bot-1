@@ -62,7 +62,8 @@ export async function generateReport(
   reportType: string,
   subject: string,
   topic: string,
-  group?: string | null
+  group?: string | null,
+  imageData?: string | null
 ): Promise<string> {
   const reportTypeName = REPORT_TYPE_NAMES[reportType] || reportType;
   const subjectName = SUBJECT_NAMES[subject] || subject;
@@ -496,12 +497,28 @@ Markdown таблиці для класифікацій:
 10+ джерел`;
   }
 
+  const userContent: any[] = [{ type: "text", text: userPrompt }];
+
+  if (imageData) {
+    let dataUrl: string;
+    if (imageData.startsWith("data:")) {
+      dataUrl = imageData;
+    } else {
+      dataUrl = `data:image/jpeg;base64,${imageData}`;
+    }
+    userContent.push({
+      type: "image_url",
+      image_url: { url: dataUrl },
+    });
+    userContent[0].text += "\n\n⚠️ ВАЖЛИВО: До запиту прикріплено ФОТО завдання. Уважно розглянь зображення, прочитай ВСЕ що на ньому написано (текст, числа, формули, умови задач, таблиці) і використай цю інформацію для генерації роботи. Якщо на фото є задачі — розв'яжи саме їх. Якщо є текст — використай його як основу.";
+  }
+
   const response = await openai.chat.completions.create({
     model: "gpt-5.2",
     max_completion_tokens: 16384,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
-      { role: "user", content: userPrompt },
+      { role: "user", content: userContent },
     ],
   });
 

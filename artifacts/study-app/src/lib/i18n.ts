@@ -73,6 +73,11 @@ type TranslationKeys = {
   topicPlaceholder: string;
   groupLabel: string;
   groupPlaceholder: string;
+  attachPhoto: string;
+  attachPhotoDesc: string;
+  photoAttached: string;
+  removePhoto: string;
+  maxFileSize: string;
   generate: string;
   generating: string;
   generatingDesc: string;
@@ -224,6 +229,11 @@ const translations: Record<string, TranslationKeys> = {
     topicPlaceholder: "e.g.: Lab work on Python — bubble sort algorithm",
     groupLabel: "Group / Class",
     groupPlaceholder: "e.g.: IT-21, 11-A (optional)",
+    attachPhoto: "Attach Photo",
+    attachPhotoDesc: "Photo of the task from textbook",
+    photoAttached: "Photo attached",
+    removePhoto: "Remove",
+    maxFileSize: "Max 5 MB, JPG/PNG",
     generate: "Generate",
     generating: "Generating...",
     generatingDesc: "AI is working on your task. Usually takes 10-30 seconds",
@@ -373,6 +383,11 @@ const translations: Record<string, TranslationKeys> = {
     topicPlaceholder: "Например: Лабораторная работа по Python — сортировка массивов пузырьковым методом",
     groupLabel: "Группа / Класс",
     groupPlaceholder: "Например: ИТ-21, 11-А (необязательно)",
+    attachPhoto: "Прикрепить фото",
+    attachPhotoDesc: "Фото задания из учебника",
+    photoAttached: "Фото прикреплено",
+    removePhoto: "Удалить",
+    maxFileSize: "Макс. 5 МБ, JPG/PNG",
     generate: "Сгенерировать",
     generating: "Генерирую...",
     generatingDesc: "AI работает над твоим заданием. Обычно это занимает 10-30 секунд",
@@ -522,6 +537,11 @@ const translations: Record<string, TranslationKeys> = {
     topicPlaceholder: "Наприклад: Лабораторна робота з Python — сортування масивів бульбашковим методом",
     groupLabel: "Група / Клас",
     groupPlaceholder: "Наприклад: ІТ-21, 11-А (необов'язково)",
+    attachPhoto: "Прикріпити фото",
+    attachPhotoDesc: "Фото завдання з підручника",
+    photoAttached: "Фото прикріплено",
+    removePhoto: "Видалити",
+    maxFileSize: "Макс. 5 МБ, JPG/PNG",
     generate: "Згенерувати",
     generating: "Генерую...",
     generatingDesc: "AI працює над твоїм завданням. Зазвичай це займає 10-30 секунд",

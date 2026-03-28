@@ -157,6 +157,9 @@ components:
           type: string
         group:
           type: string
+        imageData:
+          type: string
+          description: Base64-encoded image of the task/assignment
       required:
         - telegramId
         - reportType

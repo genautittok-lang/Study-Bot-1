@@ -85,6 +85,8 @@ export default function NewReport() {
   const [searchQ, setSearchQ] = useState("");
   const [eduLevel, setEduLevel] = useState<EduLevel>("all");
   const [copied, setCopied] = useState(false);
+  const [imageData, setImageData] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const canGenerate = user ? (!user.freeReportsUsed || user.balance > 0) : false;
   const TYPES = getReportTypes();
@@ -103,7 +105,7 @@ export default function NewReport() {
     setStep("generating"); setProgress(0); hapticFeedback("medium");
     const iv = setInterval(() => { setProgress(p => Math.min(p + Math.random() * 5 + 1.5, 92)); }, 700);
     try {
-      const res = await generateReport({ telegramId: user.telegramId, reportType, subject, topic: topic.trim(), group: group.trim() || undefined });
+      const res = await generateReport({ telegramId: user.telegramId, reportType, subject, topic: topic.trim(), group: group.trim() || undefined, imageData: imageData || undefined });
       clearInterval(iv); setProgress(100);
       if (res.success && res.content) {
         hapticSuccess(); setResult(res.content);
@@ -113,7 +115,29 @@ export default function NewReport() {
     } catch { clearInterval(iv); hapticError(); setErrorMsg(t("connectionError")); setStep("error"); }
   }
 
-  function reset() { setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); }
+  function reset() { setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); }
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { hapticError(); return; }
+    if (!file.type.startsWith("image/")) { hapticError(); return; }
+    hapticFeedback("light");
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      setImageData(base64);
+      setImagePreview(base64);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  }
+
+  function removeImage() {
+    hapticFeedback("light");
+    setImageData(null);
+    setImagePreview(null);
+  }
 
   if (step === "generating") {
     return (
@@ -333,6 +357,49 @@ export default function NewReport() {
         <div>
           <label className="text-[13px] font-bold text-white/60 mb-2 block">{t("groupLabel")}</label>
           <input value={group} onChange={e => setGroup(e.target.value)} placeholder={t("groupPlaceholder")} className="input-field" />
+        </div>
+        <div>
+          <label className="text-[13px] font-bold text-white/60 mb-2 block">{t("attachPhoto")}</label>
+          <AnimatePresence mode="wait">
+            {imagePreview ? (
+              <motion.div key="preview" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+                className="rounded-2xl overflow-hidden relative" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(124,58,237,0.15)" }}>
+                <img src={imagePreview} alt="Task" className="w-full max-h-[200px] object-contain rounded-2xl" />
+                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-4 py-3"
+                  style={{ background: "linear-gradient(transparent, rgba(0,0,0,0.8))" }}>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "rgba(52,211,153,0.15)" }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <span className="text-[12px] font-bold text-emerald-400">{t("photoAttached")}</span>
+                  </div>
+                  <motion.button whileTap={{ scale: 0.9 }} onClick={removeImage}
+                    className="px-3 py-1.5 rounded-xl text-[11px] font-bold text-red-400 transition-colors"
+                    style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.12)" }}>
+                    {t("removePhoto")}
+                  </motion.button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.label key="upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                className="flex flex-col items-center justify-center gap-3 py-6 rounded-2xl cursor-pointer transition-all active:scale-[0.98]"
+                style={{ background: "rgba(124,58,237,0.03)", border: "1px dashed rgba(124,58,237,0.12)" }}>
+                <input type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: "rgba(124,58,237,0.08)" }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="1.5">
+                    <rect width="18" height="18" x="3" y="3" rx="2"/>
+                    <circle cx="9" cy="9" r="2"/>
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                  </svg>
+                </div>
+                <div className="text-center">
+                  <div className="text-[13px] font-bold text-violet-400">{t("attachPhoto")}</div>
+                  <div className="text-[11px] text-white/20 mt-0.5">{t("attachPhotoDesc")}</div>
+                  <div className="text-[10px] text-white/10 mt-1">{t("maxFileSize")}</div>
+                </div>
+              </motion.label>
+            )}
+          </AnimatePresence>
         </div>
       </div>
       {!canGenerate && (

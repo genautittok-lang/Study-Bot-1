@@ -71,7 +71,8 @@ router.post("/generate", async (req, res) => {
       body.reportType,
       body.subject,
       body.topic,
-      body.group
+      body.group,
+      body.imageData
     );
 
     await useReport(body.telegramId);

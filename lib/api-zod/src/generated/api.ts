@@ -34,8 +34,6 @@ export const TwaAuthResponse = zod.object({
   balance: zod.number(),
   freeReportsUsed: zod.boolean(),
   totalReports: zod.number(),
-  referralCode: zod.string().optional(),
-  referralCount: zod.number().optional(),
 });
 
 /**
@@ -47,6 +45,10 @@ export const TwaGenerateBody = zod.object({
   subject: zod.string(),
   topic: zod.string(),
   group: zod.string().optional(),
+  imageData: zod
+    .string()
+    .optional()
+    .describe("Base64-encoded image of the task\/assignment"),
 });
 
 export const TwaGenerateResponse = zod.object({

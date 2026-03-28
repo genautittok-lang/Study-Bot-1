@@ -12,4 +12,6 @@ export interface TwaGenerateBody {
   subject: string;
   topic: string;
   group?: string;
+  /** Base64-encoded image of the task/assignment */
+  imageData?: string;
 }

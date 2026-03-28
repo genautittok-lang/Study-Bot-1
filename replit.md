@@ -45,7 +45,8 @@ artifacts-monorepo/
 - **Education level filter**: All / School / College / University tabs in category selection
 - **3 payment methods**: Card (250 UAH, card 5375 4141 2121 2120), Crypto USDT (5$ TRC-20), Telegram Stars (500 XTR)
 - **Receipt flow**: After card payment, user sends screenshot to @studypro_support moderator
-- **AI generation**: gpt-5.2 with structured prompts per document type (specific prompts for all 11 types)
+- **AI generation**: gpt-5.2 with structured prompts per document type (specific prompts for all 11 types), vision support for photo attachments
+- **File upload**: Users can attach photos of tasks from textbooks (base64, max 5MB, JPG/PNG), AI reads the image via vision
 - **Referral system**: +2 reports for referrer and invitee, unique codes per user
 - **Level progression**: Beginner (0-5), Student (6-20), Expert (21-50), Master (51-100), Legend (101+)
 - **Achievements**: First Step, Expert, Master, Networker
