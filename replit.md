@@ -60,34 +60,41 @@ artifacts-monorepo/
 Premium React + Vite fintech-grade TWA with light premium design:
 
 ### Design System (Light Theme)
-- **Background**: `#f0f1f5` (light gray)
-- **Cards**: White `#ffffff` with subtle shadows `0 1px 3px rgba(0,0,0,0.04)`
-- **Text**: Primary `#1a1b23`, secondary `#888`/`#999`
-- **Accent**: Violet `#7c3aed`/`#8b5cf6`
+- **Background**: `#F5F5FA` (light lavender-gray)
+- **Cards**: `rgba(255,255,255,0.72)` with `backdrop-filter: blur(24px) saturate(180%)`, border `rgba(255,255,255,0.6)`, shadow `0 4px 16px rgba(0,0,0,0.03)`
+- **Text**: Primary `#1a1a2e`, secondary `#6b7280`, tertiary `#9ca3af`
+- **Primary**: `#6C5CE7` (purple), `#0984E3` (blue), `#00CEC9` (cyan), `#00B894` (green), `#FF9F43` (orange)
+- **Hero cards**: Gradient backgrounds (purple 145deg, blue 145deg) with radial glow overlays
+- **Interactive**: 3D tilt cards (perspective transform on pointer move), animated progress rings (SVG), animated counters
 
 #### CSS Classes
-- `.hero-card` — Violet gradient with glass overlays, shimmer sweep
-- `.g-card` — White card with subtle border and shadow
-- `.btn-main` — Violet gradient with top highlight, shadow
-- `.btn-accent` — Green gradient with top highlight
-- `.btn-ghost` — Light gray button
-- `.gradient-text` — Purple-to-cyan gradient text
-- `.avatar-ring` — Linear gradient border (violet→cyan)
-- `.badge` / `.badge-g` — Pill badges (violet / green)
-- `.input-field` — Clean focus ring with violet glow
-- `.icon-box` — 44px icon container
+- `.hero-card` — Gradient card with radial glow overlays (`.hero-purple`, `.hero-blue`, `.hero-dark`)
+- `.hero-shimmer` — Animated shimmer sweep on hero cards
+- `.g-card` — White frosted glass card with backdrop-blur
+- `.btn-main` — Purple gradient with shadow
+- `.btn-accent` — Green gradient
+- `.btn-ghost` — Transparent with border
+- `.gradient-text` — Purple→cyan gradient text
+- `.avatar-ring` — Holographic spinning border ring (CSS `@property --holo-angle`)
+- `.badge` / `.badge-g` / `.badge-blue` — Pill badges
+- `.input-field` — Clean focus ring with purple glow
+- `.icon-box` — 38px icon container
 - `.section-label` — Uppercase tracking label
 - `.nav-bar` — White frosted glass nav with blur(24px)
-- `.spinner` — Violet loading spinner
+- `.spinner` — Purple loading spinner
+- `.progress-bar` — White/translucent progress bar
+- `.skeleton` — Animated shimmer loading placeholder
+- Ambient orbs: Floating colored circles in background
+- Water ripple tap effect
 
-**Nav**: Centered raised violet Create (+) button, white frosted glass bar with blur.
+**Nav**: Centered raised purple Create (+) button with glow, white frosted glass bar, active tab has purple dot indicator.
 
 ### Pages
-- **Home**: Greeting + Telegram avatar, hero-card balance, 2-column action cards, 3-column stats, recent reports, referral invite
-- **Create**: 4-step progress bar, 11 report types grid, education level tabs, search, details form with photo upload, AI generation spinner
-- **History**: Skeleton loading, detail viewer with Markdown + copy, empty state
-- **Balance**: Hero balance card, Telegram Stars golden button, Card/Crypto tiles, payment flows with copy fields
-- **Profile**: Hero card with avatar + username, level progress, stats, achievements, referral code + copy, 30-language selector
+- **Home**: Time-based greeting with avatar, 3D tilt CTA card "Create Report" with rotating sparkle icon, balance card with SVG progress ring, horizontal scroll quick actions, bento stats grid, recent activity feed, referral banner
+- **Create**: 4-step gradient progress bar, 11 report types grid, education level segmented tabs, search with clear, details form with photo upload/preview, AI generation spinner with percent
+- **History**: Skeleton loading, detail viewer with Markdown + copy, empty state with illustration
+- **Balance**: Credit-card style blue gradient balance display, featured Telegram Stars button with HOT badge, Card/Crypto tiles with icons, unified payment flow with dark package card
+- **Profile**: Purple gradient header card with avatar + level progress, stats grid, achievements with SVG progress rings showing completion %, referral with inline copy, language selector
 - **Admin**: Dashboard stats, user management (+balance), payment approval/rejection, broadcast to all users
 
 ### Admin Panel

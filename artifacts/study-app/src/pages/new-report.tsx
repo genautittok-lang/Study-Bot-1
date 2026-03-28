@@ -176,7 +176,7 @@ export default function NewReport() {
         </div>
         <div className="flex gap-2.5 mb-3">
           <motion.button whileTap={{ scale: 0.96 }}
-            onClick={() => { navigator.clipboard.writeText(result); hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+            onClick={() => { navigator.clipboard.writeText(result).then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); }).catch(() => {}); }}
             className="flex-1 btn-main py-3 text-[13px] flex items-center justify-center gap-2">
             {copied
               ? <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>✓</>
