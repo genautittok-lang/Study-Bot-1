@@ -206,6 +206,17 @@ type TranslationKeys = {
   shareText: string;
   recentSubjects: string;
   continueWith: string;
+  letsGo: string;
+  shareWithFriend: string;
+  referralStep1: string;
+  referralStep2: string;
+  referralStep3: string;
+  yourReward: string;
+  friendReward: string;
+  howItWorks: string;
+  sendInvite: string;
+  friendsJoined: string;
+  earnedReports: string;
 };
 
 const translations: Record<string, TranslationKeys> = {
@@ -231,6 +242,7 @@ const translations: Record<string, TranslationKeys> = {
     createReport: "Create Report",
     home: "Home",
     create: "Create",
+    letsGo: "Let's Go",
     balance: "Balance",
     profile: "Profile",
     newDocument: "New Document",
@@ -377,6 +389,16 @@ const translations: Record<string, TranslationKeys> = {
     shareText: "Generated with StudyPro Bot",
     recentSubjects: "Recent",
     continueWith: "Continue",
+    shareWithFriend: "Share with a friend",
+    referralStep1: "Send your link to a friend",
+    referralStep2: "Friend creates their first report",
+    referralStep3: "You both get +2 reports!",
+    yourReward: "You get",
+    friendReward: "Friend gets",
+    howItWorks: "How it works",
+    sendInvite: "Send invite via Telegram",
+    friendsJoined: "friends joined",
+    earnedReports: "reports earned",
   },
   ru: {
     appName: "StudyPro",
@@ -400,6 +422,7 @@ const translations: Record<string, TranslationKeys> = {
     createReport: "Создать отчёт",
     home: "Главная",
     create: "Создать",
+    letsGo: "Поехали",
     balance: "Баланс",
     profile: "Профиль",
     newDocument: "Новый документ",
@@ -546,6 +569,16 @@ const translations: Record<string, TranslationKeys> = {
     shareText: "Сгенерировано в StudyPro Bot",
     recentSubjects: "Недавние",
     continueWith: "Продолжить",
+    shareWithFriend: "Поделись с другом",
+    referralStep1: "Отправь ссылку другу",
+    referralStep2: "Друг создаёт свой первый отчёт",
+    referralStep3: "Вы оба получите +2 отчёта!",
+    yourReward: "Ты получишь",
+    friendReward: "Друг получит",
+    howItWorks: "Как это работает",
+    sendInvite: "Отправить через Telegram",
+    friendsJoined: "друзей пришло",
+    earnedReports: "отчётов заработано",
   },
   uk: {
     appName: "StudyPro",
@@ -569,6 +602,7 @@ const translations: Record<string, TranslationKeys> = {
     createReport: "Створити звіт",
     home: "Головна",
     create: "Створити",
+    letsGo: "Погнали",
     balance: "Баланс",
     profile: "Профіль",
     newDocument: "Новий документ",
@@ -715,6 +749,16 @@ const translations: Record<string, TranslationKeys> = {
     shareText: "Згенеровано в StudyPro Bot",
     recentSubjects: "Нещодавні",
     continueWith: "Продовжити",
+    shareWithFriend: "Поділись з другом",
+    referralStep1: "Відправ посилання другу",
+    referralStep2: "Друг створює свій перший звіт",
+    referralStep3: "Ви обидва отримаєте +2 звіти!",
+    yourReward: "Ти отримаєш",
+    friendReward: "Друг отримає",
+    howItWorks: "Як це працює",
+    sendInvite: "Надіслати через Telegram",
+    friendsJoined: "друзів приєдналось",
+    earnedReports: "звітів зароблено",
   },
 };
 

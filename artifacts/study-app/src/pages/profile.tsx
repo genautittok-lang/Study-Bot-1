@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useUser, usePhotoUrl, useLang } from "@/lib/store";
-import { hapticFeedback, hapticSuccess } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, shareViaTelegram } from "@/lib/telegram";
 import { t, getLang, setLang, LANGUAGES, getUserLevel, getNextLevel } from "@/lib/i18n";
 import { motion } from "framer-motion";
+import Icon3D from "@/components/icons-3d";
 
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
@@ -48,10 +49,20 @@ export default function Profile() {
     { icon: "👥", name: t("referralAch"), ok: refCount >= 3, color: "#00B894", p: Math.min((refCount / 3) * 100, 100) },
   ];
 
+  const refLink = `https://t.me/studypro_bot?start=ref_${refCode}`;
+
   function copyRef() {
-    navigator.clipboard.writeText(`https://t.me/studypro_bot?start=ref_${refCode}`)
+    navigator.clipboard.writeText(refLink)
       .then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); })
       .catch(() => {});
+  }
+
+  const hasRefCode = !!refCode && refCode !== "---";
+
+  function shareRefTelegram() {
+    if (!hasRefCode) return;
+    hapticFeedback("medium");
+    shareViaTelegram(`🎓 ${t("shareWithFriend")}!\n\n${t("referralStep3")}\n\n${refLink}`);
   }
 
   const a = (i: number) => ({
@@ -200,16 +211,34 @@ export default function Profile() {
       {/* REFERRAL */}
       <motion.div {...a(3)} className="g-card rounded-[22px] p-4 mb-3">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-[42px] h-[42px] rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "rgba(0,184,148,0.06)" }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B894" strokeWidth="1.8">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-              <line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>
-            </svg>
-          </div>
+          <Icon3D id="invite" size={42} />
           <div className="flex-1">
             <div className="font-bold text-[14px] leading-tight">{t("referralSystem")}</div>
             <div className="text-[11px] text-[#9ca3af] mt-0.5">{t("referralBonus")}</div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1 mb-3 px-1">
+          {[t("referralStep1"), t("referralStep2"), t("referralStep3")].map((step, i) => (
+            <div key={i} className="flex items-center gap-1 flex-1">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                style={{ background: i === 2 ? "#00B894" : "linear-gradient(135deg, #6C5CE7, #0984E3)" }}>
+                {i + 1}
+              </div>
+              <span className="text-[8px] text-[#9ca3af] font-medium leading-tight">{step}</span>
+              {i < 2 && <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="3" className="shrink-0 ml-auto"><polyline points="9 18 15 12 9 6"/></svg>}
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-2 mb-3">
+          <div className="flex-1 rounded-[12px] py-2.5 px-3 text-center" style={{ background: "rgba(0,184,148,0.05)" }}>
+            <div className="text-[20px] font-extrabold tabular" style={{ color: "#00B894" }}>{refCount}</div>
+            <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-0.5">{t("friendsJoined")}</div>
+          </div>
+          <div className="flex-1 rounded-[12px] py-2.5 px-3 text-center" style={{ background: "rgba(108,92,231,0.05)" }}>
+            <div className="text-[20px] font-extrabold tabular" style={{ color: "#6C5CE7" }}>{refCount * 2}</div>
+            <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-0.5">{t("earnedReports")}</div>
           </div>
         </div>
 
@@ -228,10 +257,10 @@ export default function Profile() {
           </motion.button>
         </div>
 
-        <motion.button whileTap={{ scale: 0.97 }} onClick={copyRef}
+        <motion.button whileTap={{ scale: 0.97 }} onClick={shareRefTelegram}
           className="w-full btn-accent py-[12px] text-[13px] flex items-center justify-center gap-2">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
-          {copied ? t("linkCopied") : t("copyLink")}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          {t("sendInvite")}
         </motion.button>
       </motion.div>
 

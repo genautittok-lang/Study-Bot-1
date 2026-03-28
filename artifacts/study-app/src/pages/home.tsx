@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { useUser, usePhotoUrl, useLang, getRecentItems, type RecentItem } from "@/lib/store";
 import { useLocation } from "wouter";
 import { getReports, type ReportItem } from "@/lib/api";
-import { hapticFeedback, hapticSuccess } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, shareViaTelegram } from "@/lib/telegram";
 import { t, getUserLevel, getReportTypeMap, getNextLevel } from "@/lib/i18n";
 import { motion, useMotionValue, useTransform } from "framer-motion";
+import Icon3D from "@/components/icons-3d";
 
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 const anim = (i: number) => ({
@@ -110,10 +111,20 @@ export default function Home() {
     getReports(user.telegramId).then(r => setRecent(r.reports.slice(0, 2))).catch(() => {});
   }, [user]);
 
+  const refLink = `https://t.me/studypro_bot?start=ref_${user?.referralCode || "---"}`;
+
   function copyRef() {
-    navigator.clipboard.writeText(`https://t.me/studypro_bot?start=ref_${user?.referralCode || "---"}`)
+    navigator.clipboard.writeText(refLink)
       .then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); })
       .catch(() => {});
+  }
+
+  const hasRefCode = !!user?.referralCode && user.referralCode !== "---";
+
+  function shareRefTelegram() {
+    if (!hasRefCode) return;
+    hapticFeedback("medium");
+    shareViaTelegram(`🎓 ${t("shareWithFriend")}!\n\n${t("referralStep3")}\n\n${refLink}`);
   }
 
   return (
@@ -229,10 +240,10 @@ export default function Home() {
       <motion.div {...anim(3)} className="mb-4">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4">
           {[
-            { icon: "💎", label: t("topUp"), desc: "15 rep", go: "/balance", bg: "linear-gradient(135deg, rgba(0,206,201,0.08), rgba(9,132,227,0.05))", border: "rgba(0,206,201,0.12)" },
-            { icon: "📊", label: t("history"), desc: `${user?.totalReports || 0} ${t("total").toLowerCase()}`, go: "/history", bg: "linear-gradient(135deg, rgba(255,159,67,0.08), rgba(255,107,107,0.05))", border: "rgba(255,159,67,0.12)" },
-            { icon: "👤", label: t("profile"), desc: lvl.name, go: "/profile", bg: "linear-gradient(135deg, rgba(108,92,231,0.08), rgba(253,121,168,0.05))", border: "rgba(108,92,231,0.12)" },
-            { icon: "👥", label: t("inviteFriends"), desc: `+2 ${t("reports5").toLowerCase()}`, go: "#ref", bg: "linear-gradient(135deg, rgba(0,184,148,0.08), rgba(0,206,201,0.05))", border: "rgba(0,184,148,0.12)" },
+            { iconId: "topup", label: t("topUp"), desc: "15 rep", go: "/balance", border: "rgba(0,206,201,0.12)" },
+            { iconId: "history", label: t("history"), desc: `${user?.totalReports || 0} ${t("total").toLowerCase()}`, go: "/history", border: "rgba(255,159,67,0.12)" },
+            { iconId: "profile", label: t("profile"), desc: lvl.name, go: "/profile", border: "rgba(108,92,231,0.12)" },
+            { iconId: "invite", label: t("inviteFriends"), desc: `+2 ${t("reports5").toLowerCase()}`, go: "#ref", border: "rgba(0,184,148,0.12)" },
           ].map((item, i) => (
             <motion.button key={i}
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
@@ -241,15 +252,17 @@ export default function Home() {
               onClick={() => {
                 hapticFeedback("light");
                 if (item.go === "#ref") {
-                  copyRef();
+                  shareRefTelegram();
                 } else {
                   go(item.go);
                 }
               }}
               className="flex-shrink-0 rounded-[18px] p-3.5 min-w-[120px]"
-              style={{ background: item.bg, border: `1px solid ${item.border}` }}
+              style={{ border: `1px solid ${item.border}`, background: "rgba(255,255,255,0.5)" }}
             >
-              <span className="text-[24px] block mb-2">{item.icon}</span>
+              <div className="mb-2">
+                <Icon3D id={item.iconId} size={36} />
+              </div>
               <div className="text-[12px] font-bold leading-tight text-left">{item.label}</div>
               <div className="text-[10px] text-[#9ca3af] mt-0.5 text-left font-medium">{item.desc}</div>
             </motion.button>
@@ -341,41 +354,58 @@ export default function Home() {
         </motion.div>
       )}
 
-      {/* ─── REFERRAL BANNER ─── */}
-      <motion.div {...anim(6)}>
-        <motion.button whileTap={{ scale: 0.97 }} onClick={copyRef}
-          className="w-full rounded-[22px] p-4 flex items-center gap-3 overflow-hidden relative"
-          style={{
-            background: "linear-gradient(135deg, rgba(0,184,148,0.06), rgba(0,206,201,0.03))",
-            border: "1px solid rgba(0,184,148,0.1)",
-          }}>
-          <div className="w-[44px] h-[44px] rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "rgba(0,184,148,0.08)" }}>
-            {copied ? (
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", bounce: 0.5 }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B894" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              </motion.div>
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B894" strokeWidth="1.8">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                <line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>
-              </svg>
-            )}
+      {/* ─── REFERRAL SECTION ─── */}
+      <motion.div {...anim(6)} className="g-card rounded-[22px] p-4 overflow-hidden">
+        <div className="flex items-center gap-3 mb-3">
+          <Icon3D id="invite" size={42} />
+          <div className="flex-1">
+            <div className="font-bold text-[14px] leading-tight">{t("inviteFriends")}</div>
+            <div className="text-[11px] text-[#9ca3af] mt-0.5">{t("referralBonus")}</div>
           </div>
-          <div className="flex-1 text-left">
-            <div className="text-[13px] font-bold leading-tight">
-              {copied ? t("linkCopied") : t("inviteFriends")}
+        </div>
+
+        <div className="flex items-center gap-2 mb-3">
+          {[
+            { num: "1", text: t("referralStep1") },
+            { num: "2", text: t("referralStep2") },
+            { num: "3", text: t("referralStep3") },
+          ].map((s, i) => (
+            <div key={i} className="flex-1 text-center">
+              <div className="w-6 h-6 rounded-full mx-auto mb-1 flex items-center justify-center text-[10px] font-bold text-white"
+                style={{ background: i === 2 ? "#00B894" : "linear-gradient(135deg, #6C5CE7, #0984E3)" }}>
+                {s.num}
+              </div>
+              <div className="text-[8px] text-[#9ca3af] font-medium leading-tight">{s.text}</div>
             </div>
-            <div className="text-[11px] text-[#9ca3af] mt-0.5 font-medium">{t("referralBonus")}</div>
+          ))}
+        </div>
+
+        <div className="flex gap-2 mb-3">
+          <div className="flex-1 rounded-[12px] py-2 px-3 text-center" style={{ background: "rgba(0,184,148,0.05)" }}>
+            <div className="text-[18px] font-extrabold tabular" style={{ color: "#00B894" }}>{user?.referralCount || 0}</div>
+            <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-0.5">{t("friendsJoined")}</div>
           </div>
-          {(user?.referralCount || 0) > 0 && (
-            <div className="shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold"
-              style={{ background: "rgba(0,184,148,0.08)", color: "#00B894" }}>
-              {user?.referralCount}
-            </div>
-          )}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2" className="shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
-        </motion.button>
+          <div className="flex-1 rounded-[12px] py-2 px-3 text-center" style={{ background: "rgba(108,92,231,0.05)" }}>
+            <div className="text-[18px] font-extrabold tabular" style={{ color: "#6C5CE7" }}>{(user?.referralCount || 0) * 2}</div>
+            <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-0.5">{t("earnedReports")}</div>
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <motion.button whileTap={{ scale: 0.96 }} onClick={shareRefTelegram}
+            className="flex-1 btn-accent py-[11px] text-[13px] flex items-center justify-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            {t("sendInvite")}
+          </motion.button>
+          <motion.button whileTap={{ scale: 0.96 }} onClick={copyRef}
+            className="py-[11px] px-4 rounded-[16px] text-[13px] font-semibold flex items-center justify-center gap-1.5"
+            style={{ background: copied ? "rgba(0,184,148,0.06)" : "rgba(0,0,0,0.03)", color: copied ? "#00B894" : "#6b7280" }}>
+            {copied
+              ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B894" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>}
+            {copied ? "✓" : t("copyLink")}
+          </motion.button>
+        </div>
       </motion.div>
     </div>
   );

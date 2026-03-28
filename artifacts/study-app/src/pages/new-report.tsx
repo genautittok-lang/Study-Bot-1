@@ -7,6 +7,7 @@ import type { EduLevel } from "@/lib/i18n";
 import { hapticFeedback, hapticSuccess, hapticError, shareViaTelegram } from "@/lib/telegram";
 import { motion, AnimatePresence } from "framer-motion";
 import MarkdownRenderer from "@/components/markdown-renderer";
+import Icon3D, { REPORT_ICON_MAP } from "@/components/icons-3d";
 
 type Step = "type" | "category" | "subject" | "details" | "generating" | "done" | "error";
 const STEPS = ["type", "category", "subject", "details"] as const;
@@ -246,7 +247,9 @@ export default function NewReport() {
               whileTap={{ scale: 0.96 }}
               onClick={() => { hapticFeedback("light"); setReportType(type.id); setStep("category"); }}
               className="g-card rounded-[16px] p-3.5 text-left">
-              <span className="text-[22px] block mb-2">{type.icon}</span>
+              <div className="mb-2">
+                <Icon3D id={REPORT_ICON_MAP[type.id] || "report"} size={38} />
+              </div>
               <div className="font-bold text-[13px] leading-snug">{type.label}</div>
               <div className="text-[10px] text-[#9ca3af] mt-0.5 leading-snug">{type.desc}</div>
             </motion.button>

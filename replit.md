@@ -89,12 +89,17 @@ Premium React + Vite fintech-grade TWA with light premium design:
 
 **Nav**: Centered raised purple Create (+) button with glow, white frosted glass bar, active tab has purple dot indicator.
 
+### 3D Icon System
+- `Icon3D` component in `src/components/icons-3d.tsx` — 22+ icon types with gradient SVG fills
+- `REPORT_ICON_MAP` maps report type IDs to icon IDs
+- Used across: new-report type grid, home quick actions, balance payment methods, referral sections
+
 ### Pages
-- **Home**: Time-based greeting with avatar, 3D tilt CTA card "Create Report" with rotating sparkle icon, balance card with SVG progress ring, horizontal scroll quick actions, bento stats grid, recent activity feed, referral banner
-- **Create**: 4-step gradient progress bar, 11 report types grid, education level segmented tabs, search with clear, details form with photo upload/preview, AI generation spinner with percent
-- **History**: Skeleton loading, detail viewer with Markdown + copy, empty state with illustration
-- **Balance**: Credit-card style blue gradient balance display, featured Telegram Stars button with HOT badge, Card/Crypto tiles with icons, unified payment flow with dark package card
-- **Profile**: Purple gradient header card with avatar + level progress, stats grid, achievements with SVG progress rings showing completion %, referral with inline copy, language selector
+- **Home**: Time-based greeting with avatar, 3D tilt CTA card "Create Report" with rotating sparkle icon, balance card with SVG progress ring, horizontal scroll quick actions (with 3D icons), bento stats grid, recent subjects horizontal scroll, referral section with step-by-step flow + stats cards + Telegram share CTA
+- **Create**: 4-step gradient progress bar, 11 report types grid with 3D icons, education level segmented tabs, search with clear, details form with photo upload/preview, AI generation spinner with percent
+- **History**: Skeleton loading, detail viewer with Markdown + copy + word count, share via Telegram, repeat button, empty state
+- **Balance**: Credit-card style blue gradient balance display, featured Telegram Stars button with HOT badge, Card/Crypto tiles with 3D icons, unified payment flow with dark package card
+- **Profile**: Purple gradient header card with avatar + level progress, stats grid, achievements with SVG progress rings, referral section with step-by-step flow + stats + Telegram share as primary CTA, language selector
 - **Admin**: Dashboard stats, user management (+balance), payment approval/rejection, broadcast to all users
 
 ### Admin Panel

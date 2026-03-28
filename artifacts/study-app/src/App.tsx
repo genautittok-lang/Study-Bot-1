@@ -56,7 +56,7 @@ function BottomNav() {
       )
     },
     {
-      path: "/new", label: t("create"), special: true,
+      path: "/new", label: t("letsGo"), special: true,
       icon: () => (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
           <line x1="12" x2="12" y1="5" y2="19"/>

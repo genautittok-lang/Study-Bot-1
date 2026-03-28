@@ -4,6 +4,7 @@ import { createPayment, createInvoice } from "@/lib/api";
 import { hapticFeedback, hapticSuccess, hapticError, getTelegramWebApp } from "@/lib/telegram";
 import { t } from "@/lib/i18n";
 import { motion } from "framer-motion";
+import Icon3D from "@/components/icons-3d";
 
 type Method = "card" | "crypto" | "stars" | null;
 const CARD = "5375 4141 2121 2120";
@@ -214,7 +215,7 @@ export default function Balance() {
               style={{ background: "linear-gradient(135deg, #FFA502, #FF9F43)", boxShadow: "0 4px 12px rgba(255,159,67,0.2)" }}>
               {starsLoading
                 ? <div className="spinner w-5 h-5 border-white/25 border-t-white" />
-                : <span className="text-[22px]">⭐</span>}
+                : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01Z"/></svg>}
             </div>
             <div className="flex-1 text-left">
               <div className="font-bold text-[14px] leading-tight">{t("telegramStars")}</div>
@@ -232,10 +233,7 @@ export default function Balance() {
           <motion.button whileTap={{ scale: 0.97 }}
             onClick={() => { hapticFeedback("light"); setMethod("card"); }}
             className="w-full g-card rounded-[20px] p-4 flex items-center gap-3.5">
-            <div className="w-[48px] h-[48px] rounded-[15px] flex items-center justify-center shrink-0"
-              style={{ background: "rgba(108,92,231,0.06)" }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" strokeWidth="1.5"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
-            </div>
+            <Icon3D id="card" size={48} />
             <div className="flex-1 text-left">
               <div className="font-bold text-[14px] leading-tight flex items-center gap-2">
                 {t("cardPayment")}
@@ -252,10 +250,7 @@ export default function Balance() {
           <motion.button whileTap={{ scale: 0.97 }}
             onClick={() => { hapticFeedback("light"); setMethod("crypto"); }}
             className="w-full g-card rounded-[20px] p-4 flex items-center gap-3.5">
-            <div className="w-[48px] h-[48px] rounded-[15px] flex items-center justify-center shrink-0"
-              style={{ background: "rgba(0,184,148,0.06)" }}>
-              <span className="text-[20px] font-bold" style={{ color: "#00B894" }}>₮</span>
-            </div>
+            <Icon3D id="crypto" size={48} />
             <div className="flex-1 text-left">
               <div className="font-bold text-[14px] leading-tight">{t("cryptoPayment")}</div>
               <div className="text-[12px] text-[#9ca3af] mt-0.5 font-medium">5 USDT (TRC-20)</div>
