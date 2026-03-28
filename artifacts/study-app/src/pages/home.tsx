@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { useUser, useLang } from "@/lib/store";
 import { useLocation } from "wouter";
-import { hapticFeedback } from "@/lib/telegram";
-import { t } from "@/lib/i18n";
+import { hapticFeedback, hapticSuccess } from "@/lib/telegram";
+import { t, getUserLevel } from "@/lib/i18n";
 import { motion } from "framer-motion";
 
 const fadeUp = {
@@ -18,10 +19,22 @@ export default function Home() {
   const user = useUser();
   const [, setLocation] = useLocation();
   useLang();
+  const [refCopied, setRefCopied] = useState(false);
 
   const availableReports = user
     ? (!user.freeReportsUsed ? user.balance + 1 : user.balance)
     : 0;
+
+  const level = getUserLevel(user?.totalReports || 0);
+
+  function copyReferralLink() {
+    const code = user?.referralCode || "---";
+    const link = `https://t.me/studypro_bot?start=ref_${code}`;
+    navigator.clipboard.writeText(link);
+    hapticSuccess();
+    setRefCopied(true);
+    setTimeout(() => setRefCopied(false), 2000);
+  }
 
   return (
     <motion.div
@@ -31,12 +44,19 @@ export default function Home() {
       variants={stagger}
     >
       <motion.div className="mb-5" variants={fadeUp}>
-        <h1 className="text-2xl font-extrabold text-foreground tracking-tight">
-          {t("welcome")}, {user?.firstName || "Student"}! <span className="wave-emoji">👋</span>
-        </h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          {t("subtitle")}
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-extrabold text-foreground tracking-tight">
+              {t("welcome")}, {user?.firstName || "Student"}! <span className="wave-emoji">👋</span>
+            </h1>
+            <p className="text-muted-foreground mt-1 text-sm">
+              {t("subtitle")}
+            </p>
+          </div>
+          <div className={`w-10 h-10 bg-gradient-to-br ${level.color} rounded-xl flex items-center justify-center shadow-lg text-lg`}>
+            {level.icon}
+          </div>
+        </div>
       </motion.div>
 
       <motion.div
@@ -44,6 +64,7 @@ export default function Home() {
         className="relative overflow-hidden rounded-3xl p-5 mb-5 text-white shadow-2xl shadow-primary/25"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-blue-500 to-violet-600" />
+        <div className="absolute inset-0 shimmer-bg" />
         <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
         <div className="relative z-10">
@@ -82,13 +103,13 @@ export default function Home() {
 
       <motion.div className="grid grid-cols-2 gap-3 mb-5" variants={stagger}>
         {[
-          { path: "/new", label: t("newReport"), sub: t("generateAI"), gradient: "from-blue-500 to-blue-600", iconColor: "text-blue-500", bgColor: "bg-blue-50",
+          { path: "/new", label: t("newReport"), sub: t("generateAI"), iconColor: "text-blue-500", bgColor: "bg-blue-50",
             icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg> },
-          { path: "/history", label: t("history"), sub: t("myReports"), gradient: "from-emerald-500 to-green-600", iconColor: "text-emerald-500", bgColor: "bg-emerald-50",
+          { path: "/history", label: t("history"), sub: t("myReports"), iconColor: "text-emerald-500", bgColor: "bg-emerald-50",
             icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
-          { path: "/balance", label: t("topUp"), sub: t("buyReports"), gradient: "from-violet-500 to-purple-600", iconColor: "text-violet-500", bgColor: "bg-violet-50",
+          { path: "/balance", label: t("topUp"), sub: t("buyReports"), iconColor: "text-violet-500", bgColor: "bg-violet-50",
             icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg> },
-          { path: "/profile", label: t("stats"), sub: `${user?.totalReports || 0} ${t("report1")}`, gradient: "from-amber-500 to-orange-600", iconColor: "text-amber-500", bgColor: "bg-amber-50",
+          { path: "/profile", label: t("stats"), sub: `${level.icon} ${level.name}`, iconColor: "text-amber-500", bgColor: "bg-amber-50",
             icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg> },
         ].map((item) => (
           <motion.button
@@ -108,6 +129,35 @@ export default function Home() {
             <div className="text-xs text-muted-foreground mt-0.5">{item.sub}</div>
           </motion.button>
         ))}
+      </motion.div>
+
+      <motion.div variants={fadeUp} className="card-premium card-glow rounded-2xl p-4 mb-4 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-emerald-500/5 to-transparent rounded-bl-full" />
+        <div className="relative">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-9 h-9 bg-gradient-to-br from-emerald-400 to-green-500 rounded-xl flex items-center justify-center">
+              <span className="text-white text-sm">🎁</span>
+            </div>
+            <div>
+              <div className="font-bold text-sm">{t("inviteFriends")}</div>
+              <div className="text-xs text-muted-foreground">{t("referralBonus")}</div>
+            </div>
+          </div>
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={copyReferralLink}
+            className="w-full bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-2.5 text-sm font-bold mt-2 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition-colors"
+          >
+            {refCopied ? (
+              <>{t("linkCopied")}</>
+            ) : (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+                {t("copyLink")}
+              </>
+            )}
+          </motion.button>
+        </div>
       </motion.div>
 
       <motion.div variants={fadeUp} className="card-premium rounded-2xl p-4 overflow-hidden relative">

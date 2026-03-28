@@ -17,6 +17,8 @@ export interface UserData {
   balance: number;
   freeReportsUsed: boolean;
   totalReports: number;
+  referralCode?: string;
+  referralCount?: number;
 }
 
 export interface GenerateResponse {

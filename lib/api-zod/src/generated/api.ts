@@ -34,6 +34,8 @@ export const TwaAuthResponse = zod.object({
   balance: zod.number(),
   freeReportsUsed: zod.boolean(),
   totalReports: zod.number(),
+  referralCode: zod.string().optional(),
+  referralCount: zod.number().optional(),
 });
 
 /**

@@ -66,6 +66,7 @@ type TranslationKeys = {
   chooseDocType: string;
   subject: string;
   chooseSubject: string;
+  chooseCategory: string;
   details: string;
   describeTask: string;
   topicLabel: string;
@@ -95,15 +96,11 @@ type TranslationKeys = {
   availableReports: string;
   total: string;
   freeReport: string;
-  monobank: string;
-  cardTransfer: string;
   crypto: string;
   cryptoDesc: string;
   telegramStars: string;
   payViaTelegram: string;
-  cardNumber: string;
   important: string;
-  monoNote: string;
   iPaid: string;
   cryptoAddress: string;
   cryptoNote: string;
@@ -120,6 +117,38 @@ type TranslationKeys = {
   chooseLanguage: string;
   userId: string;
   joined: string;
+  visaMastercard: string;
+  cardPayment: string;
+  cardNumber: string;
+  cardNote: string;
+  googlePay: string;
+  googlePayDesc: string;
+  applePay: string;
+  applePayDesc: string;
+  payAmount: string;
+  choosePayment: string;
+  popular: string;
+  allSubjects: string;
+  referralSystem: string;
+  inviteFriends: string;
+  referralDesc: string;
+  referralCode: string;
+  copyLink: string;
+  linkCopied: string;
+  invited: string;
+  bonusEarned: string;
+  referralBonus: string;
+  level: string;
+  nextLevel: string;
+  achievements: string;
+  firstReportAch: string;
+  tenReportsAch: string;
+  fiftyReportsAch: string;
+  referralAch: string;
+  accountInfo: string;
+  memberSince: string;
+  proTip: string;
+  proTipText: string;
   reportReport: string;
   reportSummary: string;
   reportDatabase: string;
@@ -132,17 +161,6 @@ type TranslationKeys = {
   reportLabDesc: string;
   reportEssayDesc: string;
   reportTasksDesc: string;
-  subProgramming: string;
-  subMath: string;
-  subPhysics: string;
-  subChemistry: string;
-  subBiology: string;
-  subHistory: string;
-  subGeography: string;
-  subDatabases: string;
-  subNetworks: string;
-  subEconomics: string;
-  subOther: string;
 };
 
 const translations: Record<string, TranslationKeys> = {
@@ -174,6 +192,7 @@ const translations: Record<string, TranslationKeys> = {
     chooseDocType: "Choose document type",
     subject: "Subject",
     chooseSubject: "Choose subject",
+    chooseCategory: "Choose category",
     details: "Details",
     describeTask: "Describe what you need",
     topicLabel: "Topic / Task *",
@@ -203,15 +222,11 @@ const translations: Record<string, TranslationKeys> = {
     availableReports: "Available reports",
     total: "Total",
     freeReport: "+1 free",
-    monobank: "Monobank",
-    cardTransfer: "Card transfer",
     crypto: "Crypto",
     cryptoDesc: "USDT / USDC (TRC-20)",
     telegramStars: "Telegram Stars",
     payViaTelegram: "Pay via Telegram",
-    cardNumber: "Card number:",
     important: "Important!",
-    monoNote: "In the payment comment, specify your ID:",
     iPaid: "I paid",
     cryptoAddress: "Address (TRC-20):",
     cryptoNote: "After transfer, send the transaction hash to support chat",
@@ -228,6 +243,38 @@ const translations: Record<string, TranslationKeys> = {
     chooseLanguage: "Choose language",
     userId: "User ID",
     joined: "Joined",
+    visaMastercard: "Visa / Mastercard",
+    cardPayment: "Card payment",
+    cardNumber: "Card number:",
+    cardNote: "In the payment comment, specify your ID:",
+    googlePay: "Google Pay",
+    googlePayDesc: "Fast payment",
+    applePay: "Apple Pay",
+    applePayDesc: "Fast payment",
+    payAmount: "Pay",
+    choosePayment: "Choose payment method",
+    popular: "Popular",
+    allSubjects: "All subjects",
+    referralSystem: "Referral System",
+    inviteFriends: "Invite Friends",
+    referralDesc: "Invite friends and get free reports! You and your friend both receive +2 reports.",
+    referralCode: "Your referral code",
+    copyLink: "Copy link",
+    linkCopied: "Copied!",
+    invited: "Invited",
+    bonusEarned: "Bonus earned",
+    referralBonus: "+2 reports for each invite",
+    level: "Level",
+    nextLevel: "Next level",
+    achievements: "Achievements",
+    firstReportAch: "First Step",
+    tenReportsAch: "Expert",
+    fiftyReportsAch: "Master",
+    referralAch: "Networker",
+    accountInfo: "Account",
+    memberSince: "Member since",
+    proTip: "Pro Tip",
+    proTipText: "Invite 5 friends to unlock 10 free reports!",
     reportReport: "Report",
     reportSummary: "Summary",
     reportDatabase: "Database",
@@ -240,17 +287,6 @@ const translations: Record<string, TranslationKeys> = {
     reportLabDesc: "Complete lab work",
     reportEssayDesc: "Detailed essay",
     reportTasksDesc: "Problem solving",
-    subProgramming: "Programming",
-    subMath: "Mathematics",
-    subPhysics: "Physics",
-    subChemistry: "Chemistry",
-    subBiology: "Biology",
-    subHistory: "History",
-    subGeography: "Geography",
-    subDatabases: "Databases",
-    subNetworks: "Networks",
-    subEconomics: "Economics",
-    subOther: "Other",
   },
   ru: {
     appName: "StudyPro",
@@ -280,6 +316,7 @@ const translations: Record<string, TranslationKeys> = {
     chooseDocType: "Выбери тип документа",
     subject: "Предмет",
     chooseSubject: "Выбери предмет",
+    chooseCategory: "Выбери категорию",
     details: "Детали",
     describeTask: "Опиши что нужно",
     topicLabel: "Тема / Задание *",
@@ -309,15 +346,11 @@ const translations: Record<string, TranslationKeys> = {
     availableReports: "Доступно отчётов",
     total: "Всего",
     freeReport: "+1 бесплатный",
-    monobank: "Monobank",
-    cardTransfer: "Перевод на карту",
     crypto: "Крипто",
     cryptoDesc: "USDT / USDC (TRC-20)",
     telegramStars: "Telegram Stars",
     payViaTelegram: "Оплата через Telegram",
-    cardNumber: "Номер карты:",
     important: "Важно!",
-    monoNote: "В комментарии к переводу укажи свой ID:",
     iPaid: "Я оплатил",
     cryptoAddress: "Адрес (TRC-20):",
     cryptoNote: "После перевода отправь хеш транзакции в чат поддержки",
@@ -334,6 +367,38 @@ const translations: Record<string, TranslationKeys> = {
     chooseLanguage: "Выбери язык",
     userId: "ID пользователя",
     joined: "Зарегистрирован",
+    visaMastercard: "Visa / Mastercard",
+    cardPayment: "Оплата картой",
+    cardNumber: "Номер карты:",
+    cardNote: "В комментарии к переводу укажи свой ID:",
+    googlePay: "Google Pay",
+    googlePayDesc: "Быстрая оплата",
+    applePay: "Apple Pay",
+    applePayDesc: "Быстрая оплата",
+    payAmount: "Оплатить",
+    choosePayment: "Выбери способ оплаты",
+    popular: "Популярное",
+    allSubjects: "Все предметы",
+    referralSystem: "Реферальная система",
+    inviteFriends: "Пригласи друзей",
+    referralDesc: "Пригласи друзей и получи бесплатные отчёты! Ты и друг получите по +2 отчёта.",
+    referralCode: "Твой реферальный код",
+    copyLink: "Скопировать ссылку",
+    linkCopied: "Скопировано!",
+    invited: "Приглашено",
+    bonusEarned: "Бонус получен",
+    referralBonus: "+2 отчёта за каждое приглашение",
+    level: "Уровень",
+    nextLevel: "Следующий уровень",
+    achievements: "Достижения",
+    firstReportAch: "Первый шаг",
+    tenReportsAch: "Эксперт",
+    fiftyReportsAch: "Мастер",
+    referralAch: "Нетворкер",
+    accountInfo: "Аккаунт",
+    memberSince: "Участник с",
+    proTip: "Совет",
+    proTipText: "Пригласи 5 друзей и получи 10 бесплатных отчётов!",
     reportReport: "Отчёт",
     reportSummary: "Конспект",
     reportDatabase: "База данных",
@@ -346,17 +411,6 @@ const translations: Record<string, TranslationKeys> = {
     reportLabDesc: "Полная лабораторная работа",
     reportEssayDesc: "Развёрнутый реферат",
     reportTasksDesc: "Решение задач",
-    subProgramming: "Программирование",
-    subMath: "Математика",
-    subPhysics: "Физика",
-    subChemistry: "Химия",
-    subBiology: "Биология",
-    subHistory: "История",
-    subGeography: "География",
-    subDatabases: "Базы данных",
-    subNetworks: "Сети",
-    subEconomics: "Экономика",
-    subOther: "Другое",
   },
   uk: {
     appName: "StudyPro",
@@ -386,6 +440,7 @@ const translations: Record<string, TranslationKeys> = {
     chooseDocType: "Вибери тип документу",
     subject: "Предмет",
     chooseSubject: "Вибери предмет",
+    chooseCategory: "Вибери категорію",
     details: "Деталі",
     describeTask: "Опиши що потрібно",
     topicLabel: "Тема / Завдання *",
@@ -415,15 +470,11 @@ const translations: Record<string, TranslationKeys> = {
     availableReports: "Доступно звітів",
     total: "Всього",
     freeReport: "+1 безкоштовний",
-    monobank: "Monobank",
-    cardTransfer: "Переказ на картку",
     crypto: "Крипто",
     cryptoDesc: "USDT / USDC (TRC-20)",
     telegramStars: "Telegram Stars",
     payViaTelegram: "Оплата через Telegram",
-    cardNumber: "Номер картки:",
     important: "Важливо!",
-    monoNote: "В коментарі до переказу вкажи свій ID:",
     iPaid: "Я оплатив",
     cryptoAddress: "Адреса (TRC-20):",
     cryptoNote: "Після переказу надішли хеш транзакції в чат підтримки",
@@ -440,6 +491,38 @@ const translations: Record<string, TranslationKeys> = {
     chooseLanguage: "Вибери мову",
     userId: "ID користувача",
     joined: "Зареєстрований",
+    visaMastercard: "Visa / Mastercard",
+    cardPayment: "Оплата карткою",
+    cardNumber: "Номер картки:",
+    cardNote: "В коментарі до переказу вкажи свій ID:",
+    googlePay: "Google Pay",
+    googlePayDesc: "Швидка оплата",
+    applePay: "Apple Pay",
+    applePayDesc: "Швидка оплата",
+    payAmount: "Оплатити",
+    choosePayment: "Вибери спосіб оплати",
+    popular: "Популярне",
+    allSubjects: "Усі предмети",
+    referralSystem: "Реферальна система",
+    inviteFriends: "Запроси друзів",
+    referralDesc: "Запроси друзів і отримай безкоштовні звіти! Ти і друг отримаєте по +2 звіти.",
+    referralCode: "Твій реферальний код",
+    copyLink: "Скопіювати посилання",
+    linkCopied: "Скопійовано!",
+    invited: "Запрошено",
+    bonusEarned: "Бонус отримано",
+    referralBonus: "+2 звіти за кожне запрошення",
+    level: "Рівень",
+    nextLevel: "Наступний рівень",
+    achievements: "Досягнення",
+    firstReportAch: "Перший крок",
+    tenReportsAch: "Експерт",
+    fiftyReportsAch: "Майстер",
+    referralAch: "Нетворкер",
+    accountInfo: "Акаунт",
+    memberSince: "Учасник з",
+    proTip: "Порада",
+    proTipText: "Запроси 5 друзів і отримай 10 безкоштовних звітів!",
     reportReport: "Звіт",
     reportSummary: "Конспект",
     reportDatabase: "База даних",
@@ -452,17 +535,6 @@ const translations: Record<string, TranslationKeys> = {
     reportLabDesc: "Повна лабораторна робота",
     reportEssayDesc: "Розгорнутий реферат",
     reportTasksDesc: "Розв'язання задач",
-    subProgramming: "Програмування",
-    subMath: "Математика",
-    subPhysics: "Фізика",
-    subChemistry: "Хімія",
-    subBiology: "Біологія",
-    subHistory: "Історія",
-    subGeography: "Географія",
-    subDatabases: "Бази Даних",
-    subNetworks: "Мережі",
-    subEconomics: "Економіка",
-    subOther: "Інше",
   },
 };
 
@@ -507,10 +579,8 @@ export async function detectLanguageByIP() {
       if (translations[detected]) {
         currentLang = detected;
       } else {
-        currentLang = detected === "kk" || detected === "ky" || detected === "tg" ||
-                      detected === "tk" || detected === "az" || detected === "hy" ||
-                      detected === "ka" || detected === "be" || detected === "md" ||
-                      detected === "mn" ? "ru" : "en";
+        const cisLangs = ["kk", "ky", "tg", "tk", "az", "hy", "ka", "be", "md", "mn"];
+        currentLang = cisLangs.includes(detected) ? "ru" : "en";
       }
       langListeners.forEach((l) => l());
     }
@@ -548,20 +618,189 @@ export function getReportTypes() {
   ];
 }
 
+interface SubjectCategoryData {
+  id: string;
+  icon: string;
+  name: Record<string, string>;
+  subjects: Array<{ id: string; icon: string; name: Record<string, string> }>;
+}
+
+const SUBJECT_CATEGORIES: SubjectCategoryData[] = [
+  {
+    id: "it", icon: "💻",
+    name: { en: "IT & Programming", ru: "IT и Программирование", uk: "IT та Програмування" },
+    subjects: [
+      { id: "programming", icon: "💻", name: { en: "Programming", ru: "Программирование", uk: "Програмування" } },
+      { id: "web_dev", icon: "🌐", name: { en: "Web Development", ru: "Веб-разработка", uk: "Веб-розробка" } },
+      { id: "mobile_dev", icon: "📱", name: { en: "Mobile Development", ru: "Мобильная разработка", uk: "Мобільна розробка" } },
+      { id: "databases", icon: "🗃", name: { en: "Databases", ru: "Базы данных", uk: "Бази даних" } },
+      { id: "networks", icon: "🔗", name: { en: "Networks", ru: "Компьютерные сети", uk: "Комп'ютерні мережі" } },
+      { id: "algorithms", icon: "⚙️", name: { en: "Algorithms", ru: "Алгоритмы", uk: "Алгоритми" } },
+      { id: "cybersecurity", icon: "🔒", name: { en: "Cybersecurity", ru: "Кибербезопасность", uk: "Кібербезпека" } },
+      { id: "ai_ml", icon: "🤖", name: { en: "AI & Machine Learning", ru: "AI и Machine Learning", uk: "AI та Machine Learning" } },
+      { id: "sysadmin", icon: "🖥", name: { en: "System Administration", ru: "Системное администрирование", uk: "Системне адміністрування" } },
+      { id: "devops", icon: "🚀", name: { en: "DevOps", ru: "DevOps", uk: "DevOps" } },
+    ],
+  },
+  {
+    id: "math", icon: "📐",
+    name: { en: "Mathematics", ru: "Математика", uk: "Математика" },
+    subjects: [
+      { id: "math", icon: "📐", name: { en: "Mathematics", ru: "Математика", uk: "Математика" } },
+      { id: "higher_math", icon: "∫", name: { en: "Higher Mathematics", ru: "Высшая математика", uk: "Вища математика" } },
+      { id: "discrete_math", icon: "🔢", name: { en: "Discrete Mathematics", ru: "Дискретная математика", uk: "Дискретна математика" } },
+      { id: "linear_algebra", icon: "📊", name: { en: "Linear Algebra", ru: "Линейная алгебра", uk: "Лінійна алгебра" } },
+      { id: "statistics", icon: "📈", name: { en: "Statistics", ru: "Статистика", uk: "Статистика" } },
+      { id: "math_analysis", icon: "∑", name: { en: "Mathematical Analysis", ru: "Математический анализ", uk: "Математичний аналіз" } },
+    ],
+  },
+  {
+    id: "science", icon: "🔬",
+    name: { en: "Natural Sciences", ru: "Естественные науки", uk: "Природничі науки" },
+    subjects: [
+      { id: "physics", icon: "⚡", name: { en: "Physics", ru: "Физика", uk: "Фізика" } },
+      { id: "chemistry", icon: "🧪", name: { en: "Chemistry", ru: "Химия", uk: "Хімія" } },
+      { id: "biology", icon: "🌿", name: { en: "Biology", ru: "Биология", uk: "Біологія" } },
+      { id: "ecology", icon: "🌱", name: { en: "Ecology", ru: "Экология", uk: "Екологія" } },
+      { id: "astronomy", icon: "🌌", name: { en: "Astronomy", ru: "Астрономия", uk: "Астрономія" } },
+      { id: "geology", icon: "🪨", name: { en: "Geology", ru: "Геология", uk: "Геологія" } },
+    ],
+  },
+  {
+    id: "humanities", icon: "📜",
+    name: { en: "Humanities", ru: "Гуманитарные науки", uk: "Гуманітарні науки" },
+    subjects: [
+      { id: "history", icon: "📜", name: { en: "History", ru: "История", uk: "Історія" } },
+      { id: "philosophy", icon: "🤔", name: { en: "Philosophy", ru: "Философия", uk: "Філософія" } },
+      { id: "psychology", icon: "🧠", name: { en: "Psychology", ru: "Психология", uk: "Психологія" } },
+      { id: "sociology", icon: "👥", name: { en: "Sociology", ru: "Социология", uk: "Соціологія" } },
+      { id: "cultural_studies", icon: "🎭", name: { en: "Cultural Studies", ru: "Культурология", uk: "Культурологія" } },
+      { id: "pedagogy", icon: "📖", name: { en: "Pedagogy", ru: "Педагогика", uk: "Педагогіка" } },
+    ],
+  },
+  {
+    id: "business", icon: "💼",
+    name: { en: "Business & Economics", ru: "Бизнес и Экономика", uk: "Бізнес та Економіка" },
+    subjects: [
+      { id: "economics", icon: "💰", name: { en: "Economics", ru: "Экономика", uk: "Економіка" } },
+      { id: "management", icon: "📋", name: { en: "Management", ru: "Менеджмент", uk: "Менеджмент" } },
+      { id: "marketing", icon: "📣", name: { en: "Marketing", ru: "Маркетинг", uk: "Маркетинг" } },
+      { id: "accounting", icon: "🧾", name: { en: "Accounting", ru: "Бухгалтерский учёт", uk: "Бухгалтерський облік" } },
+      { id: "finance", icon: "🏦", name: { en: "Finance", ru: "Финансы", uk: "Фінанси" } },
+      { id: "business_plan", icon: "📑", name: { en: "Business Planning", ru: "Бизнес-планирование", uk: "Бізнес-планування" } },
+    ],
+  },
+  {
+    id: "law", icon: "⚖️",
+    name: { en: "Law & Politics", ru: "Право и Политика", uk: "Право та Політика" },
+    subjects: [
+      { id: "law", icon: "⚖️", name: { en: "Law", ru: "Право", uk: "Право" } },
+      { id: "constitutional_law", icon: "📜", name: { en: "Constitutional Law", ru: "Конституционное право", uk: "Конституційне право" } },
+      { id: "criminal_law", icon: "🔨", name: { en: "Criminal Law", ru: "Уголовное право", uk: "Кримінальне право" } },
+      { id: "civil_law", icon: "📝", name: { en: "Civil Law", ru: "Гражданское право", uk: "Цивільне право" } },
+      { id: "political_science", icon: "🏛", name: { en: "Political Science", ru: "Политология", uk: "Політологія" } },
+      { id: "international_relations", icon: "🌐", name: { en: "International Relations", ru: "Международные отношения", uk: "Міжнародні відносини" } },
+    ],
+  },
+  {
+    id: "languages", icon: "🗣",
+    name: { en: "Languages & Literature", ru: "Языки и Литература", uk: "Мови та Література" },
+    subjects: [
+      { id: "ukrainian_lang", icon: "🇺🇦", name: { en: "Ukrainian Language", ru: "Украинский язык", uk: "Українська мова" } },
+      { id: "russian_lang", icon: "🇷🇺", name: { en: "Russian Language", ru: "Русский язык", uk: "Російська мова" } },
+      { id: "english", icon: "🇬🇧", name: { en: "English", ru: "Английский язык", uk: "Англійська мова" } },
+      { id: "literature", icon: "📚", name: { en: "Literature", ru: "Литература", uk: "Література" } },
+      { id: "world_literature", icon: "📕", name: { en: "World Literature", ru: "Мировая литература", uk: "Світова література" } },
+      { id: "linguistics", icon: "🔤", name: { en: "Linguistics", ru: "Лингвистика", uk: "Лінгвістика" } },
+    ],
+  },
+  {
+    id: "engineering", icon: "🏗",
+    name: { en: "Engineering", ru: "Инженерия", uk: "Інженерія" },
+    subjects: [
+      { id: "engineering_graphics", icon: "📐", name: { en: "Engineering Graphics", ru: "Инженерная графика", uk: "Інженерна графіка" } },
+      { id: "electrical_eng", icon: "⚡", name: { en: "Electrical Engineering", ru: "Электротехника", uk: "Електротехніка" } },
+      { id: "mechanics", icon: "⚙️", name: { en: "Mechanics", ru: "Механика", uk: "Механіка" } },
+      { id: "material_science", icon: "🔩", name: { en: "Material Science", ru: "Материаловедение", uk: "Матеріалознавство" } },
+      { id: "architecture", icon: "🏛", name: { en: "Architecture", ru: "Архитектура", uk: "Архітектура" } },
+      { id: "construction", icon: "🏗", name: { en: "Construction", ru: "Строительство", uk: "Будівництво" } },
+    ],
+  },
+  {
+    id: "medicine", icon: "🏥",
+    name: { en: "Medicine & Health", ru: "Медицина и Здоровье", uk: "Медицина та Здоров'я" },
+    subjects: [
+      { id: "anatomy", icon: "🫀", name: { en: "Anatomy", ru: "Анатомия", uk: "Анатомія" } },
+      { id: "physiology", icon: "🫁", name: { en: "Physiology", ru: "Физиология", uk: "Фізіологія" } },
+      { id: "pharmacology", icon: "💊", name: { en: "Pharmacology", ru: "Фармакология", uk: "Фармакологія" } },
+      { id: "public_health", icon: "🏥", name: { en: "Public Health", ru: "Общественное здоровье", uk: "Громадське здоров'я" } },
+      { id: "nursing", icon: "👨‍⚕️", name: { en: "Nursing", ru: "Сестринское дело", uk: "Медсестринство" } },
+    ],
+  },
+  {
+    id: "other", icon: "📚",
+    name: { en: "Other", ru: "Другое", uk: "Інше" },
+    subjects: [
+      { id: "geography", icon: "🌍", name: { en: "Geography", ru: "География", uk: "Географія" } },
+      { id: "physical_ed", icon: "🏃", name: { en: "Physical Education", ru: "Физкультура", uk: "Фізкультура" } },
+      { id: "art", icon: "🎨", name: { en: "Art & Design", ru: "Искусство и Дизайн", uk: "Мистецтво та Дизайн" } },
+      { id: "music", icon: "🎵", name: { en: "Music", ru: "Музыка", uk: "Музика" } },
+      { id: "other", icon: "📚", name: { en: "Other", ru: "Другое", uk: "Інше" } },
+    ],
+  },
+];
+
+export interface SubjectCategory {
+  id: string;
+  icon: string;
+  name: string;
+  subjects: Array<{ id: string; icon: string; name: string }>;
+}
+
+export function getSubjectCategories(): SubjectCategory[] {
+  const lang = currentLang;
+  return SUBJECT_CATEGORIES.map(cat => ({
+    id: cat.id,
+    icon: cat.icon,
+    name: cat.name[lang] || cat.name.ru || cat.name.en,
+    subjects: cat.subjects.map(s => ({
+      id: s.id,
+      icon: s.icon,
+      name: s.name[lang] || s.name.ru || s.name.en,
+    })),
+  }));
+}
+
+export function getAllSubjects() {
+  const lang = currentLang;
+  return SUBJECT_CATEGORIES.flatMap(cat =>
+    cat.subjects.map(s => ({
+      id: s.id,
+      icon: s.icon,
+      name: s.name[lang] || s.name.ru || s.name.en,
+      category: cat.name[lang] || cat.name.ru || cat.name.en,
+    }))
+  );
+}
+
+export function getSubjectName(subjectId: string): string {
+  const lang = currentLang;
+  for (const cat of SUBJECT_CATEGORIES) {
+    for (const s of cat.subjects) {
+      if (s.id === subjectId) return s.name[lang] || s.name.ru || s.name.en;
+    }
+  }
+  return subjectId;
+}
+
+export function getCategoryName(categoryId: string): string {
+  const lang = currentLang;
+  const cat = SUBJECT_CATEGORIES.find(c => c.id === categoryId);
+  return cat ? (cat.name[lang] || cat.name.ru || cat.name.en) : categoryId;
+}
+
 export function getSubjects() {
-  return [
-    { id: "programming", label: t("subProgramming"), icon: "💻" },
-    { id: "math", label: t("subMath"), icon: "📐" },
-    { id: "physics", label: t("subPhysics"), icon: "⚡" },
-    { id: "chemistry", label: t("subChemistry"), icon: "🧪" },
-    { id: "biology", label: t("subBiology"), icon: "🌿" },
-    { id: "history", label: t("subHistory"), icon: "📜" },
-    { id: "geography", label: t("subGeography"), icon: "🌍" },
-    { id: "databases", label: t("subDatabases"), icon: "🗃" },
-    { id: "networks", label: t("subNetworks"), icon: "🌐" },
-    { id: "economics", label: t("subEconomics"), icon: "💰" },
-    { id: "other", label: t("subOther"), icon: "📚" },
-  ];
+  return getAllSubjects().map(s => ({ id: s.id, label: s.name, icon: s.icon }));
 }
 
 export function getReportTypeMap() {
@@ -569,5 +808,37 @@ export function getReportTypeMap() {
 }
 
 export function getSubjectMap() {
-  return Object.fromEntries(getSubjects().map(s => [s.id, s]));
+  return Object.fromEntries(getSubjects().map(s => [s.id, { ...s, label: s.label }]));
+}
+
+export function getUserLevel(totalReports: number): { name: string; icon: string; min: number; max: number; color: string } {
+  const lang = currentLang as "en" | "ru" | "uk";
+  const levels = [
+    { min: 0, max: 5, icon: "🌱", color: "from-green-400 to-emerald-500",
+      name: { en: "Beginner", ru: "Новичок", uk: "Початківець" } as Record<string, string> },
+    { min: 6, max: 20, icon: "📚", color: "from-blue-400 to-blue-600",
+      name: { en: "Student", ru: "Студент", uk: "Студент" } as Record<string, string> },
+    { min: 21, max: 50, icon: "🎓", color: "from-violet-400 to-purple-600",
+      name: { en: "Expert", ru: "Эксперт", uk: "Експерт" } as Record<string, string> },
+    { min: 51, max: 100, icon: "🏆", color: "from-amber-400 to-orange-600",
+      name: { en: "Master", ru: "Мастер", uk: "Майстер" } as Record<string, string> },
+    { min: 101, max: 999999, icon: "👑", color: "from-yellow-300 to-amber-500",
+      name: { en: "Legend", ru: "Легенда", uk: "Легенда" } as Record<string, string> },
+  ];
+
+  const level = levels.find(l => totalReports >= l.min && totalReports <= l.max) || levels[0];
+  return { name: level.name[lang] || level.name["en"], icon: level.icon, min: level.min, max: level.max, color: level.color };
+}
+
+export function getNextLevel(totalReports: number): { name: string; reportsNeeded: number } | null {
+  const lang = currentLang as string;
+  const thresholds = [
+    { at: 6, name: { en: "Student", ru: "Студент", uk: "Студент" } as Record<string, string> },
+    { at: 21, name: { en: "Expert", ru: "Эксперт", uk: "Експерт" } as Record<string, string> },
+    { at: 51, name: { en: "Master", ru: "Мастер", uk: "Майстер" } as Record<string, string> },
+    { at: 101, name: { en: "Legend", ru: "Легенда", uk: "Легенда" } as Record<string, string> },
+  ];
+  const next = thresholds.find(t => totalReports < t.at);
+  if (!next) return null;
+  return { name: next.name[lang] || next.name["en"], reportsNeeded: next.at - totalReports };
 }

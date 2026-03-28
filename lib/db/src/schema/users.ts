@@ -11,6 +11,9 @@ export const usersTable = pgTable("users", {
   balance: integer("balance").notNull().default(0),
   freeReportsUsed: boolean("free_reports_used").notNull().default(false),
   totalReports: integer("total_reports").notNull().default(0),
+  referralCode: varchar("referral_code", { length: 20 }).unique(),
+  referredBy: bigint("referred_by", { mode: "number" }),
+  referralCount: integer("referral_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

@@ -1,2 +1,7 @@
 export * from "./generated/api";
-export * from "./generated/types";
+export type {
+  HealthStatus,
+  TwaUser,
+  TwaReportItem,
+  TwaReportList,
+} from "./generated/types";

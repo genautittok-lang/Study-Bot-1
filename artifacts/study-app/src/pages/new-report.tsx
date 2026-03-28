@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useUser, setUser, useLang } from "@/lib/store";
 import { generateReport } from "@/lib/api";
-import { getReportTypes, getSubjects, t } from "@/lib/i18n";
+import { getReportTypes, getSubjectCategories, getSubjectName, t } from "@/lib/i18n";
 import { hapticFeedback, hapticSuccess, hapticError } from "@/lib/telegram";
 import { motion, AnimatePresence } from "framer-motion";
 
-type Step = "type" | "subject" | "details" | "generating" | "done" | "error";
+type Step = "type" | "category" | "subject" | "details" | "generating" | "done" | "error";
 
 const slideIn = {
   initial: { opacity: 0, x: 30 },
@@ -20,6 +20,7 @@ export default function NewReport() {
   useLang();
   const [step, setStep] = useState<Step>("type");
   const [reportType, setReportType] = useState("");
+  const [category, setCategory] = useState("");
   const [subject, setSubject] = useState("");
   const [topic, setTopic] = useState("");
   const [group, setGroup] = useState("");
@@ -29,7 +30,7 @@ export default function NewReport() {
 
   const canGenerate = user ? (!user.freeReportsUsed || user.balance > 0) : false;
   const REPORT_TYPES = getReportTypes();
-  const SUBJECTS = getSubjects();
+  const CATEGORIES = getSubjectCategories();
 
   async function handleGenerate() {
     if (!user || !topic.trim()) return;
@@ -98,9 +99,9 @@ export default function NewReport() {
         <p className="text-muted-foreground text-sm text-center max-w-[260px] mb-6">
           {t("generatingDesc")}
         </p>
-        <div className="w-48 h-1.5 bg-muted rounded-full overflow-hidden">
+        <div className="w-48 h-2 bg-muted rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-primary to-violet-600 rounded-full"
+            className="h-full progress-bar-gradient rounded-full"
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.3 }}
           />
@@ -139,7 +140,7 @@ export default function NewReport() {
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.96 }}
-            onClick={() => { setStep("type"); setReportType(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); }}
+            onClick={() => { setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); }}
             className="flex-1 bg-secondary text-secondary-foreground rounded-xl py-2.5 text-sm font-semibold"
           >
             + {t("newOne")}
@@ -188,7 +189,7 @@ export default function NewReport() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => { hapticFeedback("light"); setReportType(type.id); setStep("subject"); }}
+              onClick={() => { hapticFeedback("light"); setReportType(type.id); setStep("category"); }}
               className="w-full card-premium rounded-2xl p-4 text-left flex items-center gap-4"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center shrink-0">
@@ -206,7 +207,7 @@ export default function NewReport() {
     );
   }
 
-  if (step === "subject") {
+  if (step === "category") {
     return (
       <motion.div {...slideIn} className="px-4 pt-6 pb-4">
         <motion.button whileTap={{ scale: 0.96 }} onClick={() => { hapticFeedback("light"); setStep("type"); }}
@@ -214,21 +215,22 @@ export default function NewReport() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
           {t("back")}
         </motion.button>
-        <h2 className="text-xl font-bold mb-1">{t("subject")}</h2>
-        <p className="text-muted-foreground text-sm mb-5">{t("chooseSubject")}</p>
+        <h2 className="text-xl font-bold mb-1">{t("chooseCategory")}</h2>
+        <p className="text-muted-foreground text-sm mb-5">{CATEGORIES.reduce((acc, c) => acc + c.subjects.length, 0)} {t("allSubjects").toLowerCase()}</p>
         <div className="grid grid-cols-2 gap-2.5">
-          {SUBJECTS.map((sub, i) => (
+          {CATEGORIES.map((cat, i) => (
             <motion.button
-              key={sub.id}
+              key={cat.id}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.04 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => { hapticFeedback("light"); setSubject(sub.id); setStep("details"); }}
+              onClick={() => { hapticFeedback("light"); setCategory(cat.id); setStep("subject"); }}
               className="card-premium rounded-2xl p-4 text-left"
             >
-              <div className="text-2xl mb-2">{sub.icon}</div>
-              <div className="font-semibold text-foreground text-sm">{sub.label}</div>
+              <div className="text-2xl mb-2">{cat.icon}</div>
+              <div className="font-semibold text-foreground text-sm">{cat.name}</div>
+              <div className="text-xs text-muted-foreground mt-0.5">{cat.subjects.length} {t("allSubjects").toLowerCase()}</div>
             </motion.button>
           ))}
         </div>
@@ -236,8 +238,44 @@ export default function NewReport() {
     );
   }
 
-  const selectedType = REPORT_TYPES.find((t) => t.id === reportType);
-  const selectedSubject = SUBJECTS.find((s) => s.id === subject);
+  if (step === "subject") {
+    const selectedCategory = CATEGORIES.find((c) => c.id === category);
+    const subjects = selectedCategory?.subjects || [];
+
+    return (
+      <motion.div {...slideIn} className="px-4 pt-6 pb-4">
+        <motion.button whileTap={{ scale: 0.96 }} onClick={() => { hapticFeedback("light"); setStep("category"); }}
+          className="text-primary text-sm font-semibold mb-4 flex items-center gap-1">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
+          {t("back")}
+        </motion.button>
+        <h2 className="text-xl font-bold mb-1">{selectedCategory?.icon} {selectedCategory?.name}</h2>
+        <p className="text-muted-foreground text-sm mb-5">{t("chooseSubject")}</p>
+        <div className="space-y-2">
+          {subjects.map((sub, i) => (
+            <motion.button
+              key={sub.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => { hapticFeedback("light"); setSubject(sub.id); setStep("details"); }}
+              className="w-full card-premium rounded-2xl p-4 text-left flex items-center gap-3"
+            >
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center shrink-0">
+                <span className="text-xl">{sub.icon}</span>
+              </div>
+              <div className="font-semibold text-sm flex-1">{sub.name}</div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-muted-foreground/30"><polyline points="9 18 15 12 9 6"/></svg>
+            </motion.button>
+          ))}
+        </div>
+      </motion.div>
+    );
+  }
+
+  const selectedType = REPORT_TYPES.find((rt) => rt.id === reportType);
+  const selectedSubjectName = getSubjectName(subject);
 
   return (
     <motion.div {...slideIn} className="px-4 pt-6 pb-4">
@@ -249,12 +287,12 @@ export default function NewReport() {
       <h2 className="text-xl font-bold mb-1">{t("details")}</h2>
       <p className="text-muted-foreground text-sm mb-5">{t("describeTask")}</p>
 
-      <div className="flex gap-2 mb-5">
+      <div className="flex gap-2 mb-5 flex-wrap">
         <div className="bg-primary/10 text-primary rounded-xl px-3 py-1.5 text-xs font-semibold">
           {selectedType?.icon} {selectedType?.label}
         </div>
         <div className="bg-emerald-50 text-emerald-700 rounded-xl px-3 py-1.5 text-xs font-semibold">
-          {selectedSubject?.icon} {selectedSubject?.label}
+          {selectedSubjectName}
         </div>
       </div>
 

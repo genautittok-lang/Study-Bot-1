@@ -1,6 +1,15 @@
 import { db, usersTable, reportsTable, paymentsTable } from "@workspace/db";
 import { eq, sql } from "drizzle-orm";
 
+function generateReferralCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 8; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
 export async function getOrCreateUser(telegramId: number, userData: {
   username?: string;
   firstName?: string;
@@ -13,8 +22,18 @@ export async function getOrCreateUser(telegramId: number, userData: {
     .limit(1);
 
   if (existing.length > 0) {
-    return existing[0];
+    const user = existing[0];
+    if (!user.referralCode) {
+      const code = generateReferralCode();
+      await db.update(usersTable)
+        .set({ referralCode: code, updatedAt: new Date() })
+        .where(eq(usersTable.id, user.id));
+      return { ...user, referralCode: code };
+    }
+    return user;
   }
+
+  const referralCode = generateReferralCode();
 
   const inserted = await db
     .insert(usersTable)
@@ -26,6 +45,8 @@ export async function getOrCreateUser(telegramId: number, userData: {
       balance: 0,
       freeReportsUsed: false,
       totalReports: 0,
+      referralCode,
+      referralCount: 0,
     })
     .returning();
 
@@ -126,4 +147,31 @@ export async function addBalance(telegramId: number, amount: number) {
     .update(usersTable)
     .set({ balance: user.balance + amount, updatedAt: new Date() })
     .where(eq(usersTable.telegramId, telegramId));
+}
+
+export async function getUserByReferralCode(code: string) {
+  const result = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.referralCode, code))
+    .limit(1);
+  return result[0] ?? null;
+}
+
+export async function processReferral(referrerTelegramId: number, newUserTelegramId: number) {
+  await db.update(usersTable)
+    .set({
+      referralCount: sql`${usersTable.referralCount} + 1`,
+      balance: sql`${usersTable.balance} + 2`,
+      updatedAt: new Date(),
+    })
+    .where(eq(usersTable.telegramId, referrerTelegramId));
+
+  await db.update(usersTable)
+    .set({
+      referredBy: referrerTelegramId,
+      balance: sql`${usersTable.balance} + 2`,
+      updatedAt: new Date(),
+    })
+    .where(eq(usersTable.telegramId, newUserTelegramId));
 }

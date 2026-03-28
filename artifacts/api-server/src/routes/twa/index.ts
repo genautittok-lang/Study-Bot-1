@@ -40,6 +40,8 @@ router.post("/auth", async (req, res) => {
       balance: user.balance,
       freeReportsUsed: user.freeReportsUsed,
       totalReports: user.totalReports,
+      referralCode: user.referralCode ?? undefined,
+      referralCount: user.referralCount ?? 0,
     });
     res.json(data);
   } catch (err) {
@@ -131,7 +133,9 @@ router.post("/payment", async (req, res) => {
     const body = TwaCreatePaymentBody.parse(req.body);
 
     const amounts: Record<string, { amount: number; currency: string }> = {
-      mono: { amount: 250, currency: "UAH" },
+      card: { amount: 250, currency: "UAH" },
+      google_pay: { amount: 250, currency: "UAH" },
+      apple_pay: { amount: 250, currency: "UAH" },
       crypto: { amount: 5, currency: "USDT" },
       stars: { amount: 500, currency: "XTR" },
     };
