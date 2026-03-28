@@ -56,23 +56,26 @@ artifacts-monorepo/
 Premium React + Vite fintech-grade TWA with animated design system:
 
 ### Design System (CSS Classes)
-- `.hero-card` — Animated conic gradient rotating border (`@property --card-angle`), deep navy bg, radial glow overlays, shimmer sweep
-- `.g-card` — Glassmorphism card with backdrop-filter blur, hover/active states
-- `.g-card-s` — Static glassmorphism card (no interaction states)
-- `.btn-main` — Violet gradient (`#8b5cf6→#7c3aed→#6d28d9`) with sweep-shine animation, glow shadow
-- `.btn-accent` — Green gradient with animated background-position
+- `.hero-card` — Rotating conic gradient border (`@property --card-angle`), glass bg with backdrop-blur, subtle glow overlays, shimmer sweep
+- `.g-card` — Clean glass card with backdrop-filter blur(6px), subtle hover/active states
+- `.g-card-s` — Static glass card (no interaction states)
+- `.btn-main` — Violet gradient (`#8b5cf6→#7c3aed`) with top highlight, clean shadow
+- `.btn-accent` — Green gradient with top highlight
 - `.btn-ghost` — Subtle transparent button
 - `.num-glow` — Gradient text (`white→#c4b5fd→#67e8f9`) with drop-shadow
 - `.gradient-text` — Purple-to-cyan gradient text
-- `.avatar-ring` — Conic gradient border ring
-- `.app-bg` — Aurora background blobs with blur(60px) filter animation
-- `.particles` + `.particle` — Floating particle system (20 dots)
+- `.avatar-ring` — Linear gradient border (violet→cyan)
+- `.app-bg` — Subtle aurora blobs with blur(80px) animation
+- `.particles` + `.particle` — Floating particle system (14 dots, subtle opacity)
 - `.badge` / `.badge-g` — Pill badges (violet / green)
-- `.input-field` — Focus ring with glow
-- `.icon-box` — 48px icon container
+- `.input-field` — Clean focus ring with subtle glow
+- `.icon-box` — 44px icon container
 - `.section-label` — Uppercase tracking label
+- `.top-line` — Accent line helper for card top edges
+- `.nav-bar` — Frosted glass nav with blur(30px)
 
-**Color scheme**: Primary violet `#7c3aed`/`#8b5cf6`, cyan `#06b6d4`/`#67e8f9`, green `#34d399`, amber `#fbbf24`. Background `#0d0f14`.
+**Color scheme**: Primary violet `#7c3aed`/`#8b5cf6`, cyan `#06b6d4`/`#67e8f9`, green `#34d399`, amber `#fbbf24`. Background `#0a0b10`.
+**Design direction**: Clean, simple but premium professional. Subtler effects, reduced opacity, tighter spacing, smaller font sizes, rounded-xl corners (14-16px). Special raised violet Create button in nav.
 
 ### Pages
 - **Home**: Greeting + Telegram avatar, hero-card balance with animated number + progress bar, 2-column action cards (Create Report + Top Up), 3-column stats, recent reports, referral invite section

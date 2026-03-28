@@ -17,10 +17,10 @@ function StepBar({ step }: { step: Step }) {
   if (idx < 0) return null;
   const labels = [t("chooseDocType"), t("chooseCategory"), t("chooseSubject"), t("details")];
   return (
-    <div className="mb-6">
-      <div className="flex items-center gap-2 mb-2">
+    <div className="mb-5">
+      <div className="flex items-center gap-1.5 mb-1.5">
         {STEPS.map((_, i) => (
-          <div key={i} className="flex-1 h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.04)" }}>
+          <div key={i} className="flex-1 h-[2px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.03)" }}>
             <motion.div className="h-full rounded-full"
               style={{ background: i <= idx ? "linear-gradient(90deg, #7c3aed, #06b6d4)" : "transparent" }}
               initial={{ width: "0%" }} animate={{ width: i <= idx ? "100%" : "0%" }}
@@ -30,8 +30,8 @@ function StepBar({ step }: { step: Step }) {
       </div>
       <div className="flex justify-between">
         {labels.map((l, i) => (
-          <span key={i} className="text-[9px] font-semibold uppercase tracking-wider"
-            style={{ color: i <= idx ? "rgba(139,92,246,0.7)" : "rgba(255,255,255,0.1)" }}>{l}</span>
+          <span key={i} className="text-[8px] font-semibold uppercase tracking-wider"
+            style={{ color: i <= idx ? "rgba(139,92,246,0.6)" : "rgba(255,255,255,0.08)" }}>{l}</span>
         ))}
       </div>
     </div>
@@ -41,8 +41,8 @@ function StepBar({ step }: { step: Step }) {
 function BackBtn({ onClick }: { onClick: () => void }) {
   return (
     <motion.button whileTap={{ scale: 0.95 }} onClick={() => { hapticFeedback("light"); onClick(); }}
-      className="text-white/25 text-[14px] font-bold mb-4 flex items-center gap-1.5 active:text-white/60 transition-colors">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
+      className="text-white/20 text-[13px] font-semibold mb-3 flex items-center gap-1 active:text-white/50 transition-colors">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
       {t("back")}
     </motion.button>
   );
@@ -51,15 +51,15 @@ function BackBtn({ onClick }: { onClick: () => void }) {
 function EduTabs({ value, onChange }: { value: EduLevel; onChange: (v: EduLevel) => void }) {
   const levels = getEduLevels();
   return (
-    <div className="flex gap-1.5 mb-5 p-1 rounded-2xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+    <div className="flex gap-1 mb-4 p-1 rounded-xl" style={{ background: "rgba(255,255,255,0.015)", border: "1px solid rgba(255,255,255,0.03)" }}>
       {levels.map(lv => (
         <motion.button key={lv.id} whileTap={{ scale: 0.96 }}
           onClick={() => { hapticFeedback("light"); onChange(lv.id); }}
-          className="flex-1 py-2 rounded-xl text-[12px] font-bold transition-all relative"
+          className="flex-1 py-1.5 rounded-lg text-[11px] font-semibold transition-all relative"
           style={{
-            color: value === lv.id ? "#fff" : "rgba(255,255,255,0.25)",
-            background: value === lv.id ? "linear-gradient(135deg, rgba(124,58,237,0.25), rgba(6,182,212,0.15))" : "transparent",
-            border: value === lv.id ? "1px solid rgba(124,58,237,0.2)" : "1px solid transparent",
+            color: value === lv.id ? "#fff" : "rgba(255,255,255,0.2)",
+            background: value === lv.id ? "rgba(124,58,237,0.15)" : "transparent",
+            border: value === lv.id ? "1px solid rgba(124,58,237,0.15)" : "1px solid transparent",
           }}>
           {lv.label}
         </motion.button>
@@ -142,25 +142,25 @@ export default function NewReport() {
   if (step === "generating") {
     return (
       <div className="px-5 pt-16 pb-4 flex flex-col items-center justify-center min-h-[70vh]">
-        <div className="relative mb-8">
+        <div className="relative mb-6">
           <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-            className="w-28 h-28 rounded-full"
-            style={{ border: "3px solid rgba(255,255,255,0.03)", borderTopColor: "#7c3aed", borderRightColor: "#06b6d4" }} />
-          <div className="absolute inset-0 flex items-center justify-center flex-col">
-            <span className="text-[22px] font-black tabular num-glow">{Math.round(progress)}%</span>
+            className="w-24 h-24 rounded-full"
+            style={{ border: "2px solid rgba(255,255,255,0.02)", borderTopColor: "#7c3aed", borderRightColor: "#06b6d4" }} />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-[20px] font-extrabold tabular num-glow">{Math.round(progress)}%</span>
           </div>
         </div>
-        <motion.h2 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-          className="text-xl font-bold text-white mb-2">{t("generating")}...</motion.h2>
-        <p className="text-[13px] text-white/20 mb-8 text-center px-6">{t("generatingDesc")}</p>
-        <div className="w-64 h-[4px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.03)" }}>
+        <motion.h2 initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+          className="text-lg font-bold text-white mb-1.5">{t("generating")}...</motion.h2>
+        <p className="text-[12px] text-white/18 mb-6 text-center px-8">{t("generatingDesc")}</p>
+        <div className="w-56 h-[2px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.02)" }}>
           <motion.div className="h-full rounded-full"
             style={{ background: "linear-gradient(90deg, #7c3aed, #06b6d4, #34d399)" }}
             animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
         </div>
-        <div className="mt-8 flex gap-3 flex-wrap justify-center">
+        <div className="mt-6 flex gap-2 flex-wrap justify-center">
           {[t("reportReport"), getSubjectName(subject)].map((tag, i) => tag && (
-            <span key={i} className="badge-g text-[11px]">{tag}</span>
+            <span key={i} className="badge-g text-[10px]">{tag}</span>
           ))}
         </div>
       </div>
@@ -170,34 +170,34 @@ export default function NewReport() {
   if (step === "done") {
     const selType = TYPES.find(rt => rt.id === reportType);
     return (
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="px-5 pt-8 pb-4">
-        <div className="hero-card rounded-3xl p-5 mb-5">
-          <div className="flex items-center gap-4">
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="px-5 pt-7 pb-4">
+        <div className="hero-card rounded-2xl p-4 mb-4">
+          <div className="flex items-center gap-3.5 relative z-10">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", bounce: 0.5 }}
-              className="w-14 h-14 rounded-2xl flex items-center justify-center"
-              style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.15)" }}>
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              className="w-11 h-11 rounded-xl flex items-center justify-center"
+              style={{ background: "rgba(16,185,129,0.06)" }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             </motion.div>
             <div className="flex-1">
-              <h2 className="text-lg font-black text-white">{t("done")}</h2>
-              <p className="text-[12px] text-white/30 mt-0.5">{selType?.icon} {selType?.label} · {wordCount.toLocaleString()} words</p>
+              <h2 className="text-base font-bold text-white">{t("done")}</h2>
+              <p className="text-[11px] text-white/25 mt-0.5">{selType?.icon} {selType?.label} · {wordCount.toLocaleString()} words</p>
             </div>
           </div>
         </div>
-        <div className="flex gap-3 mb-5">
+        <div className="flex gap-2.5 mb-4">
           <motion.button whileTap={{ scale: 0.96 }}
             onClick={() => { navigator.clipboard.writeText(result); hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-            className="flex-1 btn-main py-3.5 text-[14px] flex items-center justify-center gap-2">
+            className="flex-1 btn-main py-3 text-[13px] flex items-center justify-center gap-2">
             {copied ? (
-              <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>✓</>
+              <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>✓</>
             ) : (
-              <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{t("copy")}</>
+              <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{t("copy")}</>
             )}
           </motion.button>
           <motion.button whileTap={{ scale: 0.96 }} onClick={reset}
-            className="flex-1 g-card rounded-2xl py-3.5 text-[14px] font-bold text-white/60 hover:text-white transition-colors">{t("newOne")}</motion.button>
+            className="flex-1 g-card rounded-xl py-3 text-[13px] font-semibold text-white/50 hover:text-white transition-colors">{t("newOne")}</motion.button>
         </div>
-        <div className="g-card-s rounded-2xl p-5 max-h-[60vh] overflow-y-auto scrollbar-hide select-text">
+        <div className="g-card-s rounded-xl p-4 max-h-[60vh] overflow-y-auto scrollbar-hide select-text">
           <MarkdownRenderer content={result} />
         </div>
       </motion.div>
@@ -208,13 +208,13 @@ export default function NewReport() {
     return (
       <div className="px-5 pt-16 pb-4 flex flex-col items-center justify-center min-h-[70vh]">
         <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-          className="w-20 h-20 rounded-3xl flex items-center justify-center mb-6"
-          style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.1)" }}>
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="1.8"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>
+          className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
+          style={{ background: "rgba(239,68,68,0.04)" }}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>
         </motion.div>
-        <h2 className="text-xl font-bold text-white mb-2">{t("error")}</h2>
-        <p className="text-[14px] text-white/25 text-center mb-8 px-8">{errorMsg}</p>
-        <button onClick={() => setStep("details")} className="btn-main px-10 py-3.5 text-[14px]">{t("tryAgain")}</button>
+        <h2 className="text-lg font-bold text-white mb-1.5">{t("error")}</h2>
+        <p className="text-[13px] text-white/20 text-center mb-6 px-8">{errorMsg}</p>
+        <button onClick={() => setStep("details")} className="btn-main px-10 py-3 text-[13px]">{t("tryAgain")}</button>
       </div>
     );
   }
@@ -223,23 +223,22 @@ export default function NewReport() {
 
   if (step === "type") {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pt-8 pb-4">
-        <h2 className="text-[28px] font-black text-white tracking-tight mb-1">{t("newDocument")}</h2>
-        <p className="text-[13px] text-white/20 mb-5">{t("chooseDocType")}</p>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pt-7 pb-4">
+        <h2 className="text-[22px] font-extrabold text-white tracking-tight mb-0.5">{t("newDocument")}</h2>
+        <p className="text-[11px] text-white/18 mb-4">{t("chooseDocType")}</p>
         <StepBar step={step} />
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 gap-2">
           {TYPES.map((type, i) => (
             <motion.button key={type.id}
-              initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.04, duration: 0.3, ease }}
+              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.03, duration: 0.25, ease }}
               whileTap={{ scale: 0.95 }}
               onClick={() => { hapticFeedback("light"); setReportType(type.id); setStep("category"); }}
-              className="g-card rounded-2xl p-3.5 text-left relative overflow-hidden group">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px]"
-                style={{ background: `linear-gradient(90deg, transparent, ${colors[i % 11]}30, transparent)` }} />
-              <span className="text-[24px] block mb-2">{type.icon}</span>
-              <div className="font-black text-[13px] text-white leading-snug">{type.label}</div>
-              <div className="text-[10px] text-white/15 mt-1 leading-snug">{type.desc}</div>
+              className="g-card rounded-xl p-3 text-left relative overflow-hidden">
+              <div className="top-line" style={{ background: `linear-gradient(90deg, transparent, ${colors[i % 11]}20, transparent)` }} />
+              <span className="text-[20px] block mb-1.5">{type.icon}</span>
+              <div className="font-bold text-[12px] text-white leading-snug">{type.label}</div>
+              <div className="text-[9px] text-white/12 mt-0.5 leading-snug">{type.desc}</div>
             </motion.button>
           ))}
         </div>
@@ -250,27 +249,26 @@ export default function NewReport() {
   if (step === "category") {
     const totalSubjects = CATS.reduce((a, c) => a + c.subjects.length, 0);
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pt-8 pb-4">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pt-7 pb-4">
         <BackBtn onClick={() => setStep("type")} />
-        <h2 className="text-[26px] font-black text-white tracking-tight mb-1">{t("chooseCategory")}</h2>
-        <p className="text-[13px] text-white/20 mb-4">{totalSubjects}+ {t("allSubjects").toLowerCase()}</p>
+        <h2 className="text-[22px] font-extrabold text-white tracking-tight mb-0.5">{t("chooseCategory")}</h2>
+        <p className="text-[11px] text-white/18 mb-4">{totalSubjects}+ {t("allSubjects").toLowerCase()}</p>
         <StepBar step={step} />
         <EduTabs value={eduLevel} onChange={setEduLevel} />
         <AnimatePresence mode="wait">
-          <motion.div key={eduLevel} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }} className="grid grid-cols-2 gap-2.5">
+          <motion.div key={eduLevel} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.15 }} className="grid grid-cols-2 gap-2">
             {filteredCats.map((cat, i) => (
               <motion.button key={cat.id}
-                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.03, duration: 0.2 }}
+                initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.025, duration: 0.2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => { hapticFeedback("light"); setCategory(cat.id); setStep("subject"); setSearchQ(""); }}
-                className="g-card rounded-2xl p-3.5 text-left relative overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px]"
-                  style={{ background: `linear-gradient(90deg, transparent, ${colors[i % 11]}20, transparent)` }} />
-                <span className="text-[26px] block mb-2">{cat.icon}</span>
-                <div className="font-black text-[12px] text-white leading-snug">{cat.name}</div>
-                <div className="text-[10px] text-white/15 mt-1 font-semibold">{cat.subjects.length} {t("allSubjects").toLowerCase()}</div>
+                className="g-card rounded-xl p-3 text-left relative overflow-hidden">
+                <div className="top-line" style={{ background: `linear-gradient(90deg, transparent, ${colors[i % 11]}15, transparent)` }} />
+                <span className="text-[22px] block mb-1.5">{cat.icon}</span>
+                <div className="font-bold text-[11px] text-white leading-snug">{cat.name}</div>
+                <div className="text-[9px] text-white/12 mt-0.5 font-medium">{cat.subjects.length} {t("allSubjects").toLowerCase()}</div>
               </motion.button>
             ))}
           </motion.div>
@@ -284,31 +282,31 @@ export default function NewReport() {
     const subs = cat?.subjects || [];
     const filtered = searchQ ? subs.filter(s => s.name.toLowerCase().includes(searchQ.toLowerCase())) : subs;
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pt-8 pb-4">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pt-7 pb-4">
         <BackBtn onClick={() => setStep("category")} />
-        <div className="flex items-center gap-3 mb-1">
-          <span className="text-[28px]">{cat?.icon}</span>
-          <h2 className="text-[24px] font-black text-white tracking-tight">{cat?.name}</h2>
+        <div className="flex items-center gap-2.5 mb-0.5">
+          <span className="text-[22px]">{cat?.icon}</span>
+          <h2 className="text-[20px] font-extrabold text-white tracking-tight">{cat?.name}</h2>
         </div>
-        <p className="text-[13px] text-white/20 mb-5">{subs.length} {t("allSubjects").toLowerCase()}</p>
+        <p className="text-[11px] text-white/18 mb-4">{subs.length} {t("allSubjects").toLowerCase()}</p>
         <StepBar step={step} />
-        <div className="relative mb-4">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/12">
+        <div className="relative mb-3">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/10">
             <circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
           <input value={searchQ} onChange={e => setSearchQ(e.target.value)}
-            placeholder={t("chooseSubject")} aria-label={t("chooseSubject")} className="input-field pl-12" />
+            placeholder={t("chooseSubject")} aria-label={t("chooseSubject")} className="input-field pl-10" />
           {searchQ && (
             <button onClick={() => setSearchQ("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/15 hover:text-white/40 transition-colors">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/12 hover:text-white/30 transition-colors">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
             </button>
           )}
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {filtered.length === 0 && searchQ && (
-            <div className="text-center py-8 text-white/15 text-[13px]">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto mb-3 text-white/8">
+            <div className="text-center py-8 text-white/12 text-[12px]">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto mb-2 text-white/6">
                 <circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/>
               </svg>
               Not found
@@ -316,13 +314,13 @@ export default function NewReport() {
           )}
           {filtered.map((sub, i) => (
             <motion.button key={sub.id}
-              initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.025, duration: 0.2 }}
+              initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02, duration: 0.15 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => { hapticFeedback("light"); setSubject(sub.id); setStep("details"); }}
-              className="w-full g-card rounded-2xl p-4 text-left flex items-center gap-3.5">
-              <span className="text-lg shrink-0">{sub.icon}</span>
-              <span className="font-semibold text-[14px] text-white flex-1">{sub.name}</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/8"><polyline points="9 18 15 12 9 6"/></svg>
+              className="w-full g-card rounded-xl p-3.5 text-left flex items-center gap-3">
+              <span className="text-base shrink-0">{sub.icon}</span>
+              <span className="font-semibold text-[13px] text-white flex-1">{sub.name}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/6"><polyline points="9 18 15 12 9 6"/></svg>
             </motion.button>
           ))}
         </div>
@@ -333,69 +331,68 @@ export default function NewReport() {
   const selType = TYPES.find(rt => rt.id === reportType);
   const selSubj = getSubjectName(subject);
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pt-8 pb-4">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pt-7 pb-4">
       <BackBtn onClick={() => setStep("subject")} />
-      <h2 className="text-[26px] font-black text-white tracking-tight mb-1">{t("details")}</h2>
-      <p className="text-[13px] text-white/20 mb-5">{t("describeTask")}</p>
+      <h2 className="text-[22px] font-extrabold text-white tracking-tight mb-0.5">{t("details")}</h2>
+      <p className="text-[11px] text-white/18 mb-4">{t("describeTask")}</p>
       <StepBar step={step} />
-      <div className="flex gap-2 mb-5 flex-wrap">
+      <div className="flex gap-1.5 mb-4 flex-wrap">
         <span className="badge-g">{selType?.icon} {selType?.label}</span>
         <span className="badge-g">{selSubj}</span>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-3.5">
         <div>
-          <label className="text-[13px] font-bold text-white/60 mb-2 block">{t("topicLabel")}</label>
+          <label className="text-[12px] font-semibold text-white/40 mb-1.5 block">{t("topicLabel")}</label>
           <textarea value={topic} onChange={e => setTopic(e.target.value)} placeholder={t("topicPlaceholder")}
             className="input-field resize-none leading-relaxed" rows={4} />
           {topic.length > 0 && (
-            <div className="flex justify-between mt-1.5">
-              <div />
-              <div className="text-[11px] text-white/12 tabular">{topic.length}</div>
+            <div className="flex justify-end mt-1">
+              <div className="text-[10px] text-white/10 tabular">{topic.length}</div>
             </div>
           )}
         </div>
         <div>
-          <label className="text-[13px] font-bold text-white/60 mb-2 block">{t("groupLabel")}</label>
+          <label className="text-[12px] font-semibold text-white/40 mb-1.5 block">{t("groupLabel")}</label>
           <input value={group} onChange={e => setGroup(e.target.value)} placeholder={t("groupPlaceholder")} className="input-field" />
         </div>
         <div>
-          <label className="text-[13px] font-bold text-white/60 mb-2 block">{t("attachPhoto")}</label>
+          <label className="text-[12px] font-semibold text-white/40 mb-1.5 block">{t("attachPhoto")}</label>
           <AnimatePresence mode="wait">
             {imagePreview ? (
               <motion.div key="preview" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-                className="rounded-2xl overflow-hidden relative" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(124,58,237,0.15)" }}>
-                <img src={imagePreview} alt="Task" className="w-full max-h-[200px] object-contain rounded-2xl" />
-                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-4 py-3"
+                className="rounded-xl overflow-hidden relative" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(124,58,237,0.1)" }}>
+                <img src={imagePreview} alt="Task" className="w-full max-h-[180px] object-contain rounded-xl" />
+                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-3 py-2.5"
                   style={{ background: "linear-gradient(transparent, rgba(0,0,0,0.8))" }}>
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "rgba(52,211,153,0.15)" }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "rgba(52,211,153,0.12)" }}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
                     </div>
-                    <span className="text-[12px] font-bold text-emerald-400">{t("photoAttached")}</span>
+                    <span className="text-[10px] font-semibold text-emerald-400">{t("photoAttached")}</span>
                   </div>
                   <motion.button whileTap={{ scale: 0.9 }} onClick={removeImage}
-                    className="px-3 py-1.5 rounded-xl text-[11px] font-bold text-red-400 transition-colors"
-                    style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.12)" }}>
+                    className="px-2.5 py-1 rounded-lg text-[10px] font-semibold text-red-400"
+                    style={{ background: "rgba(239,68,68,0.06)" }}>
                     {t("removePhoto")}
                   </motion.button>
                 </div>
               </motion.div>
             ) : (
               <motion.label key="upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="flex flex-col items-center justify-center gap-3 py-6 rounded-2xl cursor-pointer transition-all active:scale-[0.98]"
-                style={{ background: "rgba(124,58,237,0.03)", border: "1px dashed rgba(124,58,237,0.12)" }}>
+                className="flex flex-col items-center justify-center gap-2.5 py-5 rounded-xl cursor-pointer transition-all active:scale-[0.98]"
+                style={{ background: "rgba(124,58,237,0.02)", border: "1px dashed rgba(124,58,237,0.08)" }}>
                 <input type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: "rgba(124,58,237,0.08)" }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="1.5">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(124,58,237,0.06)" }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="1.5">
                     <rect width="18" height="18" x="3" y="3" rx="2"/>
                     <circle cx="9" cy="9" r="2"/>
                     <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
                   </svg>
                 </div>
                 <div className="text-center">
-                  <div className="text-[13px] font-bold text-violet-400">{t("attachPhoto")}</div>
-                  <div className="text-[11px] text-white/20 mt-0.5">{t("attachPhotoDesc")}</div>
-                  <div className="text-[10px] text-white/10 mt-1">{t("maxFileSize")}</div>
+                  <div className="text-[12px] font-semibold text-violet-400">{t("attachPhoto")}</div>
+                  <div className="text-[10px] text-white/15 mt-0.5">{t("attachPhotoDesc")}</div>
+                  <div className="text-[9px] text-white/8 mt-0.5">{t("maxFileSize")}</div>
                 </div>
               </motion.label>
             )}
@@ -403,16 +400,16 @@ export default function NewReport() {
         </div>
       </div>
       {!canGenerate && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-          className="mt-5 rounded-2xl p-4 text-[13px] flex items-center gap-3"
-          style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.08)" }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-          <span className="text-red-400">{t("noBalance")}. <button onClick={() => setLocation("/balance")} className="underline font-bold">{t("topUpBalance")}</button></span>
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+          className="mt-4 rounded-xl p-3.5 text-[12px] flex items-center gap-2.5"
+          style={{ background: "rgba(239,68,68,0.03)", border: "1px solid rgba(239,68,68,0.06)" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+          <span className="text-red-400">{t("noBalance")}. <button onClick={() => setLocation("/balance")} className="underline font-semibold">{t("topUpBalance")}</button></span>
         </motion.div>
       )}
       <motion.button whileTap={{ scale: 0.97 }} onClick={handleGenerate} disabled={!topic.trim() || !canGenerate}
-        className="mt-6 w-full btn-main py-[18px] text-[15px] flex items-center justify-center gap-2.5 disabled:opacity-30">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+        className="mt-5 w-full btn-main py-[16px] text-[14px] flex items-center justify-center gap-2 disabled:opacity-30">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
         {t("generate")}
       </motion.button>
     </motion.div>
