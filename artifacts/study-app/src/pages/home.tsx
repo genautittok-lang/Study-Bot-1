@@ -26,7 +26,7 @@ const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 const s = (i: number) => ({
   initial: { opacity: 0, y: 20 } as const,
   animate: { opacity: 1, y: 0 } as const,
-  transition: { delay: i * 0.08, duration: 0.5, ease },
+  transition: { delay: i * 0.07, duration: 0.5, ease },
 });
 
 export default function Home() {
@@ -57,9 +57,9 @@ export default function Home() {
 
   return (
     <div className="px-5 pt-8 pb-4">
-      <motion.div {...s(0)} className="flex items-center justify-between mb-8">
+      <motion.div {...s(0)} className="flex items-center justify-between mb-7">
         <div>
-          <h1 className="text-[26px] font-black text-white tracking-tight leading-none mb-1.5">
+          <h1 className="text-[28px] font-black text-white tracking-tight leading-none mb-1.5">
             {t("welcome")}, <span className="gradient-text">{user?.firstName || "Student"}</span>
           </h1>
           <p className="text-[13px] text-white/20 font-medium">{t("subtitle")}</p>
@@ -76,7 +76,7 @@ export default function Home() {
         </motion.button>
       </motion.div>
 
-      <motion.div {...s(1)} className="hero-card hero-shimmer p-6 mb-6">
+      <motion.div {...s(1)} className="hero-card hero-shimmer p-6 mb-5">
         <div className="shimmer-bar" />
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-1">
@@ -116,40 +116,54 @@ export default function Home() {
         </div>
       </motion.div>
 
-      <motion.div {...s(2)} className="mb-6">
-        <motion.button whileTap={{ scale: 0.97 }}
+      <motion.div {...s(2)} className="grid grid-cols-2 gap-3 mb-5">
+        <motion.button whileTap={{ scale: 0.96 }}
           onClick={() => { hapticFeedback("medium"); nav("/new"); }}
-          className="w-full btn-main py-[18px] text-[15px] flex items-center justify-center gap-2.5">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
-          {t("createReport")}
+          className="btn-main rounded-2xl py-5 px-4 text-left flex flex-col gap-2 relative overflow-hidden">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+          <div>
+            <div className="font-black text-[14px]">{t("createReport")}</div>
+            <div className="text-[10px] opacity-60 mt-0.5">{t("generateAI")}</div>
+          </div>
+        </motion.button>
+        <motion.button whileTap={{ scale: 0.96 }}
+          onClick={() => { hapticFeedback("light"); nav("/balance"); }}
+          className="g-card rounded-2xl py-5 px-4 text-left flex flex-col gap-2 relative overflow-hidden">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px]"
+            style={{ background: "linear-gradient(90deg, transparent, rgba(6,182,212,0.25), transparent)" }} />
+          <span className="text-[24px]">💎</span>
+          <div>
+            <div className="font-black text-[14px] text-white">{t("topUp")}</div>
+            <div className="text-[10px] text-white/20 mt-0.5">{t("reports15")}</div>
+          </div>
         </motion.button>
       </motion.div>
 
-      <motion.div {...s(3)} className="grid grid-cols-3 gap-3 mb-6">
+      <motion.div {...s(3)} className="grid grid-cols-3 gap-2.5 mb-5">
         {[
-          { path: "/history", val: String(user?.totalReports || 0), sub: t("total"), accent: "#a78bfa", bg: "rgba(124,58,237,0.06)" },
-          { path: "/balance", val: "15", sub: t("reports5"), accent: "#67e8f9", bg: "rgba(6,182,212,0.06)" },
-          { path: "/profile", val: lvl.icon, sub: lvl.name, accent: "#fbbf24", bg: "rgba(251,191,36,0.05)" },
+          { path: "/history", val: String(user?.totalReports || 0), sub: t("total"), accent: "#a78bfa", icon: "📄" },
+          { path: "/balance", val: String(bal), sub: t("balance"), accent: "#67e8f9", icon: "💰" },
+          { path: "/profile", val: lvl.icon, sub: lvl.name, accent: "#fbbf24", icon: "" },
         ].map((it) => (
-          <motion.button key={it.path} whileTap={{ scale: 0.94 }}
+          <motion.button key={it.path + it.sub} whileTap={{ scale: 0.94 }}
             onClick={() => { hapticFeedback("light"); nav(it.path); }}
-            className="g-card rounded-[18px] py-5 px-3 flex flex-col items-center gap-2 relative overflow-hidden">
+            className="g-card rounded-[18px] py-4 px-3 flex flex-col items-center gap-1.5 relative overflow-hidden">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px]"
               style={{ background: `linear-gradient(90deg, transparent, ${it.accent}30, transparent)` }} />
-            <span className="stat-num" style={{ color: it.accent }}>{it.val}</span>
+            <span className="text-[24px] font-black tabular" style={{ color: it.accent }}>{it.val}</span>
             <span className="text-[9px] text-white/25 font-bold uppercase tracking-wider">{it.sub}</span>
           </motion.button>
         ))}
       </motion.div>
 
       {recent.length > 0 && (
-        <motion.div {...s(4)} className="mb-6">
+        <motion.div {...s(4)} className="mb-5">
           <div className="flex items-center justify-between mb-3">
             <span className="section-label">{t("history")}</span>
             <button onClick={() => { hapticFeedback("light"); nav("/history"); }}
               className="text-[11px] font-bold text-[#a78bfa]">{t("allSubjects")}</button>
           </div>
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             {recent.map(r => (
               <motion.button key={r.id} whileTap={{ scale: 0.98 }}
                 onClick={() => { hapticFeedback("light"); nav("/history"); }}
@@ -162,7 +176,7 @@ export default function Home() {
                   <div className="text-[14px] font-semibold text-white truncate">{r.topic}</div>
                   <div className="text-[11px] text-white/20 mt-0.5">{TYPES[r.reportType]?.label} {SUBJECTS[r.subject]?.label ? `· ${SUBJECTS[r.subject].label}` : ""}</div>
                 </div>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/8"><polyline points="9 18 15 12 9 6"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/8 shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
               </motion.button>
             ))}
           </div>
@@ -186,7 +200,7 @@ export default function Home() {
             </div>
           </div>
           <motion.button whileTap={{ scale: 0.97 }} onClick={copyRef}
-            className="mt-5 w-full btn-accent py-[14px] text-[14px] flex items-center justify-center gap-2 relative z-10">
+            className="mt-4 w-full btn-accent py-[14px] text-[14px] flex items-center justify-center gap-2 relative z-10">
             {refCopied ? (
               <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>{t("linkCopied")}</>
             ) : (

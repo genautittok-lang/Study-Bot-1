@@ -40,40 +40,58 @@ artifacts-monorepo/
 ## Bot Features
 
 - **Free first report** for every new user
-- **6 document types**: Report, Summary, Database, Lab Work, Essay, Tasks
-- **50+ subjects** in **10 categories**: IT, Math, Sciences, Humanities, Business, Law, Languages, Engineering, Medicine, Other
-- **5 payment methods**: Visa/Mastercard (250 UAH), Google Pay (250 UAH), Apple Pay (250 UAH), Crypto USDT (5$), Telegram Stars (500 XTR)
-- **AI generation**: gpt-5.2 with structured prompts per document type
+- **11 document types**: Report, Summary, Database, Lab Work, Essay, Tasks, Course Work, Diploma, Presentation, Test Paper, Notes
+- **150+ subjects** in **17 categories**: School Math (7-11), Ukrainian Language & Lit (7-11), Sciences (7-11), History & Geography (7-11), Foreign Languages, Other School; College IT, College Tech; University Math, IT, Humanities, Business, Law, Engineering, Medicine; Other
+- **Education level filter**: All / School / College / University tabs in category selection
+- **3 payment methods**: Card (250 UAH, card 5375 4141 2121 2120), Crypto USDT (5$ TRC-20), Telegram Stars (500 XTR)
+- **Receipt flow**: After card payment, user sends screenshot to @studypro_support moderator
+- **AI generation**: gpt-5.2 with structured prompts per document type (specific prompts for all 11 types)
 - **Referral system**: +2 reports for referrer and invitee, unique codes per user
 - **Level progression**: Beginner (0-5), Student (6-20), Expert (21-50), Master (51-100), Legend (101+)
 - **Achievements**: First Step, Expert, Master, Networker
 
 ## Telegram Mini App (TWA)
 
-Premium React + Vite fintech-grade TWA:
-- **Design system**: CSS classes — `hero-card` (deep navy gradient with radial glow + shimmer), `card` / `card-interactive` (white/dark, 20px radius, border, tap scale), `btn-primary` (gradient #667eea→#764ba2 with inner highlight + shadow), `btn-success` (green gradient), `btn-ghost`, `badge` / `badge-success`, `section-title` (uppercase tracking), `input-field` (focus ring), `nav-glass` (backdrop-filter blur), `avatar-ring` (gradient border), `glass`, `skeleton`, `spinner`, `pop-in`, `stat-value`, `progress-bar`. Primary = `hsl(239 84% 67%)`. Gradients: `linear-gradient(135deg, #667eea, #764ba2)`.
-- **Dark mode**: Full dark theme via .dark class, auto-synced with Telegram colorScheme every 1s. Dark bg `hsl(224 71% 4%)`, cards `hsl(224 50% 7%)`.
-- **Telegram integration**: `photo_url` pulled from WebApp.initDataUnsafe.user, stored in globalPhotoUrl, displayed in profile and home page avatars with gradient ring. Username and ID displayed in profile hero card.
-- **Page transitions**: AnimatePresence with fade+slide variants, staggered item animations.
-- **Home**: greeting + avatar (Telegram photo), hero-card balance with shimmer + AnimatedNumber, progress bar to next level, "Create Report" CTA, 3-column stats, recent reports, referral invite section.
-- **Create**: 4-step animated progress bar (type → category → subject → details), staggered list animations, search within subjects, char count, AI generation spinner with percentage + progress bar.
-- **History**: skeleton loading states, detail viewer with word count, copy with feedback, empty state with icon.
-- **Balance**: hero-card balance with shimmer, 5 payment methods as card-interactive tiles with branded icons, individual payment flows (card copy, crypto address, stars instructions), CopyField component with visual feedback.
-- **Profile**: hero-card with Telegram avatar (photo_url), username (@user), ID display, level progress bar, 3-column stats, emoji achievements, referral system with code + copy link, 30-language selector with search.
-- **i18n**: 30 languages with IP-based auto-detection and Telegram language_code fallback. Full translations: en/ru/uk.
-- **Bottom nav**: frosted glass backdrop-filter with spring-animated gradient pill indicator, filled icons for active tab, balance badge.
-- **Demo mode**: works outside Telegram with test user (telegramId: 999999999).
+Premium React + Vite fintech-grade TWA with animated design system:
 
-### i18n Languages (30 selectable, 3 full translations)
-Full translations: English (en), Russian (ru), Ukrainian (uk)
-CIS languages with Russian fallback: Kazakh, Uzbek, Kyrgyz, Tajik, Turkmen, Azerbaijani, Armenian, Georgian, Belarusian, Moldovan, Mongolian
-Other languages with English fallback: Turkish, Polish, German, French, Spanish, Portuguese, Italian, Romanian, Czech, Bulgarian, Serbian, Croatian, Arabic, Hindi, Chinese, Japanese
+### Design System (CSS Classes)
+- `.hero-card` — Animated conic gradient rotating border (`@property --card-angle`), deep navy bg, radial glow overlays, shimmer sweep
+- `.g-card` — Glassmorphism card with backdrop-filter blur, hover/active states
+- `.g-card-s` — Static glassmorphism card (no interaction states)
+- `.btn-main` — Violet gradient (`#8b5cf6→#7c3aed→#6d28d9`) with sweep-shine animation, glow shadow
+- `.btn-accent` — Green gradient with animated background-position
+- `.btn-ghost` — Subtle transparent button
+- `.num-glow` — Gradient text (`white→#c4b5fd→#67e8f9`) with drop-shadow
+- `.gradient-text` — Purple-to-cyan gradient text
+- `.avatar-ring` — Conic gradient border ring
+- `.app-bg` — Aurora background blobs with blur(60px) filter animation
+- `.particles` + `.particle` — Floating particle system (20 dots)
+- `.badge` / `.badge-g` — Pill badges (violet / green)
+- `.input-field` — Focus ring with glow
+- `.icon-box` — 48px icon container
+- `.section-label` — Uppercase tracking label
+
+**Color scheme**: Primary violet `#7c3aed`/`#8b5cf6`, cyan `#06b6d4`/`#67e8f9`, green `#34d399`, amber `#fbbf24`. Background `#0d0f14`.
+
+### Pages
+- **Home**: Greeting + Telegram avatar, hero-card balance with animated number + progress bar, 2-column action cards (Create Report + Top Up), 3-column stats, recent reports, referral invite section
+- **Create**: 4-step progress bar with labels, 2-column grid of 11 report types, education level tabs (All/School/College/University) for filtering 17 categories, search within subjects, details form with topic + group, AI generation spinner with percentage
+- **History**: Skeleton loading, detail viewer with word count + copy, empty state
+- **Balance**: Hero balance card, Telegram Stars golden button, Card payment + Crypto USDT tiles, individual payment flows with copy fields, receipt note
+- **Profile**: Hero card with Telegram avatar + username + ID, level progress, 3-column stats, 4 achievements, referral code + copy link, 30-language selector, version footer
+
+### i18n
+- 30 languages selectable, 3 full translations (en/ru/uk)
+- CIS languages with Russian fallback: Kazakh, Uzbek, Kyrgyz, Tajik, Turkmen, Azerbaijani, Armenian, Georgian, Belarusian, Moldovan, Mongolian
+- Other languages with English fallback
+- Subject categories: `school_math`, `school_ukr`, `school_science`, `school_history`, `school_langs`, `school_other`, `college_it`, `college_tech`, `uni_math`, `uni_it`, `uni_humanities`, `uni_business`, `uni_law`, `uni_eng`, `uni_medicine`, `other`
 
 ### TWA API Routes (/api/twa)
 - `POST /auth` — authenticate/create user (returns referralCode, referralCount)
 - `POST /generate` — generate report (balance check, AI, save)
 - `GET /reports?telegram_id=X` — list reports
-- `POST /payment` — create payment request (card/google_pay/apple_pay/crypto/stars)
+- `POST /payment` — create payment request (card/crypto/stars)
+- `POST /create-invoice` — create Telegram Stars invoice URL
 
 ## Environment Variables
 
@@ -94,7 +112,7 @@ Other languages with English fallback: Turkish, Polish, German, French, Spanish,
 - Generated reports with content, type, subject, topic, group, status
 
 ### payments
-- Payment requests: amount, currency, method (card/google_pay/apple_pay/crypto/stars/manual), status
+- Payment requests: amount, currency, method (card/crypto/stars/manual), status
 
 ## Development
 

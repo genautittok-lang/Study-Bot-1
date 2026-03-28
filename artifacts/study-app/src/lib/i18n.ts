@@ -152,12 +152,26 @@ type TranslationKeys = {
   reportLab: string;
   reportEssay: string;
   reportTasks: string;
+  reportCourseWork: string;
+  reportDiploma: string;
+  reportPresentation: string;
+  reportTest: string;
+  reportNotes: string;
   reportReportDesc: string;
   reportSummaryDesc: string;
   reportDatabaseDesc: string;
   reportLabDesc: string;
   reportEssayDesc: string;
   reportTasksDesc: string;
+  reportCourseWorkDesc: string;
+  reportDiplomaDesc: string;
+  reportPresentationDesc: string;
+  reportTestDesc: string;
+  reportNotesDesc: string;
+  eduSchool: string;
+  eduCollege: string;
+  eduUni: string;
+  eduAll: string;
   transferDescription: string;
   paymentAmount: string;
   walletAddress: string;
@@ -289,12 +303,26 @@ const translations: Record<string, TranslationKeys> = {
     reportLab: "Lab Work",
     reportEssay: "Essay",
     reportTasks: "Tasks",
+    reportCourseWork: "Course Work",
+    reportDiploma: "Diploma",
+    reportPresentation: "Presentation",
+    reportTest: "Test Paper",
+    reportNotes: "Notes",
     reportReportDesc: "Official report on a topic",
     reportSummaryDesc: "Brief summary of a topic",
     reportDatabaseDesc: "SQL tables and queries",
     reportLabDesc: "Complete lab work",
     reportEssayDesc: "Detailed essay",
     reportTasksDesc: "Problem solving",
+    reportCourseWorkDesc: "Full course work with sections",
+    reportDiplomaDesc: "Diploma project structure",
+    reportPresentationDesc: "Slide-by-slide presentation plan",
+    reportTestDesc: "Test / exam answers",
+    reportNotesDesc: "Lecture notes and summaries",
+    eduSchool: "School",
+    eduCollege: "College",
+    eduUni: "University",
+    eduAll: "All",
     transferDescription: "Transfer to the card below and press confirm",
     paymentAmount: "Amount",
     walletAddress: "Wallet address",
@@ -424,12 +452,26 @@ const translations: Record<string, TranslationKeys> = {
     reportLab: "Лабораторная",
     reportEssay: "Реферат",
     reportTasks: "Задачи",
+    reportCourseWork: "Курсовая",
+    reportDiploma: "Дипломная",
+    reportPresentation: "Презентация",
+    reportTest: "Контрольная",
+    reportNotes: "Конспект лекций",
     reportReportDesc: "Официальный отчёт по теме",
     reportSummaryDesc: "Краткое изложение темы",
     reportDatabaseDesc: "SQL таблицы и запросы",
     reportLabDesc: "Полная лабораторная работа",
     reportEssayDesc: "Развёрнутый реферат",
     reportTasksDesc: "Решение задач",
+    reportCourseWorkDesc: "Полная курсовая с разделами",
+    reportDiplomaDesc: "Структура дипломного проекта",
+    reportPresentationDesc: "План презентации по слайдам",
+    reportTestDesc: "Ответы на контрольную / экзамен",
+    reportNotesDesc: "Конспект лекций и изложение",
+    eduSchool: "Школа",
+    eduCollege: "Колледж",
+    eduUni: "Универ",
+    eduAll: "Все",
     transferDescription: "Переведите на карту ниже и нажмите подтвердить",
     paymentAmount: "Сумма",
     walletAddress: "Адрес кошелька",
@@ -559,12 +601,26 @@ const translations: Record<string, TranslationKeys> = {
     reportLab: "Лабораторна",
     reportEssay: "Реферат",
     reportTasks: "Задачі",
+    reportCourseWork: "Курсова",
+    reportDiploma: "Дипломна",
+    reportPresentation: "Презентація",
+    reportTest: "Контрольна",
+    reportNotes: "Конспект лекцій",
     reportReportDesc: "Офіційний звіт з теми",
     reportSummaryDesc: "Стислий виклад теми",
     reportDatabaseDesc: "SQL таблиці та запити",
     reportLabDesc: "Повна лабораторна робота",
     reportEssayDesc: "Розгорнутий реферат",
     reportTasksDesc: "Розв'язання задач",
+    reportCourseWorkDesc: "Повна курсова з розділами",
+    reportDiplomaDesc: "Структура дипломного проекту",
+    reportPresentationDesc: "План презентації по слайдам",
+    reportTestDesc: "Відповіді на контрольну / іспит",
+    reportNotesDesc: "Конспект лекцій та виклад",
+    eduSchool: "Школа",
+    eduCollege: "Коледж",
+    eduUni: "Універ",
+    eduAll: "Все",
     transferDescription: "Переведіть на картку нижче та натисніть підтвердити",
     paymentAmount: "Сума",
     walletAddress: "Адреса гаманця",
@@ -659,7 +715,36 @@ export function getReportTypes() {
     { id: "lab", label: t("reportLab"), icon: "🔬", desc: t("reportLabDesc") },
     { id: "essay", label: t("reportEssay"), icon: "📋", desc: t("reportEssayDesc") },
     { id: "tasks", label: t("reportTasks"), icon: "🧮", desc: t("reportTasksDesc") },
+    { id: "coursework", label: t("reportCourseWork"), icon: "📚", desc: t("reportCourseWorkDesc") },
+    { id: "diploma", label: t("reportDiploma"), icon: "🎓", desc: t("reportDiplomaDesc") },
+    { id: "presentation", label: t("reportPresentation"), icon: "📊", desc: t("reportPresentationDesc") },
+    { id: "test", label: t("reportTest"), icon: "✅", desc: t("reportTestDesc") },
+    { id: "notes", label: t("reportNotes"), icon: "📒", desc: t("reportNotesDesc") },
   ];
+}
+
+export type EduLevel = "all" | "school" | "college" | "uni";
+
+export function getEduLevels(): { id: EduLevel; label: string }[] {
+  return [
+    { id: "all", label: t("eduAll") },
+    { id: "school", label: t("eduSchool") },
+    { id: "college", label: t("eduCollege") },
+    { id: "uni", label: t("eduUni") },
+  ];
+}
+
+const EDU_LEVEL_MAP: Record<string, EduLevel> = {
+  school_math: "school", school_ukr: "school", school_science: "school",
+  school_history: "school", school_langs: "school", school_other: "school",
+  college_it: "college", college_tech: "college",
+  uni_math: "uni", uni_it: "uni", uni_humanities: "uni",
+  uni_business: "uni", uni_law: "uni", uni_eng: "uni", uni_medicine: "uni",
+  other: "all",
+};
+
+export function getCategoryEduLevel(categoryId: string): EduLevel {
+  return EDU_LEVEL_MAP[categoryId] || "all";
 }
 
 interface SubjectCategoryData {
