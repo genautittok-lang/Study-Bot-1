@@ -88,7 +88,7 @@ function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
-      <div className="nav-floating px-2 pt-2 pb-2.5">
+      <div className="nav-floating px-1.5 pt-1.5 pb-2">
         <div className="flex items-end justify-around">
           {tabs.map((tab) => {
             const active = tab.path === "/" ? location === "/" : location.startsWith(tab.path);
@@ -97,12 +97,12 @@ function BottomNav() {
               <button
                 key={tab.path}
                 onClick={() => { hapticFeedback("light"); setLocation(tab.path); }}
-                className={`relative flex flex-col items-center min-w-[52px] ${isSpecial ? 'pb-0' : 'py-1'}`}
+                className={`relative flex flex-col items-center min-w-[48px] ${isSpecial ? 'pb-0' : 'py-0.5'}`}
               >
                 {isSpecial ? (
                   <motion.div
                     whileTap={{ scale: 0.82 }}
-                    className="w-[50px] h-[50px] rounded-[16px] flex items-center justify-center -mt-5 create-btn-glow"
+                    className="w-[46px] h-[46px] rounded-[14px] flex items-center justify-center -mt-4 create-btn-glow"
                     style={{
                       background: "linear-gradient(145deg, #7B68EE, #6355D8, #5143C2)",
                     }}>
@@ -113,7 +113,7 @@ function BottomNav() {
                     {active && (
                       <motion.div
                         layoutId="nav-indicator"
-                        className="absolute -top-1 left-1/2 -translate-x-1/2 w-6 h-[3px] rounded-full"
+                        className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-5 h-[2.5px] rounded-full"
                         style={{ background: "linear-gradient(90deg, #7B68EE, #4A90FF)" }}
                         transition={spring}
                       />
@@ -123,7 +123,7 @@ function BottomNav() {
                     </span>
                   </>
                 )}
-                <span className={`text-[10px] font-semibold mt-0.5 transition-colors duration-150 ${
+                <span className={`text-[9px] font-semibold mt-0.5 transition-colors duration-150 ${
                   isSpecial ? "text-[#7B68EE]" : active ? "text-[#7B68EE]" : "text-[#c4c4d0]"
                 }`}>
                   {tab.label}
@@ -131,7 +131,7 @@ function BottomNav() {
                 {tab.badge && (
                   <motion.span
                     initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    className="absolute -top-0.5 right-0.5 text-white text-[8px] font-bold min-w-[16px] h-[16px] flex items-center justify-center rounded-full px-1 z-20"
+                    className="absolute -top-0.5 right-0 text-white text-[7px] font-bold min-w-[15px] h-[15px] flex items-center justify-center rounded-full px-1 z-20"
                     style={{
                       background: "linear-gradient(135deg, #7B68EE, #4A90FF)",
                       boxShadow: "0 2px 8px rgba(123,104,238,0.35)",
@@ -250,7 +250,7 @@ function AppContent() {
   return (
     <>
       <AmbientBg />
-      <div className="min-h-screen relative z-10 pb-24">
+      <div className="min-h-screen relative z-10 pb-[88px]">
         <AnimatedPage>
           <Switch>
             <Route path="/" component={Home} />

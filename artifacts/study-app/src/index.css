@@ -421,8 +421,8 @@
 }
 
 .nav-floating {
-  margin: 0 16px 8px;
-  border-radius: 24px;
+  margin: 0 12px 6px;
+  border-radius: 22px;
   background: rgba(255,255,255,0.92);
   backdrop-filter: blur(40px) saturate(200%);
   -webkit-backdrop-filter: blur(40px) saturate(200%);
