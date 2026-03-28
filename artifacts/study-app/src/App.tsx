@@ -1,9 +1,10 @@
+import { useEffect } from "react";
 import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useInitApp, useUser, useLang } from "@/lib/store";
-import { hapticFeedback } from "@/lib/telegram";
+import { hapticFeedback, getTelegramWebApp } from "@/lib/telegram";
 import { t } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import Home from "@/pages/home";
@@ -14,6 +15,19 @@ import Profile from "@/pages/profile";
 
 const queryClient = new QueryClient();
 
+function useThemeSync() {
+  useEffect(() => {
+    function sync() {
+      const tg = getTelegramWebApp();
+      const scheme = tg?.colorScheme || "light";
+      document.documentElement.classList.toggle("dark", scheme === "dark");
+    }
+    sync();
+    const interval = setInterval(sync, 1000);
+    return () => clearInterval(interval);
+  }, []);
+}
+
 function BottomNav() {
   const [location, setLocation] = useLocation();
   const user = useUser();
@@ -22,16 +36,16 @@ function BottomNav() {
   const hasBalance = user ? (!user.freeReportsUsed ? user.balance + 1 : user.balance) : 0;
 
   const tabs = [
-    { path: "/", label: t("home"), icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> },
-    { path: "/new", label: t("create"), icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>, accent: true },
-    { path: "/history", label: t("history"), icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
-    { path: "/balance", label: t("balance"), icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>, badge: hasBalance > 0 ? String(hasBalance) : undefined },
-    { path: "/profile", label: t("profile"), icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg> },
+    { path: "/", label: t("home"), icon: (a: boolean) => <svg width="20" height="20" viewBox="0 0 24 24" fill={a ? "hsl(var(--primary))" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> },
+    { path: "/new", label: t("create"), icon: (_a: boolean) => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>, accent: true },
+    { path: "/history", label: t("history"), icon: (a: boolean) => <svg width="20" height="20" viewBox="0 0 24 24" fill={a ? "hsl(var(--primary))" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
+    { path: "/balance", label: t("balance"), icon: (a: boolean) => <svg width="20" height="20" viewBox="0 0 24 24" fill={a ? "hsl(var(--primary))" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>, badge: hasBalance > 0 ? String(hasBalance) : undefined },
+    { path: "/profile", label: t("profile"), icon: (a: boolean) => <svg width="20" height="20" viewBox="0 0 24 24" fill={a ? "hsl(var(--primary))" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg> },
   ];
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom">
-      <div className="nav-pro px-2 py-1.5">
+      <div className="nav-pro px-2 py-1">
         <div className="flex items-center justify-around">
           {tabs.map((tab) => {
             const active = tab.path === "/" ? location === "/" : location.startsWith(tab.path);
@@ -39,24 +53,24 @@ function BottomNav() {
               <button
                 key={tab.path}
                 onClick={() => { hapticFeedback("light"); setLocation(tab.path); }}
-                className="relative flex flex-col items-center gap-0.5 py-1.5 px-4 rounded-xl transition-all duration-150"
+                className="relative flex flex-col items-center gap-0.5 py-2 px-4 rounded-2xl transition-all duration-150"
               >
                 {active && (
                   <motion.div
                     layoutId="nav-pill"
-                    className="absolute inset-0 bg-primary/8 rounded-xl"
+                    className="absolute inset-0 bg-primary/8 rounded-2xl"
                     transition={{ type: "spring", bounce: 0.15, duration: 0.35 }}
                   />
                 )}
-                <span className={`relative z-10 transition-colors duration-150 ${active ? "text-primary" : "text-muted-foreground/60"}`}>
-                  {tab.icon}
+                <span className={`relative z-10 transition-colors duration-150 ${active ? "text-primary" : "text-muted-foreground/50"}`}>
+                  {tab.icon(active)}
                 </span>
-                <span className={`relative z-10 text-[10px] font-medium transition-colors duration-150 ${active ? "text-primary font-semibold" : "text-muted-foreground/60"}`}>
+                <span className={`relative z-10 text-[10px] font-medium tracking-tight transition-colors duration-150 ${active ? "text-primary font-semibold" : "text-muted-foreground/50"}`}>
                   {tab.label}
                 </span>
-                {(tab as any).badge && (
-                  <span className="absolute -top-0.5 right-1.5 bg-primary text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center rounded-full px-1">
-                    {(tab as any).badge}
+                {tab.badge && (
+                  <span className="absolute -top-0.5 right-1 bg-primary text-white text-[8px] font-bold min-w-[16px] h-[16px] flex items-center justify-center rounded-full px-1 shadow-sm shadow-primary/30">
+                    {tab.badge}
                   </span>
                 )}
               </button>
@@ -72,24 +86,29 @@ function LoadingScreen() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.92 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         className="flex flex-col items-center"
       >
-        <div className="relative mb-5">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-indigo-700 flex items-center justify-center shadow-xl shadow-primary/20">
-            <span className="text-white font-black text-xl tracking-tight">SP</span>
+        <div className="relative mb-6">
+          <div className="w-[72px] h-[72px] rounded-[22px] dark-card flex items-center justify-center shadow-2xl shadow-primary/10">
+            <span className="text-white font-black text-2xl tracking-tighter">SP</span>
           </div>
-        </div>
-        <h1 className="text-lg font-bold text-foreground tracking-tight">StudyPro</h1>
-        <p className="text-xs text-muted-foreground mt-1 mb-5">{t("subtitle")}</p>
-        <div className="w-32 h-1 bg-muted rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-primary rounded-full"
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -inset-3 rounded-3xl bg-primary/5 -z-10 blur-lg"
+          />
+        </div>
+        <h1 className="text-lg font-bold text-foreground tracking-tight mb-0.5">StudyPro</h1>
+        <p className="text-xs text-muted-foreground/60 mb-6">{t("subtitle")}</p>
+        <div className="w-36 h-[3px] bg-muted rounded-full overflow-hidden">
+          <motion.div
+            className="h-full progress-bar-pro"
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
-            transition={{ duration: 2, ease: "easeInOut" }}
+            transition={{ duration: 2.5, ease: [0.4, 0, 0.6, 1] }}
           />
         </div>
       </motion.div>
@@ -106,7 +125,7 @@ function ErrorScreen({ error, retry }: { error: string; retry: () => void }) {
         className="flex flex-col items-center text-center"
       >
         <div className="w-14 h-14 bg-destructive/8 rounded-2xl flex items-center justify-center mb-4">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--destructive))" strokeWidth="2">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--destructive))" strokeWidth="1.8">
             <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
           </svg>
         </div>
@@ -118,8 +137,34 @@ function ErrorScreen({ error, retry }: { error: string; retry: () => void }) {
   );
 }
 
+const pageVariants = {
+  enter: { opacity: 0, y: 6 },
+  center: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -4 },
+};
+const pageTrans = { duration: 0.2, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] };
+
+function AnimatedPage({ children }: { children: React.ReactNode }) {
+  const [location] = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location}
+        variants={pageVariants}
+        initial="enter"
+        animate="center"
+        exit="exit"
+        transition={pageTrans}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 function AppContent() {
   const { loading, error, retry } = useInitApp();
+  useThemeSync();
   useLang();
 
   if (loading) return <LoadingScreen />;
@@ -128,7 +173,7 @@ function AppContent() {
   return (
     <>
       <div className="min-h-screen bg-background pb-20">
-        <AnimatePresence mode="wait">
+        <AnimatedPage>
           <Switch>
             <Route path="/" component={Home} />
             <Route path="/new" component={NewReport} />
@@ -137,7 +182,7 @@ function AppContent() {
             <Route path="/profile" component={Profile} />
             <Route><Home /></Route>
           </Switch>
-        </AnimatePresence>
+        </AnimatedPage>
       </div>
       <BottomNav />
     </>

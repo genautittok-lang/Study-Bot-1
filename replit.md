@@ -50,16 +50,18 @@ artifacts-monorepo/
 
 ## Telegram Mini App (TWA)
 
-Professional React + Vite app with clean, minimal UI (no childish styling):
-- **Design system**: card-pro, card-elevated, card-highlight, nav-pro, badge-pro, section-label, skeleton loaders, subtle shimmer. Light background (#f5f5f7), white cards, navy gradient accent (#1a1a2e → #0f3460). Inter font, tight tracking.
-- **Home**: greeting with level avatar, dark navy balance card with shimmer, "Create Report" CTA, 3-column quick action grid, recent reports list, referral invite card
-- **Create**: 4-step progress bar (type → category → subject → details), animated transitions, search within subjects, live word/char count, AI generation with stage descriptions + percentage
-- **History**: search/filter, skeleton loading states, detail viewer with word count and copy, date formatting
-- **Balance**: dark navy balance card, 5 payment methods as professional list items with icons and prices, individual payment flows per method
-- **Profile**: dark gradient user card with level progress bar, 3-column stats, 4 achievement badges, referral system with code display, 30-language selector with search
-- **i18n**: 30 languages with IP-based auto-detection and Telegram language_code fallback
-- **Bottom nav**: frosted glass backdrop-filter with spring-animated pill indicator and balance badge
-- **Demo mode**: works outside Telegram with test user (telegramId: 999999999)
+Professional React + Vite app with clean, minimal UI:
+- **Design system**: card-pro, card-elevated, card-highlight, nav-pro (frosted glass), badge-pro, section-label, skeleton loaders, shimmer-subtle, input-pro, spinner, success-pop animation. Light bg (hsl 220 14% 96%), white cards, navy gradient accent (#1a1a2e → #0f3460). Inter font, tight tracking (-0.011em).
+- **Dark mode**: Full dark theme via .dark class, auto-synced with Telegram colorScheme. Dark card bg (hsl 224 25% 11%), adjusted borders/shadows/text.
+- **Page transitions**: AnimatePresence with fade+slide variants between all pages.
+- **Home**: greeting with animated level avatar, dark navy balance card with shimmer + animated number counter, "Create Report" CTA, 3-column stats grid, recent reports list, referral invite card with copy feedback.
+- **Create**: 4-step animated progress bar (type → category → subject → details), staggered list animations, search within subjects, char count, AI generation spinner with percentage + progress bar.
+- **History**: search/filter, skeleton loading states, detail viewer with word count, copy with visual feedback (button color change), date formatting.
+- **Balance**: dark navy balance card with shimmer, 5 payment methods as list items with branded icons and prices, individual payment flows per method, success-pop animation on confirmation.
+- **Profile**: dark gradient user card with level progress bar animation, 3-column stats with count-up, 4 achievement badges, referral code with copy, 30-language selector with search.
+- **i18n**: 30 languages with IP-based auto-detection and Telegram language_code fallback.
+- **Bottom nav**: frosted glass backdrop-filter with spring-animated pill indicator, filled icons for active tab, balance badge.
+- **Demo mode**: works outside Telegram with test user (telegramId: 999999999).
 
 ### i18n Languages (30 selectable, 3 full translations)
 Full translations: English (en), Russian (ru), Ukrainian (uk)

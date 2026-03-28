@@ -3,7 +3,7 @@ import { useUser, useLang } from "@/lib/store";
 import { getReports, type ReportItem } from "@/lib/api";
 import { getReportTypeMap, getSubjectMap, t } from "@/lib/i18n";
 import { hapticFeedback, hapticSuccess } from "@/lib/telegram";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function History() {
   const user = useUser();
@@ -12,6 +12,7 @@ export default function History() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<ReportItem | null>(null);
   const [searchQ, setSearchQ] = useState("");
+  const [copiedId, setCopiedId] = useState<number | null>(null);
 
   const TYPES = getReportTypeMap();
   const SUBJECTS = getSubjectMap();
@@ -28,42 +29,48 @@ export default function History() {
     ? reports.filter(r => r.topic.toLowerCase().includes(searchQ.toLowerCase()))
     : reports;
 
+  function copyContent(text: string, id: number) {
+    navigator.clipboard.writeText(text);
+    hapticSuccess();
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 1500);
+  }
+
   if (selected) {
     const wordCount = selected.content ? selected.content.split(/\s+/).filter(Boolean).length : 0;
+    const isCopied = copiedId === selected.id;
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pt-5 pb-4">
-        <motion.button whileTap={{ scale: 0.96 }}
+        <motion.button whileTap={{ scale: 0.95 }}
           onClick={() => { hapticFeedback("light"); setSelected(null); }}
-          className="text-muted-foreground text-[13px] font-medium mb-3 flex items-center gap-1">
+          className="text-muted-foreground text-[13px] font-medium mb-3 flex items-center gap-1 active:text-foreground transition-colors">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
           {t("back")}
         </motion.button>
-
         <div className="flex items-start gap-3 mb-4">
-          <div className="w-10 h-10 bg-primary/6 rounded-xl flex items-center justify-center shrink-0 text-sm">
+          <div className="w-10 h-10 bg-primary/6 rounded-[12px] flex items-center justify-center shrink-0 text-sm">
             {TYPES[selected.reportType]?.icon || "~"}
           </div>
           <div className="flex-1 min-w-0">
             <h2 className="text-[15px] font-bold text-foreground leading-snug text-balance">{selected.topic}</h2>
-            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+            <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
               <span className="badge-pro">{TYPES[selected.reportType]?.label || selected.reportType}</span>
               <span className="badge-pro">{SUBJECTS[selected.subject]?.label || selected.subject}</span>
-              {wordCount > 0 && <span className="text-[10px] text-muted-foreground">{wordCount} words</span>}
+              {wordCount > 0 && <span className="text-[10px] text-muted-foreground tabular-nums">{wordCount.toLocaleString()}</span>}
             </div>
           </div>
         </div>
-
-        <div className="flex gap-2 mb-4">
-          <motion.button whileTap={{ scale: 0.96 }}
-            onClick={() => { if (selected.content) { navigator.clipboard.writeText(selected.content); hapticSuccess(); } }}
-            className="flex-1 premium-btn py-2.5 text-[13px] font-semibold flex items-center justify-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            {t("copyText")}
-          </motion.button>
-        </div>
-
-        <div className="card-elevated rounded-2xl p-4 max-h-[60vh] overflow-y-auto">
-          <div className="prose prose-sm max-w-none text-foreground text-[13px] leading-[1.7] whitespace-pre-wrap break-words select-text">
+        <motion.button whileTap={{ scale: 0.96 }}
+          onClick={() => { if (selected.content) copyContent(selected.content, selected.id); }}
+          className={`w-full ${isCopied ? "bg-emerald-600" : "premium-btn"} text-white rounded-[14px] py-2.5 text-[13px] font-semibold flex items-center justify-center gap-2 mb-4 transition-colors`}>
+          {isCopied ? (
+            <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>{t("linkCopied")}</>
+          ) : (
+            <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{t("copyText")}</>
+          )}
+        </motion.button>
+        <div className="card-elevated rounded-2xl p-4 max-h-[60vh] overflow-y-auto scrollbar-hide">
+          <div className="prose prose-sm max-w-none text-foreground text-[13px] leading-[1.75] whitespace-pre-wrap break-words select-text">
             {selected.content || t("contentUnavailable")}
           </div>
         </div>
@@ -81,24 +88,24 @@ export default function History() {
       {reports.length > 3 && (
         <div className="relative mb-3">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40">
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/30">
             <circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/>
           </svg>
-          <input value={searchQ} onChange={e => setSearchQ(e.target.value)} placeholder={t("history")}
-            aria-label={t("history")}
-            className="w-full bg-muted/50 border border-border rounded-xl pl-9 pr-3 py-2.5 text-[13px] focus:outline-none focus:ring-2 focus:ring-primary/15 focus:border-primary/30 transition-all" />
+          <input value={searchQ} onChange={e => setSearchQ(e.target.value)}
+            placeholder={t("history")} aria-label={t("history")}
+            className="input-pro pl-10" />
         </div>
       )}
 
       {loading && (
-        <div className="space-y-2.5 py-2">
+        <div className="space-y-2 py-2">
           {[0, 1, 2].map(i => (
             <div key={i} className="card-pro rounded-xl p-3.5">
               <div className="flex items-center gap-3">
-                <div className="skeleton w-9 h-9 shrink-0" />
+                <div className="skeleton w-9 h-9 shrink-0 rounded-[10px]" />
                 <div className="flex-1 space-y-2">
-                  <div className="skeleton h-3.5 w-3/4" />
-                  <div className="skeleton h-3 w-1/2" />
+                  <div className="skeleton h-3.5 w-3/4 rounded-md" />
+                  <div className="skeleton h-3 w-1/2 rounded-md" />
                 </div>
               </div>
             </div>
@@ -108,54 +115,52 @@ export default function History() {
 
       {!loading && filtered.length === 0 && reports.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16">
-          <div className="w-14 h-14 bg-muted rounded-2xl flex items-center justify-center mb-4">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" opacity="0.4">
+          <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mb-4">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1.2" opacity="0.3">
               <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>
             </svg>
           </div>
           <p className="text-[13px] text-muted-foreground font-medium">{t("noReportsYet")}</p>
-          <p className="text-[11px] text-muted-foreground/50 mt-1">{t("createFirst")}</p>
+          <p className="text-[11px] text-muted-foreground/40 mt-1">{t("createFirst")}</p>
         </div>
       )}
 
       {!loading && filtered.length === 0 && reports.length > 0 && searchQ && (
         <div className="text-center py-12">
-          <p className="text-[13px] text-muted-foreground">No results for "{searchQ}"</p>
+          <p className="text-[13px] text-muted-foreground">{t("noReportsYet")}</p>
         </div>
       )}
 
-      <div className="space-y-2">
-        <AnimatePresence>
-          {filtered.map((report, i) => (
-            <motion.button
-              key={report.id}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.03, duration: 0.2 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => { hapticFeedback("light"); setSelected(report); }}
-              className="w-full card-pro rounded-xl p-3.5 text-left"
-            >
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 bg-primary/6 rounded-lg flex items-center justify-center shrink-0 text-sm">
-                  {TYPES[report.reportType]?.icon || "~"}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-[13px] text-foreground truncate">{report.topic}</div>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <span className="text-[11px] text-muted-foreground">{TYPES[report.reportType]?.label}</span>
-                    <span className="text-[11px] text-muted-foreground/30">·</span>
-                    <span className="text-[11px] text-muted-foreground">{SUBJECTS[report.subject]?.label || report.subject}</span>
-                  </div>
-                  <div className="text-[10px] text-muted-foreground/40 mt-1 tabular-nums">
-                    {new Date(report.createdAt).toLocaleDateString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
-                  </div>
-                </div>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-muted-foreground/20 mt-1.5 shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
+      <div className="space-y-1.5">
+        {filtered.map((report, i) => (
+          <motion.button
+            key={report.id}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.025, duration: 0.15 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => { hapticFeedback("light"); setSelected(report); }}
+            className="w-full card-pro rounded-xl p-3.5 text-left"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 bg-primary/6 rounded-[10px] flex items-center justify-center shrink-0 text-sm">
+                {TYPES[report.reportType]?.icon || "~"}
               </div>
-            </motion.button>
-          ))}
-        </AnimatePresence>
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-[13px] text-foreground truncate">{report.topic}</div>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className="text-[11px] text-muted-foreground">{TYPES[report.reportType]?.label}</span>
+                  <span className="text-[11px] text-muted-foreground/20">·</span>
+                  <span className="text-[11px] text-muted-foreground">{SUBJECTS[report.subject]?.label || report.subject}</span>
+                </div>
+                <div className="text-[10px] text-muted-foreground/30 mt-1 tabular-nums">
+                  {new Date(report.createdAt).toLocaleDateString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                </div>
+              </div>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-muted-foreground/15 mt-1.5 shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </motion.button>
+        ))}
       </div>
     </motion.div>
   );
