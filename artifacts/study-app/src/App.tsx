@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -16,6 +16,47 @@ import Admin from "@/pages/admin";
 
 const queryClient = new QueryClient();
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
+
+function AuroraBackground() {
+  return (
+    <>
+      <div className="app-bg">
+        <div className="aurora-blob-3" />
+      </div>
+      <Particles />
+    </>
+  );
+}
+
+function Particles() {
+  const particles = useMemo(() =>
+    Array.from({ length: 18 }, (_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      size: Math.random() * 2.5 + 1,
+      duration: Math.random() * 15 + 12,
+      delay: Math.random() * 10,
+      opacity: Math.random() * 0.4 + 0.1,
+      color: i % 3 === 0 ? 'rgba(6,182,212,0.5)' : i % 3 === 1 ? 'rgba(16,185,129,0.4)' : 'rgba(139,92,246,0.5)',
+    })), []);
+
+  return (
+    <div className="particles">
+      {particles.map(p => (
+        <div key={p.id} className="particle" style={{
+          left: p.left,
+          width: p.size,
+          height: p.size,
+          background: p.color,
+          animationDuration: `${p.duration}s`,
+          animationDelay: `${p.delay}s`,
+          opacity: p.opacity,
+          boxShadow: `0 0 ${p.size * 3}px ${p.color}`,
+        }} />
+      ))}
+    </div>
+  );
+}
 
 function BottomNav() {
   const [location, setLocation] = useLocation();
@@ -48,10 +89,10 @@ function BottomNav() {
                 className={`relative flex flex-col items-center gap-0.5 min-w-[52px] ${isSpecial ? 'pb-1' : 'py-1.5 px-2'}`}
               >
                 {isSpecial ? (
-                  <div className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center -mt-5 shadow-xl"
+                  <div className="w-[54px] h-[54px] rounded-[18px] flex items-center justify-center -mt-6 create-btn-glow"
                     style={{
-                      background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
-                      boxShadow: "0 4px 20px rgba(124,58,237,0.4), 0 2px 8px rgba(0,0,0,0.1)",
+                      background: "linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9)",
+                      border: "1px solid rgba(255,255,255,0.15)",
                     }}>
                     <span className="text-white">{tab.icon(false)}</span>
                   </div>
@@ -61,23 +102,23 @@ function BottomNav() {
                       <motion.div
                         layoutId="nav-active"
                         className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-5 h-[3px] rounded-full"
-                        style={{ background: "#7c3aed" }}
+                        style={{ background: "linear-gradient(90deg, #8b5cf6, #06b6d4)", boxShadow: "0 0 10px rgba(139,92,246,0.5)" }}
                         transition={{ type: "spring", bounce: 0.12, duration: 0.5 }}
                       />
                     )}
-                    <span className={`relative z-10 transition-colors duration-200 ${active ? "text-[#7c3aed]" : "text-[#b0b4c0]"}`}>
+                    <span className={`relative z-10 transition-colors duration-200 ${active ? "text-[#a78bfa]" : "text-[rgba(255,255,255,0.25)]"}`}>
                       {tab.icon(active)}
                     </span>
                   </>
                 )}
-                <span className={`relative z-10 text-[10px] font-semibold transition-colors duration-200 ${isSpecial ? "text-[#7c3aed]" : active ? "text-[#7c3aed]" : "text-[#b0b4c0]"}`}>
+                <span className={`relative z-10 text-[10px] font-semibold transition-colors duration-200 ${isSpecial ? "text-[#a78bfa]" : active ? "text-[#a78bfa]" : "text-[rgba(255,255,255,0.25)]"}`}>
                   {tab.label}
                 </span>
                 {tab.badge && (
                   <motion.span
                     initial={{ scale: 0 }} animate={{ scale: 1 }}
                     className="absolute top-0.5 right-0.5 text-white text-[8px] font-bold min-w-[16px] h-[16px] flex items-center justify-center rounded-full px-1 z-20"
-                    style={{ background: "#7c3aed" }}>
+                    style={{ background: "linear-gradient(135deg, #8b5cf6, #06b6d4)", boxShadow: "0 0 8px rgba(139,92,246,0.4)" }}>
                     {tab.badge}
                   </motion.span>
                 )}
@@ -92,7 +133,8 @@ function BottomNav() {
 
 function LoadingScreen() {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden" style={{ background: "#f0f1f5" }}>
+    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden" style={{ background: "#070810" }}>
+      <div className="app-bg"><div className="aurora-blob-3" /></div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -101,23 +143,30 @@ function LoadingScreen() {
       >
         <div className="relative mb-8">
           <motion.div
-            className="w-[72px] h-[72px] rounded-[20px] flex items-center justify-center relative"
+            className="w-[76px] h-[76px] rounded-[22px] flex items-center justify-center relative"
             style={{
               background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
-              boxShadow: "0 8px 40px rgba(124,58,237,0.25)",
+              boxShadow: "0 0 60px rgba(124,58,237,0.4), 0 8px 40px rgba(124,58,237,0.2)",
+              border: "1px solid rgba(255,255,255,0.1)",
             }}
           >
-            <span className="text-white font-extrabold text-[28px] tracking-tighter relative z-10">S</span>
-            <div className="absolute inset-0 rounded-[20px]"
+            <span className="text-white font-extrabold text-[30px] tracking-tighter relative z-10">S</span>
+            <div className="absolute inset-0 rounded-[22px]"
               style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%)" }} />
           </motion.div>
+          <motion.div
+            className="absolute -inset-4 rounded-[30px]"
+            style={{ border: "1px solid rgba(124,58,237,0.2)" }}
+            animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.1, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
         </div>
-        <h1 className="text-[22px] font-extrabold tracking-tight mb-1.5 gradient-text">StudyPro</h1>
-        <p className="text-[12px] text-[#999] mb-8">{t("subtitle")}</p>
-        <div className="w-36 h-[3px] rounded-full overflow-hidden" style={{ background: "#e0e1e5" }}>
+        <h1 className="text-[24px] font-extrabold tracking-tight mb-1.5 gradient-text text-glow-purple">StudyPro</h1>
+        <p className="text-[12px] text-white/25 mb-8">{t("subtitle")}</p>
+        <div className="w-40 h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.05)" }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: "linear-gradient(90deg, #7c3aed, #06b6d4)" }}
+            style={{ background: "linear-gradient(90deg, #7c3aed, #06b6d4, #10b981)" }}
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
             transition={{ duration: 2, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
@@ -130,15 +179,16 @@ function LoadingScreen() {
 
 function ErrorScreen({ error, retry }: { error: string; retry: () => void }) {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center px-6" style={{ background: "#f0f1f5" }}>
+    <div className="min-h-screen w-full flex items-center justify-center px-6" style={{ background: "#070810" }}>
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center">
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: "rgba(239,68,68,0.08)" }}>
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+          style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.12)" }}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="1.5">
             <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
           </svg>
         </div>
-        <h1 className="text-lg font-bold text-[#1a1b23] mb-1">{t("error")}</h1>
-        <p className="text-sm text-[#888] mb-6">{error}</p>
+        <h1 className="text-lg font-bold text-white mb-1">{t("error")}</h1>
+        <p className="text-sm text-white/40 mb-6">{error}</p>
         <button onClick={retry} className="btn-main px-8 py-3 text-sm">{t("tryAgain")}</button>
       </motion.div>
     </div>
@@ -150,10 +200,10 @@ function AnimatedPage({ children }: { children: React.ReactNode }) {
   return (
     <AnimatePresence mode="wait">
       <motion.div key={location}
-        initial={{ opacity: 0, y: 6 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -4 }}
-        transition={{ duration: 0.2, ease }}>
+        exit={{ opacity: 0, y: -6 }}
+        transition={{ duration: 0.25, ease }}>
         {children}
       </motion.div>
     </AnimatePresence>
@@ -165,7 +215,7 @@ function AppContent() {
   useLang();
 
   useEffect(() => {
-    document.documentElement.style.colorScheme = 'light';
+    document.documentElement.style.colorScheme = 'dark';
   }, []);
 
   if (loading) return <LoadingScreen />;
@@ -173,6 +223,7 @@ function AppContent() {
 
   return (
     <>
+      <AuroraBackground />
       <div className="min-h-screen relative z-10 pb-20">
         <AnimatedPage>
           <Switch>
