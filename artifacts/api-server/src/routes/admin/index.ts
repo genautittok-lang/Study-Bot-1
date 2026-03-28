@@ -203,7 +203,7 @@ router.post("/payments/:id/reject", async (req: Request, res: Response) => {
     await db.update(paymentsTable).set({ status: "rejected" }).where(eq(paymentsTable.id, paymentId));
 
     try {
-      await bot.telegram.sendMessage(payment.telegramId, `❌ Ваш платіж відхилено. Зв'яжіться з підтримкою: @studypro_support`);
+      await bot.telegram.sendMessage(payment.telegramId, `❌ Ваш платіж відхилено. Зв'яжіться з підтримкою: @smartstudy_support`);
     } catch { }
 
     res.json({ success: true });

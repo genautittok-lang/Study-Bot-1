@@ -51,7 +51,7 @@ export default function Profile() {
     { icon: "🏆", name: t("hundredReportsAch") || "Legend", ok: total >= 100, color: "#FFD700", p: Math.min((total / 100) * 100, 100) },
   ];
 
-  const refLink = `https://t.me/studypro_bot?start=ref_${refCode}`;
+  const refLink = `https://t.me/smartstudy_bot?start=ref_${refCode}`;
 
   function copyRef() {
     navigator.clipboard.writeText(refLink)
@@ -278,15 +278,15 @@ export default function Profile() {
           },
           {
             label: t("support") || "Support",
-            desc: "@studypro_support",
-            action: () => { hapticFeedback("light"); window.open("https://t.me/studypro_support", "_blank"); },
+            desc: "@smartstudy_support",
+            action: () => { hapticFeedback("light"); window.open("https://t.me/smartstudy_support", "_blank"); },
             icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A90FF" strokeWidth="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
             bg: "rgba(74,144,255,0.05)",
           },
           {
             label: t("rateApp") || "Rate App",
             desc: t("rateAppDesc") || "Leave a review",
-            action: () => { hapticFeedback("light"); window.open("https://t.me/studypro_bot", "_blank"); },
+            action: () => { hapticFeedback("light"); window.open("https://t.me/smartstudy_bot", "_blank"); },
             icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF9F43" strokeWidth="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01Z"/></svg>,
             bg: "rgba(255,159,67,0.05)",
           },
@@ -322,7 +322,7 @@ export default function Profile() {
       </motion.div>
 
       <div className="text-center pt-3 pb-2">
-        <p className="text-[9px] text-[#d1d5db] font-medium">StudyPro v2.1 · Made with 💜</p>
+        <p className="text-[9px] text-[#d1d5db] font-medium">SmartStudy v2.1 · Made with 💜</p>
       </div>
     </div>
   );

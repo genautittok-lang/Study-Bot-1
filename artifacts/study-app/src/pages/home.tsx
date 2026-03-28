@@ -111,7 +111,7 @@ export default function Home() {
     getReports(user.telegramId).then(r => setRecent(r.reports.slice(0, 2))).catch(() => {});
   }, [user]);
 
-  const refLink = `https://t.me/studypro_bot?start=ref_${user?.referralCode || "---"}`;
+  const refLink = `https://t.me/smartstudy_bot?start=ref_${user?.referralCode || "---"}`;
 
   function copyRef() {
     navigator.clipboard.writeText(refLink)

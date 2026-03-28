@@ -187,7 +187,7 @@ function LoadingScreen() {
             transition={{ duration: 2.5, repeat: Infinity, delay: 0.3 }}
           />
         </div>
-        <h1 className="text-[28px] font-extrabold tracking-tight mb-1.5 gradient-text-animated">StudyPro</h1>
+        <h1 className="text-[28px] font-extrabold tracking-tight mb-1.5 gradient-text-animated">SmartStudy</h1>
         <p className="text-[12px] text-[#8b90a0] mb-8 font-medium tracking-wide">{t("subtitle")}</p>
         <div className="w-36 h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(123,104,238,0.06)" }}>
           <motion.div

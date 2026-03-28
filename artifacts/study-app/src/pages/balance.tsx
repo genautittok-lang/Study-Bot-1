@@ -418,7 +418,7 @@ export default function Balance() {
             <span className="text-[10px] text-white/40 font-bold tracking-wider uppercase">{t("currentBalance")}</span>
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.1)" }}>
               <div className="w-1.5 h-1.5 rounded-full bg-[#00D4AA] animate-pulse" />
-              <span className="text-[9px] text-white/60 font-semibold">StudyPro</span>
+              <span className="text-[9px] text-white/60 font-semibold">SmartStudy</span>
             </div>
           </div>
 
@@ -442,7 +442,7 @@ export default function Balance() {
           )}
 
           <div className="flex items-center justify-between mt-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-            <span className="text-[10px] text-white/25 font-medium">StudyPro</span>
+            <span className="text-[10px] text-white/25 font-medium">SmartStudy</span>
             <span className="text-[10px] text-white/20 font-medium tabular">{t("total")}: {user?.totalReports || 0}</span>
           </div>
         </div>

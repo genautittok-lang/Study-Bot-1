@@ -219,7 +219,7 @@ router.post("/create-invoice", async (req, res) => {
     }
 
     const invoiceLink = await bot.telegram.createInvoiceLink({
-      title: "📚 15 звітів StudyPro",
+      title: "📚 15 звітів SmartStudy",
       description: "Пакет із 15 AI-згенерованих звітів, конспектів або лабораторних",
       payload: `stars_${telegramId}_${Date.now()}`,
       currency: "XTR",

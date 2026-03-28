@@ -56,7 +56,7 @@ export default function Admin() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[22px] font-extrabold text-[#1a1b23] tracking-tight">Admin Panel</h1>
-          <p className="text-[11px] text-[#888]">Manage StudyPro</p>
+          <p className="text-[11px] text-[#888]">Manage SmartStudy</p>
         </div>
         <button onClick={() => nav("/")} className="text-[12px] font-semibold text-[#7c3aed]">Back to app</button>
       </div>
