@@ -191,6 +191,21 @@ type TranslationKeys = {
   noHistory: string;
   noHistoryDesc: string;
   progress: string;
+  lengthShort: string;
+  lengthMedium: string;
+  lengthFull: string;
+  lengthShortDesc: string;
+  lengthMediumDesc: string;
+  lengthFullDesc: string;
+  reportLength: string;
+  estimatedTime: string;
+  estimatedWords: string;
+  seconds: string;
+  repeatReport: string;
+  shareReport: string;
+  shareText: string;
+  recentSubjects: string;
+  continueWith: string;
 };
 
 const translations: Record<string, TranslationKeys> = {
@@ -347,6 +362,21 @@ const translations: Record<string, TranslationKeys> = {
     noHistory: "No reports yet",
     noHistoryDesc: "Create your first report to see it here",
     progress: "Progress",
+    lengthShort: "Short",
+    lengthMedium: "Medium",
+    lengthFull: "Full",
+    lengthShortDesc: "~500 words",
+    lengthMediumDesc: "~1500 words",
+    lengthFullDesc: "~3000 words",
+    reportLength: "Report length",
+    estimatedTime: "Est. time",
+    estimatedWords: "words",
+    seconds: "sec",
+    repeatReport: "Repeat",
+    shareReport: "Share",
+    shareText: "Generated with StudyPro Bot",
+    recentSubjects: "Recent",
+    continueWith: "Continue",
   },
   ru: {
     appName: "StudyPro",
@@ -501,6 +531,21 @@ const translations: Record<string, TranslationKeys> = {
     noHistory: "Нет отчётов",
     noHistoryDesc: "Создайте первый отчёт, чтобы увидеть его здесь",
     progress: "Прогресс",
+    lengthShort: "Короткий",
+    lengthMedium: "Средний",
+    lengthFull: "Полный",
+    lengthShortDesc: "~500 слов",
+    lengthMediumDesc: "~1500 слов",
+    lengthFullDesc: "~3000 слов",
+    reportLength: "Объём работы",
+    estimatedTime: "Время",
+    estimatedWords: "слов",
+    seconds: "сек",
+    repeatReport: "Повторить",
+    shareReport: "Поделиться",
+    shareText: "Сгенерировано в StudyPro Bot",
+    recentSubjects: "Недавние",
+    continueWith: "Продолжить",
   },
   uk: {
     appName: "StudyPro",
@@ -655,6 +700,21 @@ const translations: Record<string, TranslationKeys> = {
     noHistory: "Немає звітів",
     noHistoryDesc: "Створіть перший звіт, щоб побачити його тут",
     progress: "Прогрес",
+    lengthShort: "Короткий",
+    lengthMedium: "Середній",
+    lengthFull: "Повний",
+    lengthShortDesc: "~500 слів",
+    lengthMediumDesc: "~1500 слів",
+    lengthFullDesc: "~3000 слів",
+    reportLength: "Обсяг роботи",
+    estimatedTime: "Час",
+    estimatedWords: "слів",
+    seconds: "сек",
+    repeatReport: "Повторити",
+    shareReport: "Поділитися",
+    shareText: "Згенеровано в StudyPro Bot",
+    recentSubjects: "Нещодавні",
+    continueWith: "Продовжити",
   },
 };
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useUser, usePhotoUrl, useLang } from "@/lib/store";
+import { useUser, usePhotoUrl, useLang, getRecentItems, type RecentItem } from "@/lib/store";
 import { useLocation } from "wouter";
 import { getReports, type ReportItem } from "@/lib/api";
 import { hapticFeedback, hapticSuccess } from "@/lib/telegram";
@@ -95,6 +95,7 @@ export default function Home() {
   useLang();
   const [recent, setRecent] = useState<ReportItem[]>([]);
   const [copied, setCopied] = useState(false);
+  const [recentItems] = useState<RecentItem[]>(() => getRecentItems());
 
   const bal = user ? (!user.freeReportsUsed ? user.balance + 1 : user.balance) : 0;
   const lvl = getUserLevel(user?.totalReports || 0);
@@ -255,6 +256,32 @@ export default function Home() {
           ))}
         </div>
       </motion.div>
+
+      {/* ─── RECENT SUBJECTS ─── */}
+      {recentItems.length > 0 && (
+        <motion.div {...anim(4)} className="mb-4">
+          <div className="flex items-center gap-2 mb-2.5 px-0.5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span className="text-[11px] font-bold text-[#9ca3af] uppercase tracking-wider">{t("recentSubjects")}</span>
+          </div>
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4">
+            {recentItems.map((item, i) => (
+              <motion.button key={`${item.reportType}-${item.subject}`}
+                initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + i * 0.05, ease }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => { hapticFeedback("light"); go("/new"); }}
+                className="flex-shrink-0 g-card rounded-[16px] px-3.5 py-3 flex items-center gap-2.5 min-w-[160px]">
+                <span className="text-[18px] shrink-0">{item.typeIcon}</span>
+                <div className="min-w-0 text-left">
+                  <div className="text-[11px] font-bold truncate leading-tight">{item.subjectName}</div>
+                  <div className="text-[9px] text-[#b0b0c0] mt-0.5 truncate font-medium">{item.typeName}</div>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      )}
 
       {/* ─── STATS BENTO ─── */}
       <motion.div {...anim(4)} className="grid grid-cols-3 gap-2 mb-4">

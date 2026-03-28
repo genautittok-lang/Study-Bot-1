@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
-import { useUser, setUser, useLang } from "@/lib/store";
+import { useUser, setUser, useLang, addRecentItem } from "@/lib/store";
 import { generateReport } from "@/lib/api";
 import { getReportTypes, getSubjectCategories, getSubjectName, getEduLevels, getCategoryEduLevel, t } from "@/lib/i18n";
 import type { EduLevel } from "@/lib/i18n";
-import { hapticFeedback, hapticSuccess, hapticError } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, hapticError, shareViaTelegram } from "@/lib/telegram";
 import { motion, AnimatePresence } from "framer-motion";
 import MarkdownRenderer from "@/components/markdown-renderer";
 
@@ -87,10 +87,18 @@ export default function NewReport() {
   const [copied, setCopied] = useState(false);
   const [imageData, setImageData] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [length, setLength] = useState<"short" | "medium" | "full">("medium");
 
   const canGenerate = user ? (!user.freeReportsUsed || user.balance > 0) : false;
   const TYPES = getReportTypes();
   const CATS = getSubjectCategories();
+
+  const LENGTH_OPTIONS = [
+    { id: "short" as const, label: t("lengthShort"), desc: t("lengthShortDesc"), words: 500, time: 15 },
+    { id: "medium" as const, label: t("lengthMedium"), desc: t("lengthMediumDesc"), words: 1500, time: 30 },
+    { id: "full" as const, label: t("lengthFull"), desc: t("lengthFullDesc"), words: 3000, time: 60 },
+  ];
+  const selectedLength = LENGTH_OPTIONS.find(l => l.id === length) || LENGTH_OPTIONS[1];
 
   const filteredCats = useMemo(() => {
     if (eduLevel === "all") return CATS;
@@ -104,18 +112,30 @@ export default function NewReport() {
     if (!canGenerate) { hapticError(); setLocation("/balance"); return; }
     setStep("generating"); setProgress(0); hapticFeedback("medium");
     const iv = setInterval(() => { setProgress(p => Math.min(p + Math.random() * 5 + 1.5, 92)); }, 700);
+
+    const lengthHint = length === "short" ? " (short, ~500 words)" : length === "full" ? " (detailed, ~3000 words)" : "";
+    const fullTopic = topic.trim() + lengthHint;
+
     try {
-      const res = await generateReport({ telegramId: user.telegramId, reportType, subject, topic: topic.trim(), group: group.trim() || undefined, imageData: imageData || undefined });
+      const res = await generateReport({ telegramId: user.telegramId, reportType, subject, topic: fullTopic, group: group.trim() || undefined, imageData: imageData || undefined });
       clearInterval(iv); setProgress(100);
       if (res.success && res.content) {
         hapticSuccess(); setResult(res.content);
         setUser({ ...user, balance: res.remainingBalance ?? user.balance, freeReportsUsed: true, totalReports: user.totalReports + 1 });
+        const selType = TYPES.find(rt => rt.id === reportType);
+        addRecentItem({ reportType, subject, subjectName: getSubjectName(subject), typeName: selType?.label || reportType, typeIcon: selType?.icon || "📄" });
         setTimeout(() => setStep("done"), 400);
       } else { hapticError(); setErrorMsg(res.error === "no_balance" ? t("noBalance") : t("error")); setStep("error"); }
     } catch { clearInterval(iv); hapticError(); setErrorMsg(t("connectionError")); setStep("error"); }
   }
 
-  function reset() { setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); }
+  function shareResult() {
+    const selType = TYPES.find(rt => rt.id === reportType);
+    const preview = result.substring(0, 300).replace(/[#*_]/g, "") + "...";
+    shareViaTelegram(`${selType?.icon} ${selType?.label}: ${topic.trim()}\n\n${preview}\n\n${t("shareText")}`);
+  }
+
+  function reset() { setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); setLength("medium"); }
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -174,7 +194,7 @@ export default function NewReport() {
             <p className="text-[11px] text-[#9ca3af] mt-0.5">{selType?.icon} {selType?.label} · {wordCount.toLocaleString()} words</p>
           </div>
         </div>
-        <div className="flex gap-2.5 mb-3">
+        <div className="flex gap-2 mb-3">
           <motion.button whileTap={{ scale: 0.96 }}
             onClick={() => { navigator.clipboard.writeText(result).then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); }).catch(() => {}); }}
             className="flex-1 btn-main py-3 text-[13px] flex items-center justify-center gap-2">
@@ -182,8 +202,13 @@ export default function NewReport() {
               ? <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>✓</>
               : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{t("copy")}</>}
           </motion.button>
+          <motion.button whileTap={{ scale: 0.96 }} onClick={shareResult}
+            className="py-3 px-4 rounded-[14px] text-[13px] font-semibold flex items-center justify-center gap-1.5"
+            style={{ background: "rgba(9,132,227,0.06)", color: "#0984E3" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+          </motion.button>
           <motion.button whileTap={{ scale: 0.96 }} onClick={reset}
-            className="flex-1 btn-ghost py-3 text-[13px]">{t("newOne")}</motion.button>
+            className="btn-ghost py-3 px-4 text-[13px]">{t("newOne")}</motion.button>
         </div>
         <div className="g-card rounded-[16px] p-4 max-h-[60vh] overflow-y-auto scrollbar-hide select-text">
           <MarkdownRenderer content={result} />
@@ -327,6 +352,34 @@ export default function NewReport() {
           {topic.length > 0 && (
             <div className="flex justify-end mt-1"><div className="text-[10px] text-[#9ca3af] tabular">{topic.length}</div></div>
           )}
+        </div>
+        <div>
+          <label className="text-[12px] font-semibold text-[#6b7280] mb-1.5 block">{t("reportLength")}</label>
+          <div className="flex gap-1.5 p-1 rounded-[14px]" style={{ background: "rgba(0,0,0,0.03)" }}>
+            {LENGTH_OPTIONS.map(opt => (
+              <motion.button key={opt.id} whileTap={{ scale: 0.96 }}
+                onClick={() => { hapticFeedback("light"); setLength(opt.id); }}
+                className="flex-1 py-2.5 rounded-[10px] text-center transition-all"
+                style={{
+                  color: length === opt.id ? "#1a1a2e" : "#9ca3af",
+                  background: length === opt.id ? "white" : "transparent",
+                  boxShadow: length === opt.id ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
+                }}>
+                <div className="text-[11px] font-bold">{opt.label}</div>
+                <div className="text-[9px] mt-0.5" style={{ color: length === opt.id ? "#6C5CE7" : "#b0b0c0" }}>{opt.desc}</div>
+              </motion.button>
+            ))}
+          </div>
+          <div className="flex items-center gap-3 mt-2 px-1">
+            <div className="flex items-center gap-1">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span className="text-[10px] text-[#9ca3af] font-medium">{t("estimatedTime")}: ~{selectedLength.time} {t("seconds")}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/></svg>
+              <span className="text-[10px] text-[#9ca3af] font-medium">~{selectedLength.words.toLocaleString()} {t("estimatedWords")}</span>
+            </div>
+          </div>
         </div>
         <div>
           <label className="text-[12px] font-semibold text-[#6b7280] mb-1.5 block">{t("groupLabel")}</label>

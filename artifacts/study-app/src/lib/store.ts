@@ -4,6 +4,33 @@ import { authUser } from "./api";
 import { getTelegramUser, initTelegramApp } from "./telegram";
 import { initLanguage, detectLanguageByIP, subscribeLang } from "./i18n";
 
+export interface RecentItem {
+  reportType: string;
+  subject: string;
+  subjectName: string;
+  typeName: string;
+  typeIcon: string;
+  ts: number;
+}
+
+const RECENT_KEY = "studypro_recent";
+const MAX_RECENT = 4;
+
+export function getRecentItems(): RecentItem[] {
+  try {
+    const raw = localStorage.getItem(RECENT_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+export function addRecentItem(item: Omit<RecentItem, "ts">) {
+  const items = getRecentItems().filter(
+    i => !(i.reportType === item.reportType && i.subject === item.subject)
+  );
+  items.unshift({ ...item, ts: Date.now() });
+  try { localStorage.setItem(RECENT_KEY, JSON.stringify(items.slice(0, MAX_RECENT))); } catch {}
+}
+
 let globalUser: UserData | null = null;
 let globalPhotoUrl: string | null = null;
 const listeners = new Set<() => void>();

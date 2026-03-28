@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { useUser, useLang } from "@/lib/store";
 import { getReports, type ReportItem } from "@/lib/api";
-import { hapticFeedback, hapticSuccess } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, shareViaTelegram } from "@/lib/telegram";
 import { t, getReportTypeMap, getSubjectMap } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import MarkdownRenderer from "@/components/markdown-renderer";
@@ -10,10 +11,12 @@ const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
 export default function History() {
   const user = useUser();
+  const [, go] = useLocation();
   useLang();
   const [reports, setReports] = useState<ReportItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<ReportItem | null>(null);
+  const [copied, setCopied] = useState(false);
   const TYPES = getReportTypeMap();
   const SUBJECTS = getSubjectMap();
 
@@ -23,6 +26,13 @@ export default function History() {
     getReports(user.telegramId).then(r => setReports(r.reports)).catch(() => {}).finally(() => setLoading(false));
   }, [user]);
 
+  function shareReport(r: ReportItem) {
+    const preview = (r.content || "").substring(0, 300).replace(/[#*_]/g, "") + "...";
+    const icon = TYPES[r.reportType]?.icon || "📄";
+    const label = TYPES[r.reportType]?.label || r.reportType;
+    shareViaTelegram(`${icon} ${label}: ${r.topic}\n\n${preview}\n\n${t("shareText")}`);
+  }
+
   if (selected) {
     const wc = (selected.content || "").split(/\s+/).filter(Boolean).length;
     return (
@@ -30,22 +40,37 @@ export default function History() {
         <motion.button whileTap={{ scale: 0.95 }}
           onClick={() => { hapticFeedback("light"); setSelected(null); }}
           className="text-[#9ca3af] text-[13px] font-semibold mb-4 flex items-center gap-1 active:text-[#6b7280] transition-colors">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
           {t("back")}
         </motion.button>
         <h2 className="text-[16px] font-bold leading-snug text-balance mb-2">{selected.topic}</h2>
         <div className="flex items-center gap-1.5 flex-wrap mb-3">
           <span className="badge">{TYPES[selected.reportType]?.icon} {TYPES[selected.reportType]?.label || selected.reportType}</span>
           <span className="badge-blue">{SUBJECTS[selected.subject]?.label || selected.subject}</span>
-          {wc > 0 && <span className="text-[10px] text-[#9ca3af] tabular font-medium">{wc.toLocaleString()} words</span>}
+          {wc > 0 && <span className="text-[10px] text-[#9ca3af] tabular font-medium">{wc.toLocaleString()} {t("estimatedWords")}</span>}
         </div>
-        <motion.button whileTap={{ scale: 0.96 }}
-          onClick={() => { navigator.clipboard.writeText(selected.content || "").then(() => hapticSuccess()).catch(() => {}); }}
-          className="btn-main px-5 py-2.5 text-[13px] flex items-center gap-2 mb-3">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-          {t("copy")}
+        <div className="flex gap-2 mb-3">
+          <motion.button whileTap={{ scale: 0.96 }}
+            onClick={() => { navigator.clipboard.writeText(selected.content || "").then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); }).catch(() => {}); }}
+            className="flex-1 btn-main py-2.5 text-[13px] flex items-center justify-center gap-2">
+            {copied
+              ? <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>✓</>
+              : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{t("copy")}</>}
+          </motion.button>
+          <motion.button whileTap={{ scale: 0.96 }} onClick={() => shareReport(selected)}
+            className="py-2.5 px-4 rounded-[14px] text-[13px] font-semibold flex items-center justify-center gap-1.5"
+            style={{ background: "rgba(9,132,227,0.06)", color: "#0984E3" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+            {t("shareReport")}
+          </motion.button>
+        </div>
+        <motion.button whileTap={{ scale: 0.97 }} onClick={() => { hapticFeedback("medium"); go("/new"); }}
+          className="w-full mb-3 py-2.5 rounded-[14px] text-[13px] font-semibold flex items-center justify-center gap-2"
+          style={{ background: "rgba(108,92,231,0.05)", color: "#6C5CE7" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+          {t("repeatReport")}
         </motion.button>
-        <div className="g-card rounded-[16px] p-4 max-h-[60vh] overflow-y-auto scrollbar-hide select-text">
+        <div className="g-card rounded-[16px] p-4 max-h-[55vh] overflow-y-auto scrollbar-hide select-text">
           <MarkdownRenderer content={selected.content || t("contentUnavailable")} />
         </div>
       </motion.div>

@@ -96,3 +96,9 @@ export function hapticError() {
     getTelegramWebApp()?.HapticFeedback?.notificationOccurred("error");
   } catch {}
 }
+
+export function shareViaTelegram(text: string) {
+  const encoded = encodeURIComponent(text);
+  const url = `https://t.me/share/url?url=${encodeURIComponent("https://t.me/studypro_bot")}&text=${encoded}`;
+  window.open(url, "_blank");
+}
