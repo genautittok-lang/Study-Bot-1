@@ -4,6 +4,7 @@ import { getReports, type ReportItem } from "@/lib/api";
 import { hapticFeedback, hapticSuccess } from "@/lib/telegram";
 import { t, getReportTypeMap, getSubjectMap } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
+import MarkdownRenderer from "@/components/markdown-renderer";
 
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
@@ -44,8 +45,8 @@ export default function History() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
           {t("copy")}
         </motion.button>
-        <div className="g-card-s rounded-2xl p-5 max-h-[55vh] overflow-y-auto scrollbar-hide">
-          <div className="prose prose-sm prose-invert max-w-none text-white/70 text-[14px] leading-[1.8] whitespace-pre-wrap break-words select-text">{selected.content || t("contentUnavailable")}</div>
+        <div className="g-card-s rounded-2xl p-5 max-h-[60vh] overflow-y-auto scrollbar-hide select-text">
+          <MarkdownRenderer content={selected.content || t("contentUnavailable")} />
         </div>
       </motion.div>
     );

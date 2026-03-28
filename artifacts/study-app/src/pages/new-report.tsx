@@ -6,6 +6,7 @@ import { getReportTypes, getSubjectCategories, getSubjectName, getEduLevels, get
 import type { EduLevel } from "@/lib/i18n";
 import { hapticFeedback, hapticSuccess, hapticError } from "@/lib/telegram";
 import { motion, AnimatePresence } from "framer-motion";
+import MarkdownRenderer from "@/components/markdown-renderer";
 
 type Step = "type" | "category" | "subject" | "details" | "generating" | "done" | "error";
 const STEPS = ["type", "category", "subject", "details"] as const;
@@ -172,8 +173,8 @@ export default function NewReport() {
           <motion.button whileTap={{ scale: 0.96 }} onClick={reset}
             className="flex-1 g-card rounded-2xl py-3.5 text-[14px] font-bold text-white/60 hover:text-white transition-colors">{t("newOne")}</motion.button>
         </div>
-        <div className="g-card-s rounded-2xl p-5 max-h-[55vh] overflow-y-auto scrollbar-hide">
-          <div className="prose prose-sm prose-invert max-w-none text-white/70 text-[14px] leading-[1.8] whitespace-pre-wrap break-words select-text">{result}</div>
+        <div className="g-card-s rounded-2xl p-5 max-h-[60vh] overflow-y-auto scrollbar-hide select-text">
+          <MarkdownRenderer content={result} />
         </div>
       </motion.div>
     );
