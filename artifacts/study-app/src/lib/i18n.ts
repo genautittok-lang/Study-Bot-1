@@ -231,6 +231,15 @@ type TranslationKeys = {
   payStep3Crypto: string;
   adminWillCheck: string;
   uahOnly: string;
+  uploadScreenshot: string;
+  uploadScreenshotDesc: string;
+  screenshotUploaded: string;
+  changeScreenshot: string;
+  screenshotRequired: string;
+  submitting: string;
+  paymentSubmitted: string;
+  paymentSubmittedDesc: string;
+  adminReviewing: string;
 };
 
 const translations: Record<string, TranslationKeys> = {
@@ -427,6 +436,15 @@ const translations: Record<string, TranslationKeys> = {
     payStep3Crypto: "Admin verifies and credits 15 reports",
     adminWillCheck: "Admin will verify your payment manually",
     uahOnly: "Ukraine only",
+    uploadScreenshot: "Upload Screenshot",
+    uploadScreenshotDesc: "Attach a screenshot of your payment",
+    screenshotUploaded: "Screenshot attached ✓",
+    changeScreenshot: "Change",
+    screenshotRequired: "Please attach a payment screenshot",
+    submitting: "Sending...",
+    paymentSubmitted: "Request sent!",
+    paymentSubmittedDesc: "Admin will verify your payment and credit balance within 1-24 hours. You'll get a notification in the bot!",
+    adminReviewing: "Under review",
   },
   ru: {
     appName: "StudyPro",
@@ -621,6 +639,15 @@ const translations: Record<string, TranslationKeys> = {
     payStep3Crypto: "Админ проверит и зачислит 15 отчётов",
     adminWillCheck: "Админ проверит оплату вручную",
     uahOnly: "Только Украина",
+    uploadScreenshot: "Загрузить скриншот",
+    uploadScreenshotDesc: "Прикрепи скриншот оплаты",
+    screenshotUploaded: "Скриншот прикреплён ✓",
+    changeScreenshot: "Изменить",
+    screenshotRequired: "Пожалуйста, прикрепи скриншот оплаты",
+    submitting: "Отправляем...",
+    paymentSubmitted: "Заявка отправлена!",
+    paymentSubmittedDesc: "Админ проверит оплату и зачислит баланс в течение 1-24 часов. Ты получишь уведомление в боте!",
+    adminReviewing: "На проверке",
   },
   uk: {
     appName: "StudyPro",
@@ -815,6 +842,15 @@ const translations: Record<string, TranslationKeys> = {
     payStep3Crypto: "Адмін перевірить та зарахує 15 звітів",
     adminWillCheck: "Адмін перевірить оплату вручну",
     uahOnly: "Тільки Україна",
+    uploadScreenshot: "Завантажити скріншот",
+    uploadScreenshotDesc: "Прикріпи скріншот оплати",
+    screenshotUploaded: "Скріншот прикріплено ✓",
+    changeScreenshot: "Змінити",
+    screenshotRequired: "Будь ласка, прикріпи скріншот оплати",
+    submitting: "Надсилаємо...",
+    paymentSubmitted: "Запит надіслано!",
+    paymentSubmittedDesc: "Адмін перевірить оплату та зарахує баланс протягом 1-24 годин. Ти отримаєш сповіщення в боті!",
+    adminReviewing: "На перевірці",
   },
 };
 

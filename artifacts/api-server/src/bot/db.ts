@@ -158,6 +158,40 @@ export async function getUserByReferralCode(code: string) {
   return result[0] ?? null;
 }
 
+export async function getPaymentById(paymentId: number) {
+  const result = await db
+    .select()
+    .from(paymentsTable)
+    .where(eq(paymentsTable.id, paymentId))
+    .limit(1);
+  return result[0] ?? null;
+}
+
+export async function confirmPayment(paymentId: number) {
+  const payment = await getPaymentById(paymentId);
+  if (!payment) return null;
+
+  await db
+    .update(paymentsTable)
+    .set({ status: "confirmed" })
+    .where(eq(paymentsTable.id, paymentId));
+
+  await addBalance(payment.telegramId, payment.reportsAdded);
+  return payment;
+}
+
+export async function denyPayment(paymentId: number) {
+  const payment = await getPaymentById(paymentId);
+  if (!payment) return null;
+
+  await db
+    .update(paymentsTable)
+    .set({ status: "rejected" })
+    .where(eq(paymentsTable.id, paymentId));
+
+  return payment;
+}
+
 export async function processReferral(referrerTelegramId: number, newUserTelegramId: number) {
   await db.update(usersTable)
     .set({

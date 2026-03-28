@@ -72,6 +72,7 @@ export async function getReports(telegramId: number): Promise<{ reports: ReportI
 export async function createPayment(data: {
   telegramId: number;
   paymentMethod: string;
+  screenshotData?: string;
 }): Promise<{ success: boolean; message?: string }> {
   return request<{ success: boolean; message?: string }>("/payment", {
     method: "POST",

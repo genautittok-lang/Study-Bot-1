@@ -24,6 +24,8 @@ import {
   saveReport,
   savePayment,
   addBalance,
+  confirmPayment,
+  denyPayment,
 } from "./db.js";
 
 interface SessionData {
@@ -279,6 +281,56 @@ bot.action("help", async (ctx: BotContext) => {
     parse_mode: "Markdown",
     ...backToMenuKeyboard,
   });
+});
+
+bot.action(/^approve_pay_(\d+)$/, async (ctx: BotContext) => {
+  await ctx.answerCbQuery("✅ Обробляю...");
+  const paymentId = parseInt(ctx.match[1], 10);
+  try {
+    const payment = await confirmPayment(paymentId);
+    if (!payment) {
+      await ctx.editMessageCaption("⚠️ Платіж не знайдено або вже оброблено.", { parse_mode: "Markdown" });
+      return;
+    }
+    const user = await getUser(payment.telegramId);
+    const newBalance = user?.balance ?? payment.reportsAdded;
+    await ctx.editMessageCaption(
+      `✅ *Платіж #${paymentId} ПІДТВЕРДЖЕНО*\n\nКористувач отримав +${payment.reportsAdded} звітів.\nНовий баланс: ${newBalance} звітів.`,
+      { parse_mode: "Markdown" }
+    );
+    await bot.telegram.sendMessage(
+      payment.telegramId,
+      `🎉 *Платіж підтверджено!*\n\nТвій баланс поповнено на *${payment.reportsAdded} звітів*!\n💰 Поточний баланс: *${newBalance} звітів*\n\nДякуємо! Генеруй академічні роботи 🚀`,
+      { parse_mode: "Markdown", ...mainMenuKeyboard }
+    );
+  } catch (err) {
+    logger.error({ err }, "approve_pay error");
+    await ctx.answerCbQuery("❌ Помилка");
+  }
+});
+
+bot.action(/^reject_pay_(\d+)$/, async (ctx: BotContext) => {
+  await ctx.answerCbQuery("❌ Обробляю...");
+  const paymentId = parseInt(ctx.match[1], 10);
+  try {
+    const payment = await denyPayment(paymentId);
+    if (!payment) {
+      await ctx.editMessageCaption("⚠️ Платіж не знайдено або вже оброблено.", { parse_mode: "Markdown" });
+      return;
+    }
+    await ctx.editMessageCaption(
+      `❌ *Платіж #${paymentId} ВІДХИЛЕНО*\n\nБаланс не поповнено.`,
+      { parse_mode: "Markdown" }
+    );
+    await bot.telegram.sendMessage(
+      payment.telegramId,
+      `❌ *Платіж відхилено*\n\nНа жаль, твій платіж не підтверджено.\n\nЯкщо це помилка — напиши у підтримку @studypro_support з деталями транзакції.`,
+      { parse_mode: "Markdown", ...mainMenuKeyboard }
+    );
+  } catch (err) {
+    logger.error({ err }, "reject_pay error");
+    await ctx.answerCbQuery("❌ Помилка");
+  }
 });
 
 bot.on("text", async (ctx: BotContext) => {

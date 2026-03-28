@@ -133,6 +133,7 @@ router.get("/reports", async (req, res) => {
 router.post("/payment", async (req, res) => {
   try {
     const body = TwaCreatePaymentBody.parse(req.body);
+    const screenshotData: string | undefined = req.body.screenshotData;
 
     const amounts: Record<string, { amount: number; currency: string }> = {
       card: { amount: 250, currency: "UAH" },
@@ -147,12 +148,57 @@ router.post("/payment", async (req, res) => {
       currency: "UAH",
     };
 
-    await savePayment({
+    const [payment] = await savePayment({
       telegramId: body.telegramId,
       amount: payInfo.amount,
       currency: payInfo.currency,
       paymentMethod: body.paymentMethod,
     });
+
+    const adminId = process.env.ADMIN_TELEGRAM_ID;
+    if (adminId && payment) {
+      const user = await getUser(body.telegramId);
+      const username = user?.username ? `@${user.username}` : `ID: ${body.telegramId}`;
+      const methodLabel = body.paymentMethod === "card" ? "💳 Картка (250 UAH)" : "💎 Крипто USDT (5 USDT)";
+      const caption = `📥 *Новий запит на поповнення!*\n\n👤 Користувач: ${username}\n🆔 Telegram ID: \`${body.telegramId}\`\n💰 Метод: ${methodLabel}\n🎟 Звітів: 15\n#️⃣ Платіж: #${payment.id}\n\nПеревір оплату та натисни:`;
+
+      try {
+        if (screenshotData) {
+          const base64 = screenshotData.replace(/^data:image\/\w+;base64,/, "");
+          const imgBuffer = Buffer.from(base64, "base64");
+          await bot.telegram.sendPhoto(
+            Number(adminId),
+            { source: imgBuffer },
+            {
+              caption,
+              parse_mode: "Markdown",
+              reply_markup: {
+                inline_keyboard: [[
+                  { text: "✅ Підтвердити", callback_data: `approve_pay_${payment.id}` },
+                  { text: "❌ Відхилити", callback_data: `reject_pay_${payment.id}` },
+                ]],
+              },
+            }
+          );
+        } else {
+          await bot.telegram.sendMessage(
+            Number(adminId),
+            caption + "\n\n⚠️ _Скріншот не надано_",
+            {
+              parse_mode: "Markdown",
+              reply_markup: {
+                inline_keyboard: [[
+                  { text: "✅ Підтвердити", callback_data: `approve_pay_${payment.id}` },
+                  { text: "❌ Відхилити", callback_data: `reject_pay_${payment.id}` },
+                ]],
+              },
+            }
+          );
+        }
+      } catch (botErr) {
+        req.log.error({ botErr }, "Failed to notify admin via bot");
+      }
+    }
 
     const data = TwaCreatePaymentResponse.parse({
       success: true,
