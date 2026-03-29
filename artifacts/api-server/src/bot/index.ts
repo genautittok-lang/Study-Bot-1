@@ -229,7 +229,7 @@ bot.action("buy", async (ctx: BotContext) => {
 
 bot.action("pay_mono", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
-  const text = `💳 *Оплата через Monobank*\n\nСума: *250 грн* за 15 звітів\n\n📲 Переведи 250 грн на картку:\n\`\`\`\n5375 4141 2121 2120\n\`\`\`\nОтримувач: *StudyFlush*\n\n⚠️ *ВАЖЛИВО:* В коментарі до переказу вкажи свій Telegram ID:\n\`${ctx.from!.id}\`\n\n📸 *Після оплати надішли скріншот чеку прямо сюди в цей чат* 👇`;
+  const text = `💳 *Оплата через Monobank*\n\nСума: *250 грн* за 15 звітів\n\n📲 Переведи 250 грн на картку:\n\`\`\`\n5232 4410 5654 6307\n\`\`\`\nОтримувач: *StudyFlush*\n\n⚠️ *ВАЖЛИВО:* В коментарі до переказу вкажи свій Telegram ID:\n\`${ctx.from!.id}\`\n\n📸 *Після оплати надішли скріншот чеку прямо сюди в цей чат* 👇`;
 
   await ctx.editMessageText(text, {
     parse_mode: "Markdown",
@@ -239,7 +239,7 @@ bot.action("pay_mono", async (ctx: BotContext) => {
 
 bot.action("pay_crypto", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
-  const text = `💎 *Crypto payment / Оплата криптою*\n\nAmount: *5 USDT / 5 USDC*\n\n📍 Wallet address (TRC-20):\n\`\`\`\nTLdH6NMj7g3jKcB6pnEPr5wfbUjqTe5GxP\n\`\`\`\n\n📸 *After payment, send a screenshot here in this chat* 👇\n📸 *Після оплати надішли скріншот транзакції прямо сюди* 👇`;
+  const text = `💎 *Crypto payment / Оплата криптою*\n\nAmount: *5 USDT / 5 USDC*\n\n📍 Wallet address (TRC-20):\n\`\`\`\nTRYbty4Ew9knf61brdrixeY5M34mQTt3zY\n\`\`\`\n\n📸 *After payment, send a screenshot here in this chat* 👇\n📸 *Після оплати надішли скріншот транзакції прямо сюди* 👇`;
 
   await ctx.editMessageText(text, {
     parse_mode: "Markdown",

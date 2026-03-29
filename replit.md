@@ -47,7 +47,7 @@ artifacts-monorepo/
 - **11 document types**: Report, Summary, Database, Lab Work, Essay, Tasks, Course Work, Diploma, Presentation, Test Paper, Notes
 - **150+ subjects** in **17 categories**: School Math (7-11), Ukrainian Language & Lit (7-11), Sciences (7-11), History & Geography (7-11), Foreign Languages, Other School; College IT, College Tech; University Math, IT, Humanities, Business, Law, Engineering, Medicine; Other
 - **Education level filter**: All / School / College / University tabs in category selection
-- **3 payment methods**: Card (250 UAH, card 5375 4141 2121 2120 — Ukraine only), Crypto USDT (5 USDT TRC-20, address TLdH6NMj7g3jKcB6pnEPr5wfbUjqTe5GxP), Telegram Stars (500 XTR)
+- **3 payment methods**: Card (250 UAH, card 5232 4410 5654 6307 — Ukraine only), Crypto USDT (5 USDT TRC-20, address TRYbty4Ew9knf61brdrixeY5M34mQTt3zY), Telegram Stars (500 XTR)
 - **Card visibility**: Card payment only shown when user language is "uk" (Ukrainian); all other users see Stars + Crypto only
 - **Receipt flow**: After card/crypto payment, user sends screenshot to @studyflush_bot for manual verification by admin
 - **AI generation**: gpt-5.2 with structured prompts per document type (specific prompts for all 11 types), vision support for photo attachments

@@ -8,8 +8,8 @@ import Icon3D from "@/components/icons-3d";
 
 type Method = "card" | "crypto" | "stars" | null;
 type Step = "select" | "details" | "screenshot" | "done";
-const CARD = "5375 4141 2121 2120";
-const CRYPTO = "TLdH6NMj7g3jKcB6pnEPr5wfbUjqTe5GxP";
+const CARD = "5232 4410 5654 6307";
+const CRYPTO = "TRYbty4Ew9knf61brdrixeY5M34mQTt3zY";
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
 function CopyField({ label, value }: { label: string; value: string }) {
