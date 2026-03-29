@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
-const frontendDist = process.env.FRONTEND_DIST || path.resolve(__dirname, "../../artifacts/study-app/dist/public");
+const frontendDist = process.env.FRONTEND_DIST || path.resolve(__dirname, "../../study-app/dist/public");
 app.use(express.static(frontendDist));
 app.get("/{*splat}", (req, res, next) => {
   if (req.path.startsWith("/api")) return next();
