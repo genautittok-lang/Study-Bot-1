@@ -63,11 +63,18 @@ function getAdminIds(): number[] {
 
 async function sendWelcome(ctx: BotContext) {
   const tgUser = ctx.from!;
-  const user = await getOrCreateUser(tgUser.id, {
-    username: tgUser.username,
-    firstName: tgUser.first_name,
-    lastName: tgUser.last_name,
-  });
+  let user;
+  try {
+    user = await getOrCreateUser(tgUser.id, {
+      username: tgUser.username,
+      firstName: tgUser.first_name,
+      lastName: tgUser.last_name,
+    });
+  } catch (err: any) {
+    logger.error({ err: err?.message || err }, "Failed to getOrCreateUser in /start");
+    await ctx.reply("⚠️ Server error. Please try again in a moment.");
+    return;
+  }
 
   const payload = (ctx.message as any)?.text?.split(" ")[1] || "";
   if (payload.startsWith("ref_")) {
@@ -107,6 +114,10 @@ async function sendWelcome(ctx: BotContext) {
     }
   );
 }
+
+bot.catch((err: any, ctx: BotContext) => {
+  logger.error({ err: err?.message || err, update: ctx?.update }, "Bot error caught");
+});
 
 bot.start(sendWelcome);
 
