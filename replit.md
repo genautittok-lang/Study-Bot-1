@@ -16,7 +16,7 @@ pnpm workspace monorepo using TypeScript. Main product is **StudyFlush** (v2.2) 
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (ESM bundle)
 - **Telegram Bot**: Telegraf
-- **AI**: OpenAI via Replit AI Integrations (gpt-5.2)
+- **AI**: OpenAI via Replit AI Integrations (gpt-5.2) — env vars: `AI_INTEGRATIONS_OPENAI_BASE_URL`, `AI_INTEGRATIONS_OPENAI_API_KEY` (auto-provisioned, do NOT modify)
 - **Frontend**: React + Vite + Framer Motion + Tailwind CSS
 
 ## Structure
@@ -46,6 +46,7 @@ artifacts-monorepo/
 - **Free first report** for every new user (any length), followed by paywall modal (-50% first purchase offer with 10-min countdown)
 - **Tiered pricing**: Short (1💎), Medium (2💎), Full (3💎) — credits deducted based on document length
 - **AI Typing Effect**: Character-by-character result display with "Show all" skip button
+- **Live Generation Timer**: Real-time 0:00 seconds counter ticking during AI generation, plus elapsed time stat on done screen
 - **Improve Text**: Post-generation AI buttons — Rephrase / More complex / Simplify / Humanize (calls `/api/twa/improve`)
 - **Structure Preview**: Optional document plan preview before generation (calls `/api/twa/structure-preview`)
 - **Smart Quick Start**: 3 template cards on home page (History Report, IT Lab, Lecture Notes) that prefill the report flow via URL params

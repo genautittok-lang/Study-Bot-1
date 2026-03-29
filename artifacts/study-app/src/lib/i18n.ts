@@ -81,6 +81,7 @@ type TranslationKeys = {
   generate: string;
   generating: string;
   generatingDesc: string;
+  generatedIn: string;
   done: string;
   docGenerated: string;
   copy: string;
@@ -380,6 +381,7 @@ const translations: Record<string, Partial<TranslationKeys>> & { en: Translation
     generate: "Generate",
     generating: "Generating...",
     generatingDesc: "AI is working on your task. Usually takes 10-30 seconds",
+    generatedIn: "Generated in",
     done: "Done!",
     docGenerated: "Your document is generated",
     copy: "Copy",
@@ -676,6 +678,7 @@ const translations: Record<string, Partial<TranslationKeys>> & { en: Translation
     generate: "Сгенерировать",
     generating: "Генерирую...",
     generatingDesc: "AI работает над твоим заданием. Обычно это занимает 10-30 секунд",
+    generatedIn: "Сгенерировано за",
     done: "Готово!",
     docGenerated: "Твой документ сгенерирован",
     copy: "Копировать",
@@ -972,6 +975,7 @@ const translations: Record<string, Partial<TranslationKeys>> & { en: Translation
     generate: "Згенерувати",
     generating: "Генерую...",
     generatingDesc: "AI працює над твоїм завданням. Зазвичай це займає 10-30 секунд",
+    generatedIn: "Згенеровано за",
     done: "Готово!",
     docGenerated: "Твій документ згенеровано",
     copy: "Копіювати",

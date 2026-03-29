@@ -185,6 +185,17 @@ export default function NewReport() {
   const [structureLoading, setStructureLoading] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [showFormatPicker, setShowFormatPicker] = useState(false);
+  const [genStartTime, setGenStartTime] = useState<number>(0);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [finalGenTime, setFinalGenTime] = useState(0);
+
+  useEffect(() => {
+    if (step !== "generating" || !genStartTime) return;
+    const iv = setInterval(() => {
+      setElapsedSeconds(Math.floor((Date.now() - genStartTime) / 1000));
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [step, genStartTime]);
 
   const isFreeform = reportType === "freeform";
   const FREEFORM_TYPE = { id: "freeform", label: t("anyTask"), icon: "✨", desc: "" };
@@ -271,6 +282,7 @@ export default function NewReport() {
     if (!canGenerate) { hapticError(); setLocation("/balance"); return; }
     setStep("generating"); setProgress(0); hapticFeedback("medium");
     setTypingDone(false); setDisplayedResult("");
+    const startTs = Date.now(); setGenStartTime(startTs); setElapsedSeconds(0);
     const iv = setInterval(() => { setProgress(p => Math.min(p + Math.random() * 5 + 1.5, 92)); }, 700);
 
     const lengthHint = length === "short" ? " (short, ~500 words)" : length === "full" ? " (detailed, ~3000 words)" : "";
@@ -279,6 +291,7 @@ export default function NewReport() {
     try {
       const res = await generateReport({ telegramId: user.telegramId, reportType, subject, topic: fullTopic, group: group.trim() || undefined, imageData: imageData || undefined, language: getLang(), cost: currentCost });
       clearInterval(iv); setProgress(100);
+      setFinalGenTime(Math.round((Date.now() - startTs) / 1000));
       if (res.success && res.content) {
         hapticSuccess(); setResult(res.content);
         const wasFree = !user.freeReportsUsed;
@@ -548,7 +561,14 @@ ${markdownToHtml(result)}
 
         <motion.h2 initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
           className="text-[18px] font-extrabold mb-1 tracking-tight">{t("generating")}</motion.h2>
-        <p className="text-[12px] text-[#9ca3af] mb-3 text-center px-8">{t("generatingDesc")}</p>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+          className="flex items-center gap-1.5 mb-3">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#7C5CFC] animate-pulse" />
+          <span className="text-[13px] font-bold tabular text-[#7C5CFC]">
+            {Math.floor(elapsedSeconds / 60)}:{String(elapsedSeconds % 60).padStart(2, "0")}
+          </span>
+          <span className="text-[11px] text-[#9ca3af]">{t("seconds")}</span>
+        </motion.div>
 
         <div className="flex gap-2 flex-wrap justify-center mb-4">
           {[selType?.icon + " " + (selType?.label || ""), getSubjectName(subject)].filter(Boolean).map((tag, i) => (
@@ -628,6 +648,7 @@ ${markdownToHtml(result)}
             {[
               { val: wordCount.toLocaleString(), label: t("estimatedWords") },
               { val: `~${readTime} min`, label: t("estimatedTime") },
+              { val: `${finalGenTime} ${t("seconds")}`, label: t("generatedIn") },
             ].map((s, i) => (
               <div key={i} className="flex-1 rounded-[12px] py-2 text-center" style={{ background: "rgba(255,255,255,0.12)" }}>
                 <div className="text-[16px] font-extrabold text-white tabular">{s.val}</div>
