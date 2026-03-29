@@ -212,9 +212,7 @@
   animation: orb-float 35s ease-in-out infinite alternate;
   animation-delay: -10s;
 }
-.liquid-orb-4 {
-  display: none;
-}
+
 
 @keyframes orb-float {
   0%   { transform: translate(0, 0); }

@@ -128,14 +128,14 @@ export default function Home() {
   }, []);
 
   const refLink = `https://t.me/studyflush_bot?start=ref_${user?.referralCode || "---"}`;
+  const hasRefCode = !!user?.referralCode && user.referralCode !== "---";
 
   function copyRef() {
+    if (!hasRefCode) return;
     navigator.clipboard.writeText(refLink)
       .then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); })
       .catch(() => {});
   }
-
-  const hasRefCode = !!user?.referralCode && user.referralCode !== "---";
 
   function shareRefTelegram() {
     if (!hasRefCode) return;
@@ -160,9 +160,11 @@ export default function Home() {
           )}
         </motion.button>
         <div className="flex-1 min-w-0">
-          <div className="text-[12px] text-[#8b90a0] font-medium flex items-center gap-1">
-            <span>{greetEmoji}</span>
-            <span>{t("welcome")}</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[12px] text-[#8b90a0] font-medium flex items-center gap-1">
+              <span>{greetEmoji}</span>
+              <span>{t("welcome")}</span>
+            </span>
           </div>
           <h1 className="text-[20px] font-extrabold tracking-tight leading-tight truncate">
             {user?.firstName || "Student"}
@@ -407,59 +409,91 @@ export default function Home() {
         </motion.div>
       )}
 
-      <motion.div {...anim(6)} className="card-3d rounded-[22px] p-4 overflow-hidden relative">
-        <div className="absolute top-0 left-0 right-0 h-[2.5px]" style={{ background: "linear-gradient(90deg, #10B981, #06D6A0, #3B82F6)" }} />
-        
-        <div className="flex items-center gap-2.5 mb-3.5">
-          <Icon3D id="invite" size={40} />
-          <div className="flex-1 min-w-0">
-            <div className="font-bold text-[14px] leading-tight">{t("inviteFriends")}</div>
-            <div className="text-[10px] text-[#8b90a0] mt-0.5">{t("referralBonus")}</div>
-          </div>
-        </div>
+      <motion.div {...anim(6)} className="rounded-[22px] overflow-hidden relative"
+        style={{
+          background: "linear-gradient(145deg, #2AABEE 0%, #229ED9 40%, #1E96CC 70%, #1A8FBF 100%)",
+          boxShadow: "0 12px 40px rgba(42,171,238,0.25), 0 4px 12px rgba(0,0,0,0.06)",
+        }}>
+        <div className="absolute top-0 right-0 w-44 h-44 rounded-full opacity-20"
+          style={{ background: "radial-gradient(circle, white 0%, transparent 65%)", transform: "translate(30%, -40%)" }} />
+        <div className="absolute bottom-0 left-0 w-28 h-28 rounded-full opacity-10"
+          style={{ background: "radial-gradient(circle, #89D5FF 0%, transparent 70%)", transform: "translate(-20%, 30%)" }} />
 
-        <div className="flex items-start gap-1.5 mb-3.5">
-          {[
-            { num: "1", text: t("referralStep1") },
-            { num: "2", text: t("referralStep2") },
-            { num: "3", text: t("referralStep3") },
-          ].map((s, i) => (
-            <div key={i} className="flex-1 text-center">
-              <div className="w-6 h-6 rounded-full mx-auto mb-1 flex items-center justify-center text-[9px] font-bold text-white"
-                style={{ background: i === 2 ? "linear-gradient(135deg, #10B981, #06D6A0)" : "linear-gradient(135deg, #7C5CFC, #3B82F6)" }}>
-                {s.num}
-              </div>
-              <div className="text-[7px] text-[#8b90a0] font-medium leading-tight px-0.5">{s.text}</div>
+        <div className="relative z-10 p-5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-[48px] h-[48px] rounded-[16px] flex items-center justify-center shrink-0"
+              style={{ background: "rgba(255,255,255,0.18)", backdropFilter: "blur(8px)" }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <line x1="19" x2="19" y1="8" y2="14"/>
+                <line x1="22" x2="16" y1="11" y2="11"/>
+              </svg>
             </div>
-          ))}
-        </div>
-
-        <div className="flex gap-2 mb-3.5">
-          <div className="flex-1 rounded-[14px] py-2.5 px-2.5 text-center" style={{ background: "rgba(0,196,140,0.04)", border: "1px solid rgba(0,196,140,0.08)" }}>
-            <div className="text-[20px] font-extrabold tabular leading-none" style={{ color: "#10B981" }}>{user?.referralCount || 0}</div>
-            <div className="text-[7px] text-[#8b90a0] font-bold uppercase tracking-[0.06em] mt-1">{t("friendsJoined")}</div>
+            <div className="flex-1 min-w-0">
+              <div className="font-extrabold text-[16px] text-white leading-tight">{t("inviteFriends")}</div>
+              <div className="text-[11px] text-white/50 mt-0.5 font-medium">{t("referralBonus")}</div>
+            </div>
           </div>
-          <div className="flex-1 rounded-[14px] py-2.5 px-2.5 text-center" style={{ background: "rgba(124,92,252,0.04)", border: "1px solid rgba(124,92,252,0.08)" }}>
-            <div className="text-[20px] font-extrabold tabular gradient-text leading-none">{(user?.referralCount || 0) * 2}</div>
-            <div className="text-[7px] text-[#8b90a0] font-bold uppercase tracking-[0.06em] mt-1">{t("earnedReports")}</div>
+
+          <div className="flex items-start gap-1 mb-4">
+            {[
+              { num: "1", text: t("referralStep1") },
+              { num: "2", text: t("referralStep2") },
+              { num: "3", text: t("referralStep3") },
+            ].map((s, i) => (
+              <div key={i} className="flex-1 text-center">
+                <div className="w-7 h-7 rounded-full mx-auto mb-1.5 flex items-center justify-center text-[10px] font-bold shrink-0"
+                  style={{
+                    background: i === 2 ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.12)",
+                    color: "white",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                  }}>
+                  {s.num}
+                </div>
+                <div className="text-[8px] text-white/50 font-medium leading-tight px-0.5">{s.text}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-2 mb-4">
+            <div className="flex-1 rounded-[14px] py-2.5 px-2.5 text-center"
+              style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.12)" }}>
+              <div className="text-[22px] font-extrabold tabular leading-none text-white">{user?.referralCount || 0}</div>
+              <div className="text-[7px] text-white/40 font-bold uppercase tracking-[0.06em] mt-1">{t("friendsJoined")}</div>
+            </div>
+            <div className="flex-1 rounded-[14px] py-2.5 px-2.5 text-center"
+              style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.12)" }}>
+              <div className="text-[22px] font-extrabold tabular leading-none text-white">{(user?.referralCount || 0) * 2}</div>
+              <div className="text-[7px] text-white/40 font-bold uppercase tracking-[0.06em] mt-1">{t("earnedReports")}</div>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <motion.button whileTap={{ scale: 0.96 }} onClick={shareRefTelegram}
+              className="flex-1 py-[12px] text-[12px] font-bold flex items-center justify-center gap-1.5 rounded-[14px]"
+              style={{ background: "rgba(255,255,255,0.95)", color: "#229ED9" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              {t("sendInvite")}
+            </motion.button>
+            <motion.button whileTap={{ scale: 0.96 }} onClick={copyRef}
+              className="py-[12px] px-4 rounded-[14px] flex items-center justify-center"
+              style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.18)" }}>
+              {copied
+                ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>}
+            </motion.button>
           </div>
         </div>
+      </motion.div>
 
-        <div className="flex gap-2">
-          <motion.button whileTap={{ scale: 0.96 }} onClick={shareRefTelegram}
-            className="flex-1 btn-accent py-[11px] text-[12px] flex items-center justify-center gap-1.5 rounded-[16px]">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-            {t("sendInvite")}
-          </motion.button>
-          <motion.button whileTap={{ scale: 0.96 }} onClick={copyRef}
-            className="py-[11px] px-3.5 rounded-[16px] text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-all shrink-0"
-            style={{ background: copied ? "rgba(0,196,140,0.06)" : "rgba(0,0,0,0.025)", color: copied ? "#10B981" : "#6b7280", border: `1px solid ${copied ? "rgba(0,196,140,0.12)" : "rgba(0,0,0,0.04)"}` }}>
-            {copied
-              ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>}
-            {copied ? "✓" : t("copyLink")}
-          </motion.button>
+      <motion.div {...anim(7)} className="flex items-center justify-center pt-4 pb-1 gap-2">
+        <div className="w-[22px] h-[22px] rounded-[7px] flex items-center justify-center"
+          style={{ background: "linear-gradient(145deg, #7C5CFC, #6336F5)" }}>
+          <span className="text-white font-extrabold text-[11px]">S</span>
         </div>
+        <span className="text-[10px] text-[#c8cad4] font-semibold tracking-wide">StudyFlush</span>
+        <span className="text-[8px] text-[#ddd] font-medium">v2.2</span>
       </motion.div>
     </div>
   );

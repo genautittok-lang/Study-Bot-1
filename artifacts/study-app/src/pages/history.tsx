@@ -130,31 +130,39 @@ export default function History() {
           </div>
         </div>
 
+        <motion.button whileTap={{ scale: 0.97 }}
+          onClick={() => { navigator.clipboard.writeText(selected.content || "").then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); }).catch(() => {}); }}
+          className="w-full py-[14px] rounded-[16px] text-[14px] font-bold flex items-center justify-center gap-2.5 mb-2.5"
+          style={{
+            background: "linear-gradient(145deg, #2AABEE 0%, #229ED9 100%)",
+            color: "white",
+            boxShadow: "0 8px 24px rgba(42,171,238,0.3), 0 2px 6px rgba(0,0,0,0.06)",
+          }}>
+          {copied
+            ? <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>{t("copy")} ✓</>
+            : <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{t("copy")}</>}
+        </motion.button>
+
         <div className="flex gap-2 mb-3">
-          <motion.button whileTap={{ scale: 0.96 }}
-            onClick={() => { navigator.clipboard.writeText(selected.content || "").then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); }).catch(() => {}); }}
-            className="flex-1 btn-main py-3 text-[13px] flex items-center justify-center gap-2">
-            {copied
-              ? <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>✓</>
-              : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{t("copy")}</>}
-          </motion.button>
           <motion.button whileTap={{ scale: 0.96 }} onClick={() => downloadReport(selected)}
-            className="py-3 px-4 rounded-[16px] text-[13px] font-semibold flex items-center justify-center gap-1.5"
-            style={{ background: "rgba(16,185,129,0.06)", color: "#10B981" }}>
+            className="flex-1 py-3 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1.5"
+            style={{ background: "rgba(16,185,129,0.06)", color: "#10B981", border: "1px solid rgba(16,185,129,0.1)" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            {t("downloadFile")}
           </motion.button>
           <motion.button whileTap={{ scale: 0.96 }} onClick={() => shareReport(selected)}
-            className="py-3 px-4 rounded-[16px] text-[13px] font-semibold flex items-center justify-center gap-1.5"
-            style={{ background: "rgba(74,144,255,0.06)", color: "#3B82F6" }}>
+            className="flex-1 py-3 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1.5"
+            style={{ background: "rgba(74,144,255,0.06)", color: "#3B82F6", border: "1px solid rgba(74,144,255,0.1)" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+            {t("shareReport")}
+          </motion.button>
+          <motion.button whileTap={{ scale: 0.97 }} onClick={() => { hapticFeedback("medium"); go("/new"); }}
+            className="flex-1 py-3 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1.5"
+            style={{ background: "rgba(124,92,252,0.05)", color: "#7C5CFC", border: "1px solid rgba(124,92,252,0.08)" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+            {t("newOne")}
           </motion.button>
         </div>
-        <motion.button whileTap={{ scale: 0.97 }} onClick={() => { hapticFeedback("medium"); go("/new"); }}
-          className="w-full mb-3 py-2.5 rounded-[16px] text-[13px] font-semibold flex items-center justify-center gap-2"
-          style={{ background: "rgba(124,92,252,0.05)", color: "#7C5CFC" }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-          {t("repeatReport")}
-        </motion.button>
         <div className="card-3d rounded-[18px] p-4 max-h-[55vh] overflow-y-auto scrollbar-hide select-text">
           <MarkdownRenderer content={selected.content || t("contentUnavailable")} />
         </div>
