@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -14,6 +14,7 @@ import Balance from "@/pages/balance";
 import Profile from "@/pages/profile";
 import Support from "@/pages/support";
 import Admin from "@/pages/admin";
+import Onboarding, { isOnboardingDone } from "@/pages/onboarding";
 
 const queryClient = new QueryClient();
 const spring = { type: "spring" as const, bounce: 0.2, duration: 0.5 };
@@ -258,6 +259,7 @@ function AppContent() {
   const { loading, error, retry } = useInitApp();
   useLang();
   useBackButton();
+  const [showOnboarding, setShowOnboarding] = useState(() => !isOnboardingDone());
 
   useEffect(() => {
     document.documentElement.style.colorScheme = 'light';
@@ -265,6 +267,7 @@ function AppContent() {
 
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} retry={retry} />;
+  if (showOnboarding) return <Onboarding onDone={() => setShowOnboarding(false)} />;
 
   return (
     <>

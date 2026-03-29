@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
 import { useUser, setUser, useLang, addRecentItem } from "@/lib/store";
-import { generateReport } from "@/lib/api";
+import { generateReport, improveText, getStructurePreview } from "@/lib/api";
 import { getReportTypes, getSubjectCategories, getSubjectName, getEduLevels, getCategoryEduLevel, t, getLang } from "@/lib/i18n";
 import type { EduLevel } from "@/lib/i18n";
 import { hapticFeedback, hapticSuccess, hapticError, hapticSelection, shareViaTelegram, useBackButton } from "@/lib/telegram";
@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import MarkdownRenderer from "@/components/markdown-renderer";
 import Icon3D, { REPORT_ICON_MAP } from "@/components/icons-3d";
 
-type Step = "type" | "category" | "subject" | "details" | "generating" | "done" | "error";
+type Step = "type" | "category" | "subject" | "details" | "structure" | "generating" | "done" | "error";
 const STEPS = ["type", "category", "subject", "details"] as const;
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
@@ -89,10 +89,18 @@ export default function NewReport() {
   const [imageData, setImageData] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [length, setLength] = useState<"short" | "medium" | "full">("medium");
+  const [typingDone, setTypingDone] = useState(false);
+  const [displayedResult, setDisplayedResult] = useState("");
+  const typingRef = useRef<number | null>(null);
+  const [improving, setImproving] = useState(false);
+  const [structureText, setStructureText] = useState("");
+  const [structureLoading, setStructureLoading] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [paywallTimer, setPaywallTimer] = useState(300);
 
   useBackButton(() => {
     if (step === "done" || step === "error") { reset(); }
-    else if (step === "generating") { /* don't interrupt */ }
+    else if (step === "generating" || step === "structure") { /* don't interrupt */ }
     else if (step === "details") { setStep("subject"); }
     else if (step === "subject") { setStep("category"); }
     else if (step === "category") { setStep("type"); }

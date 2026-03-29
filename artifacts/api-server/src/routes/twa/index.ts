@@ -17,7 +17,7 @@ import {
   saveReport,
   savePayment,
 } from "../../bot/db.js";
-import { generateReport } from "../../bot/ai.js";
+import { generateReport, improveText, generateStructurePreview } from "../../bot/ai.js";
 import { bot } from "../../bot/index.js";
 import { db, reportsTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
@@ -232,6 +232,47 @@ router.post("/create-invoice", async (req, res) => {
   } catch (err) {
     req.log.error({ err }, "TWA create-invoice error");
     res.status(500).json({ success: false, error: "Failed to create invoice" });
+  }
+});
+
+router.post("/improve", async (req, res) => {
+  try {
+    const { content, action, language } = req.body as {
+      content: string;
+      action: "rephrase" | "harder" | "simpler" | "humanize";
+      language?: string;
+    };
+    if (!content || !action) {
+      return res.status(400).json({ success: false, error: "Missing fields" });
+    }
+    const allowedActions = ["rephrase", "harder", "simpler", "humanize"];
+    if (!allowedActions.includes(action)) {
+      return res.status(400).json({ success: false, error: "Invalid action" });
+    }
+    const improved = await improveText(content, action, language);
+    res.json({ success: true, content: improved });
+  } catch (err) {
+    req.log.error({ err }, "TWA improve error");
+    res.status(500).json({ success: false, error: "Improvement failed" });
+  }
+});
+
+router.post("/structure-preview", async (req, res) => {
+  try {
+    const { reportType, subject, topic, language } = req.body as {
+      reportType: string;
+      subject: string;
+      topic: string;
+      language?: string;
+    };
+    if (!reportType || !subject || !topic) {
+      return res.status(400).json({ success: false, error: "Missing fields" });
+    }
+    const structure = await generateStructurePreview(reportType, subject, topic, language);
+    res.json({ success: true, structure });
+  } catch (err) {
+    req.log.error({ err }, "TWA structure-preview error");
+    res.status(500).json({ success: false, error: "Structure generation failed" });
   }
 });
 

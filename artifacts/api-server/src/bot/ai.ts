@@ -494,3 +494,84 @@ export async function generateReport(
 
   return response.choices[0]?.message?.content ?? fallbackMsg;
 }
+
+export async function improveText(
+  content: string,
+  action: "rephrase" | "harder" | "simpler" | "humanize",
+  language?: string | null
+): Promise<string> {
+  const lang = language || "uk";
+  const langName = LANGUAGE_NAMES[lang] || lang;
+  const isUkRu = lang === "uk" || lang === "ru";
+
+  const prompts: Record<string, string> = {
+    rephrase: isUkRu
+      ? "Перефразуй цей текст, зберігаючи зміст і структуру. Використай інші слова та конструкції. Зберігай форматування Markdown."
+      : `Rephrase this text keeping the same meaning and structure. Use different words and constructions. Keep Markdown formatting. Write in ${langName}.`,
+    harder: isUkRu
+      ? "Зроби цей текст складнішим та більш академічним. Додай наукову термінологію, складніші конструкції та поглиблений аналіз. Зберігай Markdown."
+      : `Make this text more complex and academic. Add scientific terminology, complex constructions, and deeper analysis. Keep Markdown. Write in ${langName}.`,
+    simpler: isUkRu
+      ? "Спрости цей текст. Зроби його простішим для розуміння, використовуй простіші слова та короткі речення. Зберігай Markdown."
+      : `Simplify this text. Make it easier to understand with simpler words and shorter sentences. Keep Markdown. Write in ${langName}.`,
+    humanize: isUkRu
+      ? "Зроби цей текст більш «людським» — ніби написав справжній студент. Додай невеликі стилістичні недосконалості, розмовніші конструкції, але зберігай зміст і грамотність. Зберігай Markdown."
+      : `Make this text more human-like — as if written by a real student. Add slight stylistic imperfections, more conversational tone, but keep the content accurate and grammatically correct. Keep Markdown. Write in ${langName}.`,
+  };
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-5.2",
+    max_completion_tokens: 16384,
+    messages: [
+      { role: "system", content: prompts[action] || prompts.rephrase },
+      { role: "user", content },
+    ],
+  });
+
+  return response.choices[0]?.message?.content ?? content;
+}
+
+export async function generateStructurePreview(
+  reportType: string,
+  subject: string,
+  topic: string,
+  language?: string | null
+): Promise<string> {
+  const lang = language || "uk";
+  const langName = LANGUAGE_NAMES[lang] || lang;
+  const isUkRu = lang === "uk" || lang === "ru";
+  const reportTypeName = getReportTypeName(reportType, lang);
+
+  const prompt = isUkRu
+    ? `Створи план-структуру для ${reportTypeName} з предмету "${subject}" на тему "${topic}".
+
+Формат — чистий список розділів з короткими описами. Наприклад:
+## Вступ
+Актуальність теми, мета та завдання роботи
+
+## 1. Перший розділ
+Опис змісту розділу...
+
+Не пиши сам текст роботи — тільки структуру з описом кожного розділу (3-5 речень на розділ).`
+    : `Create a structure plan for a ${reportTypeName} on subject "${subject}", topic "${topic}" in ${langName}.
+
+Format — clean list of sections with brief descriptions. For example:
+## Introduction
+Topic relevance, objectives and tasks
+
+## 1. First Section
+Description of section content...
+
+Don't write the actual paper — only the structure with description of each section (3-5 sentences per section). Write in ${langName}.`;
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-5.2",
+    max_completion_tokens: 4096,
+    messages: [
+      { role: "system", content: isUkRu ? "Ти — академічний AI-асистент. Створи чіткий план роботи." : `You are an academic AI assistant. Create a clear paper structure plan. Write in ${langName}.` },
+      { role: "user", content: prompt },
+    ],
+  });
+
+  return response.choices[0]?.message?.content ?? "";
+}

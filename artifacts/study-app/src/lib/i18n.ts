@@ -277,6 +277,44 @@ type TranslationKeys = {
   supportBotNote: string;
   supportViaTelegram: string;
   downloadFile: string;
+  onboarding1Title: string;
+  onboarding1Desc: string;
+  onboarding2Title: string;
+  onboarding2Desc: string;
+  onboarding3Title: string;
+  onboarding3Desc: string;
+  onboardingStart: string;
+  onboardingSkip: string;
+  onboardingNext: string;
+  rephrase: string;
+  makeHarder: string;
+  makeSimpler: string;
+  humanize: string;
+  translate: string;
+  improving: string;
+  wantMore: string;
+  firstPurchaseOffer: string;
+  limitedOffer: string;
+  maybeLater: string;
+  getStarted: string;
+  studentsUsing: string;
+  avgRating: string;
+  dailyStreak: string;
+  streakDays: string;
+  referralProgress: string;
+  invite3Get10: string;
+  copyAsPost: string;
+  shareAsCard: string;
+  skipTyping: string;
+  structurePreview: string;
+  approveStructure: string;
+  regenerateStructure: string;
+  planIntro: string;
+  planMain: string;
+  planConclusion: string;
+  quickReport: string;
+  quickLab: string;
+  quickSummary: string;
 };
 
 const translations: Record<string, TranslationKeys> = {
@@ -519,6 +557,44 @@ const translations: Record<string, TranslationKeys> = {
     supportBotNote: "You can also message @studyflush_bot directly",
     supportViaTelegram: "Open Bot in Telegram",
     downloadFile: "Download",
+    onboarding1Title: "Create any document in 30 seconds",
+    onboarding1Desc: "Reports, essays, lab work, presentations — AI generates everything for you",
+    onboarding2Title: "AI writes like an expert student",
+    onboarding2Desc: "Academic style, proper structure, references and sources included",
+    onboarding3Title: "First document is free!",
+    onboarding3Desc: "Try it now — no registration, no payment needed",
+    onboardingStart: "Get Started",
+    onboardingSkip: "Skip",
+    onboardingNext: "Next",
+    rephrase: "Rephrase",
+    makeHarder: "More complex",
+    makeSimpler: "Simplify",
+    humanize: "Humanize",
+    translate: "Translate",
+    improving: "Improving...",
+    wantMore: "Want more?",
+    firstPurchaseOffer: "First purchase -50%",
+    limitedOffer: "Limited offer",
+    maybeLater: "Maybe later",
+    getStarted: "Get Started",
+    studentsUsing: "students already using",
+    avgRating: "avg. rating",
+    dailyStreak: "Daily streak",
+    streakDays: "days",
+    referralProgress: "Referral progress",
+    invite3Get10: "Invite 3 friends → get 10 reports",
+    copyAsPost: "Copy as post",
+    shareAsCard: "Share as card",
+    skipTyping: "Show all",
+    structurePreview: "Document structure",
+    approveStructure: "Generate by this plan",
+    regenerateStructure: "Regenerate plan",
+    planIntro: "Introduction",
+    planMain: "Main part",
+    planConclusion: "Conclusion",
+    quickReport: "History Report",
+    quickLab: "IT Lab Work",
+    quickSummary: "Lecture Notes",
   },
   ru: {
     appName: "StudyFlush",
@@ -759,6 +835,44 @@ const translations: Record<string, TranslationKeys> = {
     supportBotNote: "Также можно написать напрямую @studyflush_bot",
     supportViaTelegram: "Открыть бота в Telegram",
     downloadFile: "Скачать",
+    onboarding1Title: "Создай любой документ за 30 секунд",
+    onboarding1Desc: "Рефераты, эссе, лабораторные, презентации — AI сгенерирует всё за тебя",
+    onboarding2Title: "AI пишет как студент-эксперт",
+    onboarding2Desc: "Академический стиль, правильная структура, ссылки и источники",
+    onboarding3Title: "Первый документ бесплатно!",
+    onboarding3Desc: "Попробуй прямо сейчас — без регистрации и оплаты",
+    onboardingStart: "Начать",
+    onboardingSkip: "Пропустить",
+    onboardingNext: "Далее",
+    rephrase: "Перефразировать",
+    makeHarder: "Сложнее",
+    makeSimpler: "Проще",
+    humanize: "Очеловечить",
+    translate: "Перевести",
+    improving: "Улучшаю...",
+    wantMore: "Хочешь ещё?",
+    firstPurchaseOffer: "Первая покупка -50%",
+    limitedOffer: "Ограниченное предложение",
+    maybeLater: "Может позже",
+    getStarted: "Начать",
+    studentsUsing: "студентов уже используют",
+    avgRating: "средний рейтинг",
+    dailyStreak: "Дневная серия",
+    streakDays: "дней",
+    referralProgress: "Прогресс рефералов",
+    invite3Get10: "Пригласи 3 друзей → получи 10 отчётов",
+    copyAsPost: "Скопировать как пост",
+    shareAsCard: "Поделиться карточкой",
+    skipTyping: "Показать всё",
+    structurePreview: "Структура документа",
+    approveStructure: "Генерировать по плану",
+    regenerateStructure: "Перегенерировать план",
+    planIntro: "Введение",
+    planMain: "Основная часть",
+    planConclusion: "Заключение",
+    quickReport: "Реферат по истории",
+    quickLab: "Лаба по IT",
+    quickSummary: "Конспект лекции",
   },
   uk: {
     appName: "StudyFlush",
@@ -999,6 +1113,44 @@ const translations: Record<string, TranslationKeys> = {
     supportBotNote: "Також можна написати напряму @studyflush_bot",
     supportViaTelegram: "Відкрити бота в Telegram",
     downloadFile: "Завантажити",
+    onboarding1Title: "Створи будь-який документ за 30 секунд",
+    onboarding1Desc: "Реферати, есе, лабораторні, презентації — AI згенерує все за тебе",
+    onboarding2Title: "AI пише як студент-експерт",
+    onboarding2Desc: "Академічний стиль, правильна структура, посилання та джерела",
+    onboarding3Title: "Перший документ безкоштовно!",
+    onboarding3Desc: "Спробуй просто зараз — без реєстрації та оплати",
+    onboardingStart: "Почати",
+    onboardingSkip: "Пропустити",
+    onboardingNext: "Далі",
+    rephrase: "Перефразувати",
+    makeHarder: "Складніше",
+    makeSimpler: "Простіше",
+    humanize: "Олюднити",
+    translate: "Перекласти",
+    improving: "Покращую...",
+    wantMore: "Хочеш ще?",
+    firstPurchaseOffer: "Перша покупка -50%",
+    limitedOffer: "Обмежена пропозиція",
+    maybeLater: "Може пізніше",
+    getStarted: "Почати",
+    studentsUsing: "студентів вже використовують",
+    avgRating: "середній рейтинг",
+    dailyStreak: "Щоденна серія",
+    streakDays: "днів",
+    referralProgress: "Прогрес рефералів",
+    invite3Get10: "Запроси 3 друзів → отримай 10 звітів",
+    copyAsPost: "Скопіювати як пост",
+    shareAsCard: "Поділитися карткою",
+    skipTyping: "Показати все",
+    structurePreview: "Структура документа",
+    approveStructure: "Згенерувати за планом",
+    regenerateStructure: "Перегенерувати план",
+    planIntro: "Вступ",
+    planMain: "Основна частина",
+    planConclusion: "Висновок",
+    quickReport: "Реферат з історії",
+    quickLab: "Лаба з IT",
+    quickSummary: "Конспект лекції",
   },
   kk: {
     appName: "StudyFlush", welcome: "Сәлем", subtitle: "Оқуға арналған ақылды көмекші", yourBalance: "Сіздің балансыңыз", reportsAvailable: "қолжетімді", report1: "есеп", reports2_4: "есеп", reports5: "есеп", firstReportFree: "Бірінші есеп тегін!", newReport: "Жаңа есеп", generateAI: "AI арқылы жасау", history: "Тарих", myReports: "Менің есептерім", topUp: "Толтыру", buyReports: "Есептер сатып алу", stats: "Статистика", quickStart: "Жылдам бастау", quickStartDesc: "Құжат түрін, пәнді және тақырыпты таңдаңыз — AI бәрін 10-30 секундта жасайды!", createReport: "Есеп жасау", home: "Басты", create: "Жасау", letsGo: "Бастайық", balance: "Баланс", profile: "Профиль", newDocument: "Жаңа құжат", chooseDocType: "Құжат түрін таңдаңыз", subject: "Пән", chooseSubject: "Пән таңдаңыз", chooseCategory: "Санат таңдаңыз", details: "Мәліметтер", describeTask: "Не қажет екенін сипаттаңыз", topicLabel: "Тақырып / Тапсырма *", topicPlaceholder: "Мысалы: Python бойынша зертханалық жұмыс", groupLabel: "Топ / Сынып", groupPlaceholder: "Мысалы: IT-21, 11-A (міндетті емес)", attachPhoto: "Фото тіркеу", attachPhotoDesc: "Оқулықтан тапсырма фотосы", photoAttached: "Фото тіркелді", removePhoto: "Жою", maxFileSize: "Макс. 5 МБ, JPG/PNG", generate: "Жасау", generating: "Жасалуда...", generatingDesc: "AI тапсырмаңызбен жұмыс істеуде. Әдетте 10-30 секунд", done: "Дайын!", docGenerated: "Құжатыңыз жасалды", copy: "Көшіру", newOne: "Жаңа", error: "Қате", tryAgain: "Қайта байқап көріңіз", noBalance: "Балансыңызда жеткілікті есеп жоқ", topUpBalance: "Балансты толтыру", connectionError: "Байланыс қатесі. Қайта байқаңыз.", back: "Артқа", reportsGenerated: "құжат жасалды", docsHere: "Құжаттарыңыз мұнда пайда болады", noReportsYet: "Әзірге есептер жоқ.", createFirst: "Біріншісін жасаңыз!", copyText: "Мәтінді көшіру", contentUnavailable: "Контент қолжетімсіз", manageReports: "Есептеріңізді басқарыңыз", availableReports: "Қолжетімді есептер", total: "Барлығы", freeReport: "+1 тегін", crypto: "Крипто", cryptoDesc: "USDT / USDC (TRC-20)", telegramStars: "Telegram Stars", payViaTelegram: "Telegram арқылы төлеу", important: "Маңызды!", iPaid: "Мен төледім", cryptoAddress: "Адрес (TRC-20):", cryptoNote: "Аударымнан кейін транзакция хэшін қолдау чатына жіберіңіз", starsNote: "Telegram Stars арқылы төлеу үшін ботқа команда жіберіңіз:", starsCmd: "немесе бот мәзірінде 'Сатып алу' батырмасын басыңыз", payInBot: "Ботта төлеу", thankYou: "Рахмет!", paymentPending: "Біз төлемді 24 сағат ішінде тексереміз!", goBack: "Оралу", reports15: "15 есеп", loadError: "Жүктелмеді. Қайта байқаңыз.", profileTitle: "Профиль", language: "Тіл", chooseLanguage: "Тіл таңдаңыз", userId: "Пайдаланушы ID", joined: "Тіркелген", visaMastercard: "Visa / Mastercard", cardPayment: "Карта арқылы төлеу", cardNumber: "Карта нөмірі:", cardNote: "Төлем түсіндірмесінде ID нөміріңізді көрсетіңіз:", receiptNote: "Төлемнен кейін чек скриншотын @studyflush_bot-ға жіберіңіз", payAmount: "Төлеу", choosePayment: "Төлем әдісін таңдаңыз", popular: "Танымал", allSubjects: "Барлық пәндер", referralSystem: "Реферал жүйесі", inviteFriends: "Достарды шақыру", referralDesc: "Достарыңызды шақырыңыз және тегін есептер алыңыз! Екеуіңіз де +2 есеп аласыздар.", referralCode: "Реферал кодыңыз", copyLink: "Сілтемені көшіру", linkCopied: "Көшірілді!", invited: "Шақырылған", bonusEarned: "Бонус алынды", referralBonus: "Әр шақыру үшін +2 есеп", level: "Деңгей", nextLevel: "Келесі деңгей", achievements: "Жетістіктер", firstReportAch: "Бірінші қадам", tenReportsAch: "Сарапшы", fiftyReportsAch: "Шебер", referralAch: "Желілік", accountInfo: "Аккаунт", memberSince: "Мүше болған күн", proTip: "Кеңес", proTipText: "5 досыңызды шақырыңыз және 10 тегін есеп алыңыз!", reportReport: "Есеп", reportSummary: "Конспект", reportDatabase: "Деректер базасы", reportLab: "Зертхана", reportEssay: "Реферат", reportTasks: "Есептер", reportCourseWork: "Курстық жұмыс", reportDiploma: "Дипломдық", reportPresentation: "Презентация", reportTest: "Бақылау", reportNotes: "Дәріс конспектісі", reportReportDesc: "Тақырып бойынша ресми есеп", reportSummaryDesc: "Тақырыптың қысқаша мазмұны", reportDatabaseDesc: "SQL кестелер мен сұраулар", reportLabDesc: "Толық зертханалық жұмыс", reportEssayDesc: "Толық реферат", reportTasksDesc: "Есеп шығару", reportCourseWorkDesc: "Бөлімдері бар курстық жұмыс", reportDiplomaDesc: "Дипломдық жоба құрылымы", reportPresentationDesc: "Слайд бойынша презентация жоспары", reportTestDesc: "Бақылау / емтихан жауаптары", reportNotesDesc: "Дәріс конспектілері", eduSchool: "Мектеп", eduCollege: "Колледж", eduUni: "Университет", eduAll: "Барлығы", transferDescription: "Төмендегі картаға аударып, растаңыз", paymentAmount: "Сома", walletAddress: "Әмиян адресі", cryptoPayment: "Крипто USDT", starsDesc: "Telegram Stars арқылы төлеу", starsInstructions: "Stars-ды @studyflush_bot-ға жіберіп, растаңыз.", supportContact: "Қолдау", choosePaymentMethod: "Төлем әдістері", currentBalance: "Ағымдағы баланс", paymentSent: "Мен төледім", paymentNote: "Админ тексергеннен кейін баланс толтырылады. Әдетте 1-24 сағат.", noHistory: "Есептер жоқ", noHistoryDesc: "Мұнда көру үшін бірінші есепті жасаңыз", progress: "Прогресс", lengthShort: "Қысқа", lengthMedium: "Орташа", lengthFull: "Толық", lengthShortDesc: "~500 сөз", lengthMediumDesc: "~1500 сөз", lengthFullDesc: "~3000 сөз", reportLength: "Жұмыс көлемі", estimatedTime: "Уақыт", estimatedWords: "сөз", seconds: "сек", repeatReport: "Қайталау", shareReport: "Бөлісу", shareText: "StudyFlush Bot арқылы жасалды", recentSubjects: "Соңғы", continueWith: "Жалғастыру", shareWithFriend: "Досыңызбен бөлісіңіз", referralStep1: "Сілтемені досыңызға жіберіңіз", referralStep2: "Дос бірінші есебін жасайды", referralStep3: "Екеуіңіз де +2 есеп аласыздар!", yourReward: "Сіз аласыз", friendReward: "Дос алады", howItWorks: "Қалай жұмыс істейді", sendInvite: "Telegram арқылы шақыру жіберу", friendsJoined: "дос қосылды", earnedReports: "есеп табылды", cardPaymentDesc: "250 грн картаға аударып, скриншот жіберіңіз", cryptoPaymentDesc: "TRC-20 желісі арқылы 5 USDT жіберіңіз", starsPaymentDesc: "Telegram арқылы лезде төлеу", sendScreenshot: "Төлемнен кейін скриншотты @studyflush_bot-ға жіберіңіз", sendScreenshotCrypto: "Аударымнан кейін скриншотты @studyflush_bot-ға жіберіңіз", paymentVerification: "Админ қолмен тексеру", payStep1Card: "250 грн картаға аударыңыз", payStep2Card: "Төлем скриншотын жүктеңіз", payStep3Card: "Админ тексеріп, 15 есеп беріледі", payStep1Crypto: "5 USDT (TRC-20) адреске жіберіңіз", payStep2Crypto: "Транзакция скриншотын жүктеңіз", payStep3Crypto: "Админ тексеріп, 15 есеп беріледі", adminWillCheck: "Админ төлемді қолмен тексереді", uahOnly: "Тек Украина", uploadScreenshot: "Скриншот жүктеу", uploadScreenshotDesc: "Төлем скриншотын тіркеңіз", screenshotUploaded: "Скриншот тіркелді ✓", changeScreenshot: "Өзгерту", screenshotRequired: "Төлем скриншотын тіркеңіз", submitting: "Жіберілуде...", paymentSubmitted: "Сұрау жіберілді!", paymentSubmittedDesc: "Админ төлемді тексеріп, 1-24 сағат ішінде баланс толтырады.", adminReviewing: "Тексеруде", searchReports: "Жұмыстарды іздеу...", settings: "Баптаулар", support: "Қолдау", shareApp: "Бөлісу", shareAppDesc: "Достарға StudyFlush туралы айтыңыз", rateBot: "Ботты бағалау", rateBotDesc: "Telegram-да пікір қалдыру", about: "Қосымша туралы", version: "Нұсқа", speedAch: "Жылдам", hundredReportsAch: "Аңыз", genTip1: "AI тақырыпты талдауда...", genTip2: "Құжат құрылымын жасауда...", genTip3: "Мазмұнды генерациялауда...", genTip4: "Дереккөздер қосуда...", genTip5: "Пішімдеу және өңдеу...", genTip6: "Дерлік дайын!", supportTitle: "Қолдау", supportDesc: "Мәселеңізді сипаттаңыз, біз көмектесеміз", supportFormTitle: "Бізге жазу", supportFormDesc: "Хабарлама админге жіберіледі", supportCategory: "Санат", supportCatPayment: "Төлем", supportCatGeneration: "Генерация", supportCatBug: "Қате", supportCatFeature: "Идея", supportCatOther: "Басқа", supportMessageLabel: "Сіздің хабарламаңыз", supportMessagePlaceholder: "Мәселеңізді немесе сұрағыңызды толық сипаттаңыз...", supportSend: "Жіберу", supportSent: "Хабарлама жіберілді!", supportSentDesc: "Сұрауыңыз қабылданды. Админ 24 сағат ішінде жауап береді.", supportInfo: "Қолдау қалай жұмыс істейді", supportResponseTime: "Жауап уақыты: әдетте 1-24 сағат", supportBotNote: "Сондай-ақ @studyflush_bot-ға тікелей жаза аласыз", supportViaTelegram: "Ботты Telegram-да ашу", downloadFile: "Жүктеу"

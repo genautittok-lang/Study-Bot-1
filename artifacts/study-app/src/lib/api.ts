@@ -99,3 +99,26 @@ export async function sendSupportMessage(data: {
     body: JSON.stringify(data),
   });
 }
+
+export async function improveText(data: {
+  content: string;
+  action: "rephrase" | "harder" | "simpler" | "humanize";
+  language?: string;
+}): Promise<{ success: boolean; content?: string; error?: string }> {
+  return request<{ success: boolean; content?: string; error?: string }>("/improve", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getStructurePreview(data: {
+  reportType: string;
+  subject: string;
+  topic: string;
+  language?: string;
+}): Promise<{ success: boolean; structure?: string; error?: string }> {
+  return request<{ success: boolean; structure?: string; error?: string }>("/structure-preview", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
