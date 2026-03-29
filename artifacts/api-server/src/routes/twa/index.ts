@@ -120,7 +120,7 @@ router.get("/reports", async (req, res) => {
         reportType: r.reportType,
         subject: r.subject,
         topic: r.topic,
-        group: r.group,
+        group: r.group || "",
         content: r.content,
         createdAt: r.createdAt.toISOString(),
       })),

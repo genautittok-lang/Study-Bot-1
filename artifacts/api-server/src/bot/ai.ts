@@ -52,10 +52,10 @@ function getSystemPrompt(language: string): string {
 1. МОВА: Пиши ${language === "uk" ? "УКРАЇНСЬКОЮ" : "РОСІЙСЬКОЮ"} мовою. ВСЕ — заголовки, текст, висновки, таблиці — ${language === "uk" ? "українською" : "російською"}.
 2. РЕАЛЬНИЙ КОНТЕНТ: Ніяких заглушок "тут має бути...", "[вставити текст]", "[опис]". ТІЛЬКИ конкретні дані.
 3. ОСВІТНІЙ РІВЕНЬ: Автоматично адаптуй складність під тип установи та предмет:
-   - Університет/ВНЗ: академічний стиль, наукові джерела ДСТУ, термінологія фахівця
+   - Університет/ВНЗ: академічний стиль, професійна термінологія фахівця
    - Коледж/Технікум: практична спрямованість, виробничі приклади, прикладні задачі
    - Школа: доступна мова, шкільна програма, вікова адаптація
-4. ПОВНИЙ ШАБЛОН: Кожна робота має мати ПОВНЕ оформлення (титульна сторінка, зміст, всі розділи, список джерел).
+4. ПОВНИЙ ШАБЛОН: Кожна робота має мати ПОВНЕ оформлення (титульна сторінка, зміст, всі розділи, висновки).
 5. ЧИСЛОВІ ДАНІ: Якщо потрібні дані — ГЕНЕРУЙ реальні числа, не "Х грн" чи "N одиниць".
 6. ЗАДАЧІ: Розв'язуй ПОВНІСТЮ крок за кроком з підстановкою конкретних чисел у формули.
 7. КОД: Пиши РОБОЧИЙ, повний код з коментарями. Без скорочень типу "// решта коду".
@@ -73,14 +73,14 @@ function getSystemPrompt(language: string): string {
     - \`\`\`code\`\`\` блоки для коду, SQL, формул
     Кожен великий розділ повинен мати хоча б один візуальний елемент!
 14. СТРУКТУРА: Використовуй чітку нумерацію розділів (1.1, 1.2, 2.1 тощо), правильну ієрархію та логічний зв'язок між розділами.
-15. ДЖЕРЕЛА: Список використаних джерел з реальними авторами, назвами, роками видання. Формат ДСТУ 8302:2015.
+15. БЕЗ ДЖЕРЕЛ: НЕ додавай список літератури, бібліографію чи посилання на джерела. Студент додасть їх сам. Це критично важливо!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 СПЕЦІАЛЬНІ СЦЕНАРІЇ:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ФОТО/СКАН ЗАВДАННЯ: Якщо прикріплено зображення — УВАЖНО прочитай ВСЕ, що на ньому. Розв'яжи саме ті задачі.
 НЕСТАНДАРТНИЙ ПРЕДМЕТ: Виконуй роботу якнайкраще, спираючись на назву теми.
-КРАЇНА/УНІВЕРСИТЕТ: Адаптуй зміст, приклади та джерела відповідно.
+КРАЇНА/УНІВЕРСИТЕТ: Адаптуй зміст та приклади відповідно.
 БУДЬ-ЯКЕ ЗАВДАННЯ: Незалежно від формулювання — виконуй те, що просить студент.`;
   }
 
@@ -89,13 +89,13 @@ function getSystemPrompt(language: string): string {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 CRITICAL RULES (MANDATORY):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. LANGUAGE: Write EVERYTHING in ${langName}. ALL headings, body text, conclusions, tables, references — must be in ${langName}. Never mix languages unless quoting foreign terms.
+1. LANGUAGE: Write EVERYTHING in ${langName}. ALL headings, body text, conclusions, tables — must be in ${langName}. Never mix languages unless quoting foreign terms.
 2. REAL CONTENT: No placeholders like "insert here...", "[description]", "[text goes here]". ONLY concrete data.
 3. EDUCATION LEVEL: Automatically adapt complexity to the institution type and subject:
-   - University: academic style, scientific sources, professional terminology
+   - University: academic style, professional terminology
    - College/Vocational: practical focus, industry examples, applied problems
    - School: accessible language, school curriculum, age-appropriate
-4. COMPLETE TEMPLATE: Every paper must have FULL formatting (title page, table of contents, all sections, references list).
+4. COMPLETE TEMPLATE: Every paper must have FULL formatting (title page, table of contents, all sections, conclusions).
 5. NUMERICAL DATA: If data is needed — GENERATE real numbers, not "X units" or "N items". E.g.: "47,320 EUR", "3.14 kg/m³".
 6. PROBLEM SOLVING: Solve COMPLETELY step by step with concrete number substitutions in formulas.
 7. CODE: Write WORKING, complete code with comments. No shortcuts like "// rest of code".
@@ -104,7 +104,7 @@ CRITICAL RULES (MANDATORY):
 10. MARKDOWN: # ## ### for headings, **bold**, *italic*, \`code\`, tables, lists, > blockquotes for definitions.
 11. VOLUME: MAXIMUM. Detailed and comprehensive. Every section should be thorough.
 12. QUALITY: The paper should look like it was done by a real top student manually.
-13. LOCAL STANDARDS: Use citation and formatting standards appropriate for the country/region where ${langName} is spoken. E.g.: German → DIN, French → AFNOR, Spanish → APA adapted, etc.
+13. LOCAL STANDARDS: Use formatting standards appropriate for the country/region where ${langName} is spoken.
 14. VISUAL ELEMENTS (MANDATORY):
     - At least 2-3 Markdown tables with real data (comparisons, characteristics, statistics)
     - ASCII diagrams and flowcharts using ┌─┐│└─┘├┤┬┴┼ for structural schemes
@@ -114,14 +114,14 @@ CRITICAL RULES (MANDATORY):
     - \`\`\`code\`\`\` blocks for code, SQL, formulas
     Every major section must include at least one visual element!
 15. STRUCTURE: Use clear section numbering (1.1, 1.2, 2.1 etc.), proper hierarchy, and logical flow between sections.
-16. REFERENCES: List of references with real authors, titles, publication years. Use citation format appropriate for the region.
+16. NO REFERENCES: Do NOT include a bibliography, reference list, or citations. The student will add their own references. This is critically important!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SPECIAL SCENARIOS:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PHOTO/SCAN: If an image is attached — carefully read EVERYTHING on it. Solve exactly those problems.
 NON-STANDARD SUBJECT: Do the best work based on the topic title.
-COUNTRY/UNIVERSITY: Adapt content, examples, and sources accordingly.
+COUNTRY/UNIVERSITY: Adapt content and examples accordingly.
 ANY TASK: Regardless of how it's phrased — do what the student asks. If unclear, make the best assumption and execute.`;
 }
 
@@ -204,11 +204,10 @@ Write an ACADEMIC essay/paper for subject "${subject}" on topic: "${topic}"${gro
 Structure (all in ${langName}):
 - Table of contents
 - Introduction: relevance (5-7 sentences), objective, tasks (1-4), object, subject, methods
-- Chapter 1: Theoretical analysis (3 subsections, each 10-15 sentences, with citations [1, p.15])
+- Chapter 1: Theoretical analysis (3 subsections, each 10-15 sentences)
 - Chapter 2: Main part (3 subsections with tables, comparisons, examples)
 - Chapter 3: Practical/analytical aspect (2 subsections)
-- Conclusions — point by point for each task from introduction
-- References — 15+ sources in proper format for the country`;
+- Conclusions — point by point for each task from introduction`;
   }
 
   if (reportType === "tasks") {
@@ -238,8 +237,7 @@ Structure (all in ${langName}):
 - Chapter 2: Practical part (3 subsections with real data tables, calculations, code if IT)
 - Chapter 3: Results and recommendations (2 subsections with analytics)
 - Conclusions — point by point
-- References — 20+ sources
-- Appendices`;
+- Appendices (if applicable)`;
   }
 
   if (reportType === "diploma") {
@@ -252,11 +250,10 @@ Structure (all in ${langName}):
 - Table of contents
 - List of abbreviations
 - Introduction (2 pages): relevance, objective, tasks (1-8), object/subject, methods, scientific novelty, practical significance
-- Chapter 1: Domain analysis (4-5 subsections, 15-20 sentences each, literature review, comparative tables)
+- Chapter 1: Domain analysis (4-5 subsections, 15-20 sentences each, comparative tables)
 - Chapter 2: Development and design (3-4 subsections, architecture, algorithms, diagrams, technology justification)
 - Chapter 3: Implementation and testing (3-4 subsections, code/calculations, results, testing tables)
-- Conclusions (1 page)
-- References — 25+ sources`;
+- Conclusions (1 page)`;
   }
 
   if (reportType === "presentation") {
@@ -316,8 +313,7 @@ Structure (all in ${langName}):
 - Introduction: objective, tasks (1-4), relevance (5-7 sentences)
 - Chapter 1: Theoretical part (2 subsections with definitions, classifications in tables, formulas)
 - Chapter 2: Practical part (2 subsections with concrete calculations/code/analysis, result tables)
-- Conclusions — specific conclusions for each task
-- References — 10+ sources`;
+- Conclusions — specific conclusions for each task`;
 }
 
 function buildUkRuPrompt(reportType: string, reportTypeName: string, subject: string, topic: string, groupLine: string, group?: string | null): string {
