@@ -8,10 +8,13 @@ function CodeBlock({ className, children }: { className?: string; children: stri
   const lang = className?.replace("language-", "") || "";
 
   function copy() {
-    navigator.clipboard.writeText(children.trim());
-    hapticSuccess();
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(children.trim())
+      .then(() => {
+        hapticSuccess();
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => {});
   }
 
   return (
@@ -33,48 +36,48 @@ function CodeBlock({ className, children }: { className?: string; children: stri
 
 export default function MarkdownRenderer({ content }: { content: string }) {
   return (
-    <div className="md-content">
+    <div className="md-content" style={{ color: "#1a1a2e" }}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          h1: ({ children }) => <h1 className="text-[20px] font-black text-[#1a1a2e] mt-6 mb-3 leading-tight">{children}</h1>,
-          h2: ({ children }) => <h2 className="text-[17px] font-black text-[#1a1a2e] mt-6 mb-2.5 leading-tight flex items-center gap-2">{children}</h2>,
-          h3: ({ children }) => <h3 className="text-[15px] font-bold text-[#2d2d44] mt-4 mb-2">{children}</h3>,
-          h4: ({ children }) => <h4 className="text-[14px] font-bold text-[#3d3d55] mt-3 mb-1.5">{children}</h4>,
-          p: ({ children }) => <p className="text-[14px] text-[#4a4a6a] leading-[1.8] mb-3">{children}</p>,
-          strong: ({ children }) => <strong className="font-bold text-[#1a1a2e]">{children}</strong>,
-          em: ({ children }) => <em className="text-[#6b7280] italic">{children}</em>,
+          h1: ({ children }) => <h1 style={{ fontSize: 20, fontWeight: 900, color: "#1a1a2e", marginTop: 24, marginBottom: 12, lineHeight: 1.2 }}>{children}</h1>,
+          h2: ({ children }) => <h2 style={{ fontSize: 17, fontWeight: 900, color: "#1a1a2e", marginTop: 24, marginBottom: 10, lineHeight: 1.2, display: "flex", alignItems: "center", gap: 8 }}>{children}</h2>,
+          h3: ({ children }) => <h3 style={{ fontSize: 15, fontWeight: 700, color: "#2d2d44", marginTop: 16, marginBottom: 8 }}>{children}</h3>,
+          h4: ({ children }) => <h4 style={{ fontSize: 14, fontWeight: 700, color: "#3d3d55", marginTop: 12, marginBottom: 6 }}>{children}</h4>,
+          p: ({ children }) => <p style={{ fontSize: 14, color: "#4a4a6a", lineHeight: 1.8, marginBottom: 12 }}>{children}</p>,
+          strong: ({ children }) => <strong style={{ fontWeight: 700, color: "#1a1a2e" }}>{children}</strong>,
+          em: ({ children }) => <em style={{ color: "#6b7280", fontStyle: "italic" }}>{children}</em>,
           blockquote: ({ children }) => (
-            <blockquote className="my-3 pl-4 py-2 rounded-r-xl" style={{ borderLeft: "3px solid rgba(124,92,252,0.4)", background: "rgba(124,92,252,0.04)" }}>
+            <blockquote style={{ margin: "12px 0", paddingLeft: 16, paddingTop: 8, paddingBottom: 8, borderLeft: "3px solid rgba(124,92,252,0.4)", background: "rgba(124,92,252,0.04)", borderRadius: "0 12px 12px 0" }}>
               {children}
             </blockquote>
           ),
-          ul: ({ children }) => <ul className="list-none space-y-1.5 my-3 pl-1">{children}</ul>,
-          ol: ({ children }) => <ol className="list-none space-y-1.5 my-3 pl-1 counter-reset-item">{children}</ol>,
+          ul: ({ children }) => <ul style={{ listStyle: "none", padding: 0, margin: "12px 0 12px 4px" }} className="space-y-1.5">{children}</ul>,
+          ol: ({ children }) => <ol style={{ listStyle: "none", padding: 0, margin: "12px 0 12px 4px" }} className="space-y-1.5">{children}</ol>,
           li: ({ children, ...props }) => {
             const isOrdered = (props as any).ordered;
             return (
-              <li className="text-[14px] text-[#4a4a6a] leading-[1.7] flex gap-2">
-                <span className="text-[12px] mt-[3px] shrink-0" style={{ color: isOrdered ? "#3B82F6" : "#7C5CFC" }}>
+              <li style={{ fontSize: 14, color: "#4a4a6a", lineHeight: 1.7, display: "flex", gap: 8 }}>
+                <span style={{ fontSize: 12, marginTop: 3, flexShrink: 0, color: isOrdered ? "#3B82F6" : "#7C5CFC" }}>
                   {isOrdered ? `${(props as any).index + 1}.` : "•"}
                 </span>
-                <span className="flex-1">{children}</span>
+                <span style={{ flex: 1 }}>{children}</span>
               </li>
             );
           },
-          hr: () => <div className="my-5 h-[1px]" style={{ background: "linear-gradient(90deg, transparent, rgba(124,92,252,0.15), rgba(74,144,255,0.15), transparent)" }} />,
-          a: ({ href, children }) => <a href={href} className="text-[#7C5CFC] underline underline-offset-2 hover:text-[#5B4CCF]">{children}</a>,
+          hr: () => <div style={{ margin: "20px 0", height: 1, background: "linear-gradient(90deg, transparent, rgba(124,92,252,0.15), rgba(74,144,255,0.15), transparent)" }} />,
+          a: ({ href, children }) => <a href={href} style={{ color: "#7C5CFC", textDecoration: "underline", textUnderlineOffset: 2 }}>{children}</a>,
           table: ({ children }) => (
-            <div className="my-4 rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(124,92,252,0.1)" }}>
+            <div style={{ margin: "16px 0", borderRadius: 16, overflow: "hidden", border: "1px solid rgba(124,92,252,0.1)" }}>
               <div className="overflow-x-auto scrollbar-hide">
-                <table className="w-full text-[13px]">{children}</table>
+                <table style={{ width: "100%", fontSize: 13 }}>{children}</table>
               </div>
             </div>
           ),
           thead: ({ children }) => <thead style={{ background: "rgba(124,92,252,0.06)" }}>{children}</thead>,
-          th: ({ children }) => <th className="px-4 py-3 text-left font-bold text-[#1a1a2e] text-[12px] uppercase tracking-wider whitespace-nowrap" style={{ borderBottom: "1px solid rgba(124,92,252,0.1)" }}>{children}</th>,
-          td: ({ children }) => <td className="px-4 py-3 text-[#4a4a6a] text-[13px]" style={{ borderBottom: "1px solid rgba(0,0,0,0.04)" }}>{children}</td>,
-          tr: ({ children }) => <tr className="hover:bg-[#f8f7ff] transition-colors">{children}</tr>,
+          th: ({ children }) => <th style={{ padding: "12px 16px", textAlign: "left", fontWeight: 700, color: "#1a1a2e", fontSize: 12, textTransform: "uppercase", letterSpacing: "0.05em", whiteSpace: "nowrap", borderBottom: "1px solid rgba(124,92,252,0.1)" }}>{children}</th>,
+          td: ({ children }) => <td style={{ padding: "12px 16px", color: "#4a4a6a", fontSize: 13, borderBottom: "1px solid rgba(0,0,0,0.04)" }}>{children}</td>,
+          tr: ({ children }) => <tr>{children}</tr>,
           code: ({ className, children, node, ...props }) => {
             const hasLang = className?.startsWith("language-");
             const content = String(children);
@@ -83,8 +86,7 @@ export default function MarkdownRenderer({ content }: { content: string }) {
               return <CodeBlock className={className}>{content}</CodeBlock>;
             }
             return (
-              <code className="text-[13px] font-mono px-1.5 py-0.5 rounded-md text-[#7C5CFC]"
-                style={{ background: "rgba(124,92,252,0.06)", border: "1px solid rgba(124,92,252,0.08)" }}>
+              <code style={{ fontSize: 13, fontFamily: "'SF Mono', 'JetBrains Mono', Menlo, monospace", padding: "2px 6px", borderRadius: 6, color: "#7C5CFC", background: "rgba(124,92,252,0.06)", border: "1px solid rgba(124,92,252,0.08)" }}>
                 {children}
               </code>
             );

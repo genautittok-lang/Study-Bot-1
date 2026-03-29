@@ -58,7 +58,11 @@ artifacts-monorepo/
 
 ## Telegram Mini App (TWA)
 
-Premium React + Vite fintech-grade TWA with light premium design:
+Premium React + Vite fintech-grade TWA with light premium design. Features:
+- **Telegram BackButton**: Native BackButton integrated on all sub-pages (history detail, new-report steps, profile language picker, balance flow, support)
+- **Download files**: Download button (green, `.txt`) on generated reports and history detail view
+- **Markdown renderer**: Inline styles for guaranteed text visibility (no Tailwind color class inheritance issues)
+- **i18n**: `downloadFile` key in all 30 languages
 
 ### Design System (Light Premium Theme — v2)
 - **Background**: `#F0F0F8` with gradient overlay `(#EEEDF8 → #F0F0F8 → #EDF5FF → #F0F8F4)`
@@ -67,7 +71,7 @@ Premium React + Vite fintech-grade TWA with light premium design:
 - **Color Palette**: Purple `#7B68EE` (deep `#5B4CCF`), Blue `#4A90FF`, Cyan `#00D4AA`, Green `#00C48C`, Pink `#FF6B9D`, Orange `#FF8A50`
 - **Hero cards**: Gradient backgrounds (purple 145deg) with radial glow overlays + diagonal stripe pattern
 - **Interactive**: 3D tilt cards (perspective transform on pointer move), animated progress rings (SVG), animated counters
-- **Ambient**: 4 floating liquid orbs with blur(90px) + subtle noise texture overlay
+- **Ambient**: 3 floating liquid orbs (perf-optimized, `contain: strict`, simplified animations) + subtle noise texture overlay
 - **Accessibility**: `@media (prefers-reduced-motion: reduce)` disables animations and hides orbs
 
 #### CSS Classes

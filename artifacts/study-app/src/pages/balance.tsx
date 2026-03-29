@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useUser, useLang, updateBalance, refreshUser } from "@/lib/store";
 import { createPayment, createInvoice } from "@/lib/api";
-import { hapticFeedback, hapticSuccess, hapticError, getTelegramWebApp } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, hapticError, getTelegramWebApp, useBackButton } from "@/lib/telegram";
 import { t, getLang } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import Icon3D from "@/components/icons-3d";
@@ -84,6 +84,13 @@ export default function Balance() {
   const [method, setMethod] = useState<Method>(null);
   const [step, setStep] = useState<Step>("select");
   const [submitting, setSubmitting] = useState(false);
+
+  useBackButton(() => {
+    if (step === "done") { setStep("select"); setMethod(null); }
+    else if (step === "screenshot") { setStep("details"); }
+    else if (step === "details") { setStep("select"); setMethod(null); }
+    else { /* home via tab nav */ }
+  });
   const [starsLoading, setStarsLoading] = useState(false);
   const [screenshot, setScreenshot] = useState<string | null>(null);
   const [screenshotName, setScreenshotName] = useState<string>("");

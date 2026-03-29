@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser, useLang } from "@/lib/store";
-import { hapticFeedback, hapticSuccess } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, useBackButton } from "@/lib/telegram";
 import { t } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,6 +24,12 @@ export default function Support() {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+
+  useBackButton(() => {
+    if (sent) { go("/profile"); }
+    else if (category) { setCategory(""); }
+    else { go("/profile"); }
+  });
 
   const a = (i: number) => ({
     initial: { opacity: 0, y: 16 } as const,

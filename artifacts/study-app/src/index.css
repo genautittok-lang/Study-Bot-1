@@ -186,58 +186,39 @@
 .liquid-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(100px);
+  filter: blur(80px);
   pointer-events: none;
   will-change: transform;
-  opacity: 0.45;
+  opacity: 0.35;
   mix-blend-mode: normal;
+  contain: strict;
 }
 .liquid-orb-1 {
-  width: 450px; height: 450px;
+  width: 350px; height: 350px;
   top: -140px; left: -100px;
-  background: radial-gradient(circle, rgba(124,92,252,0.2) 0%, rgba(124,92,252,0.05) 50%, transparent 70%);
-  animation: orb-1 20s ease-in-out infinite alternate;
+  background: radial-gradient(circle, rgba(124,92,252,0.15) 0%, transparent 60%);
+  animation: orb-float 25s ease-in-out infinite alternate;
 }
 .liquid-orb-2 {
-  width: 400px; height: 400px;
+  width: 300px; height: 300px;
   bottom: -120px; right: -80px;
-  background: radial-gradient(circle, rgba(6,214,160,0.16) 0%, rgba(6,214,160,0.04) 50%, transparent 70%);
-  animation: orb-2 24s ease-in-out infinite alternate;
+  background: radial-gradient(circle, rgba(6,214,160,0.12) 0%, transparent 60%);
+  animation: orb-float 30s ease-in-out infinite alternate-reverse;
 }
 .liquid-orb-3 {
-  width: 320px; height: 320px;
+  width: 250px; height: 250px;
   top: 35%; left: 20%;
-  background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 65%);
-  animation: orb-3 28s ease-in-out infinite alternate;
+  background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 60%);
+  animation: orb-float 35s ease-in-out infinite alternate;
+  animation-delay: -10s;
 }
 .liquid-orb-4 {
-  width: 220px; height: 220px;
-  top: 12%; right: 8%;
-  background: radial-gradient(circle, rgba(236,72,153,0.07) 0%, transparent 65%);
-  animation: orb-4 22s ease-in-out infinite alternate;
+  display: none;
 }
 
-@keyframes orb-1 {
-  0%   { transform: translate(0,0) scale(1) rotate(0deg); }
-  33%  { transform: translate(40px, 50px) scale(1.1) rotate(5deg); }
-  66%  { transform: translate(-20px, 30px) scale(0.95) rotate(-3deg); }
-  100% { transform: translate(-30px, 70px) scale(1.08) rotate(2deg); }
-}
-@keyframes orb-2 {
-  0%   { transform: translate(0,0) scale(1) rotate(0deg); }
-  33%  { transform: translate(-50px, -40px) scale(1.12) rotate(-4deg); }
-  66%  { transform: translate(20px, -20px) scale(0.9) rotate(3deg); }
-  100% { transform: translate(40px, -60px) scale(1.05) rotate(-2deg); }
-}
-@keyframes orb-3 {
-  0%   { transform: translate(0,0) scale(1); }
-  50%  { transform: translate(-50px, -30px) scale(1.15); }
-  100% { transform: translate(-70px, -50px) scale(1.08); }
-}
-@keyframes orb-4 {
-  0%   { transform: translate(0,0) scale(1); }
-  50%  { transform: translate(30px, 20px) scale(1.1); }
-  100% { transform: translate(50px, 40px) scale(0.95); }
+@keyframes orb-float {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(30px, 40px); }
 }
 
 .app-bg::before {

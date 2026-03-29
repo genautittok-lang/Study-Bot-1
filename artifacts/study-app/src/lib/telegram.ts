@@ -1,3 +1,5 @@
+import { useEffect, useRef, useCallback } from "react";
+
 declare global {
   interface Window {
     Telegram: {
@@ -137,15 +139,15 @@ export function hideBackButton(cb: () => void) {
 }
 
 export function useBackButton(callback: () => void) {
-  const { useEffect, useRef } = require("react");
   const cbRef = useRef(callback);
   cbRef.current = callback;
 
+  const stableHandler = useCallback(() => cbRef.current(), []);
+
   useEffect(() => {
-    const handler = () => cbRef.current();
-    showBackButton(handler);
-    return () => hideBackButton(handler);
-  }, []);
+    showBackButton(stableHandler);
+    return () => hideBackButton(stableHandler);
+  }, [stableHandler]);
 }
 
 export function openTelegramLink(url: string) {

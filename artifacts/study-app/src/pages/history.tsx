@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
 import { useUser, useLang } from "@/lib/store";
 import { getReports, type ReportItem } from "@/lib/api";
-import { hapticFeedback, hapticSuccess, hapticSelection, shareViaTelegram } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, hapticSelection, shareViaTelegram, useBackButton } from "@/lib/telegram";
 import { t, getReportTypeMap, getSubjectMap } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import MarkdownRenderer from "@/components/markdown-renderer";
@@ -60,6 +60,29 @@ export default function History() {
     shareViaTelegram(`${icon} ${label}: ${r.topic}\n\n${preview}\n\n${t("shareText")}`);
   }
 
+  useBackButton(() => {
+    if (selected) {
+      setSelected(null);
+    } else {
+      go("/");
+    }
+  });
+
+  function downloadReport(r: ReportItem) {
+    hapticSuccess();
+    const label = TYPES[r.reportType]?.label || r.reportType;
+    const fileName = `${label} — ${r.topic.substring(0, 40)}`.replace(/[/\\?%*:|"<>]/g, "_") + ".txt";
+    const blob = new Blob([r.content || ""], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   if (selected) {
     const wc = (selected.content || "").split(/\s+/).filter(Boolean).length;
     const readTime = Math.max(1, Math.round(wc / 200));
@@ -115,11 +138,15 @@ export default function History() {
               ? <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>✓</>
               : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{t("copy")}</>}
           </motion.button>
+          <motion.button whileTap={{ scale: 0.96 }} onClick={() => downloadReport(selected)}
+            className="py-3 px-4 rounded-[16px] text-[13px] font-semibold flex items-center justify-center gap-1.5"
+            style={{ background: "rgba(16,185,129,0.06)", color: "#10B981" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          </motion.button>
           <motion.button whileTap={{ scale: 0.96 }} onClick={() => shareReport(selected)}
             className="py-3 px-4 rounded-[16px] text-[13px] font-semibold flex items-center justify-center gap-1.5"
             style={{ background: "rgba(74,144,255,0.06)", color: "#3B82F6" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
-            {t("shareReport")}
           </motion.button>
         </div>
         <motion.button whileTap={{ scale: 0.97 }} onClick={() => { hapticFeedback("medium"); go("/new"); }}

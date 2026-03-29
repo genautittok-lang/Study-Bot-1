@@ -4,7 +4,7 @@ import { useUser, setUser, useLang, addRecentItem } from "@/lib/store";
 import { generateReport } from "@/lib/api";
 import { getReportTypes, getSubjectCategories, getSubjectName, getEduLevels, getCategoryEduLevel, t, getLang } from "@/lib/i18n";
 import type { EduLevel } from "@/lib/i18n";
-import { hapticFeedback, hapticSuccess, hapticError, hapticSelection, shareViaTelegram } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, hapticError, hapticSelection, shareViaTelegram, useBackButton } from "@/lib/telegram";
 import { motion, AnimatePresence } from "framer-motion";
 import MarkdownRenderer from "@/components/markdown-renderer";
 import Icon3D, { REPORT_ICON_MAP } from "@/components/icons-3d";
@@ -90,6 +90,15 @@ export default function NewReport() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [length, setLength] = useState<"short" | "medium" | "full">("medium");
 
+  useBackButton(() => {
+    if (step === "done" || step === "error") { reset(); }
+    else if (step === "generating") { /* don't interrupt */ }
+    else if (step === "details") { setStep("subject"); }
+    else if (step === "subject") { setStep("category"); }
+    else if (step === "category") { setStep("type"); }
+    else { setLocation("/"); }
+  });
+
   const canGenerate = user ? (!user.freeReportsUsed || user.balance > 0) : false;
   const TYPES = getReportTypes();
   const CATS = getSubjectCategories();
@@ -134,6 +143,21 @@ export default function NewReport() {
     const selType = TYPES.find(rt => rt.id === reportType);
     const preview = result.substring(0, 300).replace(/[#*_]/g, "") + "...";
     shareViaTelegram(`${selType?.icon} ${selType?.label}: ${topic.trim()}\n\n${preview}\n\n${t("shareText")}`);
+  }
+
+  function downloadResult() {
+    hapticSuccess();
+    const selType = TYPES.find(rt => rt.id === reportType);
+    const fileName = `${selType?.label || "document"} — ${topic.trim().substring(0, 40)}`.replace(/[/\\?%*:|"<>]/g, "_") + ".txt";
+    const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   function reset() { setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); setLength("medium"); }
@@ -331,6 +355,11 @@ export default function NewReport() {
             {copied
               ? <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>✓</>
               : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{t("copy")}</>}
+          </motion.button>
+          <motion.button whileTap={{ scale: 0.96 }} onClick={downloadResult}
+            className="py-3 px-4 rounded-[14px] text-[13px] font-semibold flex items-center justify-center gap-1.5"
+            style={{ background: "rgba(16,185,129,0.06)", color: "#10B981" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
           </motion.button>
           <motion.button whileTap={{ scale: 0.96 }} onClick={shareResult}
             className="py-3 px-4 rounded-[14px] text-[13px] font-semibold flex items-center justify-center gap-1.5"

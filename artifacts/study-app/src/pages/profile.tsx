@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser, usePhotoUrl, useLang } from "@/lib/store";
-import { hapticFeedback, hapticSuccess, hapticSelection, shareViaTelegram, openExternalLink, openTelegramLink } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, hapticSelection, shareViaTelegram, openExternalLink, openTelegramLink, useBackButton } from "@/lib/telegram";
 import { t, getLang, setLang, LANGUAGES, getUserLevel, getNextLevel } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -33,6 +33,14 @@ export default function Profile() {
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState(false);
   const [, go] = useLocation();
+  useBackButton(() => {
+    if (showLangs) {
+      setShowLangs(false);
+    } else {
+      go("/");
+    }
+  });
+
   const curLang = getLang();
   const curLangObj = LANGUAGES.find(l => l.code === curLang);
 
