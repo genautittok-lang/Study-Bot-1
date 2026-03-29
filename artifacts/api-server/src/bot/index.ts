@@ -19,6 +19,7 @@ import { generateReport } from "./ai.js";
 import {
   getOrCreateUser,
   getUser,
+  getUserByReferralCode,
   canUserGenerateReport,
   useReport,
   saveReport,
@@ -26,6 +27,7 @@ import {
   addBalance,
   confirmPayment,
   denyPayment,
+  processReferral,
 } from "./db.js";
 
 interface SessionData {
@@ -60,11 +62,32 @@ function getAdminIds(): number[] {
 
 async function sendWelcome(ctx: BotContext) {
   const tgUser = ctx.from!;
-  await getOrCreateUser(tgUser.id, {
+  const user = await getOrCreateUser(tgUser.id, {
     username: tgUser.username,
     firstName: tgUser.first_name,
     lastName: tgUser.last_name,
   });
+
+  const payload = (ctx.message as any)?.text?.split(" ")[1] || "";
+  if (payload.startsWith("ref_")) {
+    const refCode = payload.replace("ref_", "");
+    try {
+      const referrer = await getUserByReferralCode(refCode);
+      if (referrer && referrer.telegramId !== tgUser.id && !user.referredBy) {
+        await processReferral(referrer.telegramId, tgUser.id);
+        logger.info({ referrer: referrer.telegramId, newUser: tgUser.id }, "Referral processed");
+        try {
+          await bot.telegram.sendMessage(
+            referrer.telegramId,
+            `🎉 *New referral!*\n\n${tgUser.first_name || "Someone"} joined via your link!\nYou both got *+2 reports* 🎁\n\n🎉 *Новий реферал!*\n${tgUser.first_name || "Хтось"} приєднався за твоїм посиланням!\nВи обидва отримали *+2 звіти* 🎁`,
+            { parse_mode: "Markdown" }
+          );
+        } catch {}
+      }
+    } catch (err) {
+      logger.error({ err }, "Referral error");
+    }
+  }
 
   const webAppUrl = getWebAppUrl();
 

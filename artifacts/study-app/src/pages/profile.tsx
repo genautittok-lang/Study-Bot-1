@@ -286,10 +286,13 @@ export default function Profile() {
             bg: "rgba(59,130,246,0.05)",
           },
           {
-            label: t("rateApp") || "Rate App",
-            desc: t("rateAppDesc") || "Leave a review",
-            action: () => { hapticFeedback("light"); window.open("https://t.me/studyflush_bot", "_blank"); },
-            icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF9F43" strokeWidth="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01Z"/></svg>,
+            label: t("shareApp") || "Share App",
+            desc: t("shareAppDesc") || "Tell friends about StudyFlush",
+            action: () => {
+              hapticFeedback("light");
+              shareViaTelegram(`🎓 StudyFlush — ${t("subtitle")}!\n\nhttps://t.me/studyflush_bot`);
+            },
+            icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF9F43" strokeWidth="1.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>,
             bg: "rgba(255,159,67,0.05)",
           },
         ].map((item, i) => (

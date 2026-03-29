@@ -243,8 +243,8 @@ type TranslationKeys = {
   searchReports: string;
   settings: string;
   support: string;
-  rateApp: string;
-  rateAppDesc: string;
+  shareApp: string;
+  shareAppDesc: string;
   about: string;
   version: string;
   speedAch: string;
@@ -463,10 +463,10 @@ const translations: Record<string, TranslationKeys> = {
     sendScreenshotCrypto: "After transfer, send a screenshot of the transaction to @studyflush_bot — the admin will verify and credit your balance",
     paymentVerification: "Manual verification by admin",
     payStep1Card: "Transfer 250 UAH to the card",
-    payStep2Card: "Send screenshot to @studyflush_bot",
+    payStep2Card: "Upload payment screenshot",
     payStep3Card: "Admin verifies and credits 15 reports",
     payStep1Crypto: "Send 5 USDT (TRC-20) to the address",
-    payStep2Crypto: "Send screenshot to @studyflush_bot",
+    payStep2Crypto: "Upload transaction screenshot",
     payStep3Crypto: "Admin verifies and credits 15 reports",
     adminWillCheck: "Admin will verify your payment manually",
     uahOnly: "Ukraine only",
@@ -482,8 +482,8 @@ const translations: Record<string, TranslationKeys> = {
     searchReports: "Search reports...",
     settings: "Settings",
     support: "Support",
-    rateApp: "Rate App",
-    rateAppDesc: "Leave a review",
+    shareApp: "Share App",
+    shareAppDesc: "Tell friends about StudyFlush",
     about: "About",
     version: "Version",
     speedAch: "Speed Runner",
@@ -700,10 +700,10 @@ const translations: Record<string, TranslationKeys> = {
     sendScreenshotCrypto: "После перевода отправь скриншот транзакции в @studyflush_bot — админ проверит и зачислит баланс",
     paymentVerification: "Ручная проверка админом",
     payStep1Card: "Переведи 250 грн на карту",
-    payStep2Card: "Отправь скриншот в @studyflush_bot",
+    payStep2Card: "Загрузи скриншот оплаты",
     payStep3Card: "Админ проверит и зачислит 15 отчётов",
     payStep1Crypto: "Отправь 5 USDT (TRC-20) на адрес",
-    payStep2Crypto: "Отправь скриншот в @studyflush_bot",
+    payStep2Crypto: "Загрузи скриншот транзакции",
     payStep3Crypto: "Админ проверит и зачислит 15 отчётов",
     adminWillCheck: "Админ проверит оплату вручную",
     uahOnly: "Только Украина",
@@ -719,8 +719,8 @@ const translations: Record<string, TranslationKeys> = {
     searchReports: "Поиск работ...",
     settings: "Настройки",
     support: "Поддержка",
-    rateApp: "Оценить",
-    rateAppDesc: "Оставить отзыв",
+    shareApp: "Поделиться",
+    shareAppDesc: "Расскажи друзьям о StudyFlush",
     about: "О приложении",
     version: "Версия",
     speedAch: "Скоростной",
@@ -937,10 +937,10 @@ const translations: Record<string, TranslationKeys> = {
     sendScreenshotCrypto: "Після переказу надішли скріншот транзакції в @studyflush_bot — адмін перевірить та зарахує баланс",
     paymentVerification: "Ручна перевірка адміном",
     payStep1Card: "Переведи 250 грн на картку",
-    payStep2Card: "Надішли скріншот в @studyflush_bot",
+    payStep2Card: "Завантаж скріншот оплати",
     payStep3Card: "Адмін перевірить та зарахує 15 звітів",
     payStep1Crypto: "Надішли 5 USDT (TRC-20) на адресу",
-    payStep2Crypto: "Надішли скріншот в @studyflush_bot",
+    payStep2Crypto: "Завантаж скріншот транзакції",
     payStep3Crypto: "Адмін перевірить та зарахує 15 звітів",
     adminWillCheck: "Адмін перевірить оплату вручну",
     uahOnly: "Тільки Україна",
@@ -956,8 +956,8 @@ const translations: Record<string, TranslationKeys> = {
     searchReports: "Пошук робіт...",
     settings: "Налаштування",
     support: "Підтримка",
-    rateApp: "Оцінити",
-    rateAppDesc: "Залишити відгук",
+    shareApp: "Поділитися",
+    shareAppDesc: "Розкажи друзям про StudyFlush",
     about: "Про додаток",
     version: "Версія",
     speedAch: "Швидкий старт",

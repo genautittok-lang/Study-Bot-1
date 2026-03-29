@@ -8,8 +8,8 @@ import Icon3D from "@/components/icons-3d";
 
 type Method = "card" | "crypto" | "stars" | null;
 type Step = "select" | "details" | "screenshot" | "done";
-const CARD = "5232 4410 5654 6307";
-const CRYPTO = "TRYbty4Ew9knf61brdrixeY5M34mQTt3zY";
+const CARD = "5375 4141 2121 2120";
+const CRYPTO = "TLdH6NMj7g3jKcB6pnEPr5wfbUjqTe5GxP";
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
 function CopyField({ label, value }: { label: string; value: string }) {
@@ -189,7 +189,7 @@ export default function Balance() {
               <span className="text-[11px] font-bold text-[#7C5CFC]">{t("adminReviewing")}</span>
             </div>
             <p className="text-[11px] text-[#6b7280] leading-relaxed">
-              Ми отримали твій скріншот. Адмін перевірить та зарахує <strong>15 звітів</strong> протягом 1-24 годин.
+              {t("paymentSubmittedDesc")}
             </p>
           </motion.div>
         )}
@@ -275,9 +275,7 @@ export default function Balance() {
             <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
           </svg>
           <p className="text-[11px] text-[#6b7280] leading-relaxed">
-            {isCrypto
-              ? "Надішли скріншот транзакції з гаманця. Адмін отримає його автоматично і підтвердить платіж."
-              : "Надішли скріншот чека або підтвердження переказу. Адмін отримає його автоматично і підтвердить платіж."}
+            {isCrypto ? t("sendScreenshotCrypto") : t("sendScreenshot")}
           </p>
         </div>
 
@@ -290,7 +288,7 @@ export default function Balance() {
           }}>
           {submitting
             ? <><div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />{t("submitting")}</>
-            : <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 2L11 13" /><path d="M22 2l-7 20-4-9-9-4 20-7z" /></svg>Надіслати адміну</>}
+            : <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 2L11 13" /><path d="M22 2l-7 20-4-9-9-4 20-7z" /></svg>{t("supportSend")}</>}
         </motion.button>
       </motion.div>
     );
@@ -356,8 +354,8 @@ export default function Balance() {
             </div>
             {[
               isCrypto ? t("payStep1Crypto") : t("payStep1Card"),
-              "Натисни «Я оплатив» та завантаж скріншот",
-              "Адмін перевірить і зарахує 15 звітів",
+              isCrypto ? t("payStep2Crypto") : t("payStep2Card"),
+              isCrypto ? t("payStep3Crypto") : t("payStep3Card"),
             ].map((step, i) => (
               <div key={i} className="flex items-start gap-2.5 mb-2 last:mb-0">
                 <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0 mt-0.5"
