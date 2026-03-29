@@ -203,7 +203,7 @@ router.post("/payments/:id/reject", async (req: Request, res: Response) => {
     await db.update(paymentsTable).set({ status: "rejected" }).where(eq(paymentsTable.id, paymentId));
 
     try {
-      await bot.telegram.sendMessage(payment.telegramId, `❌ Ваш платіж відхилено. Зв'яжіться з підтримкою: @studyflush_support`);
+      await bot.telegram.sendMessage(payment.telegramId, `❌ Payment rejected. Send a clearer screenshot or try again.\n❌ Платіж відхилено. Надішли чіткіший скріншот або спробуй знову.`);
     } catch { }
 
     res.json({ success: true });

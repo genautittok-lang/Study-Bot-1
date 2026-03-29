@@ -1,18 +1,31 @@
 export const MESSAGES = {
   WELCOME: (firstName: string) => `
-🎓 *Привіт, ${firstName}!* Ласкаво просимо до *StudyFlush* — твій розумний помічник для навчання!
+🎓 *Welcome to StudyFlush, ${firstName}!*
+Your smart AI assistant for academic work!
+
+✨ *What I can do:*
+📄 Generate reports on any subject
+📝 Create summaries & notes
+📊 Write lab reports
+📋 Essays, coursework & more
+
+🎁 *Your first report is FREE!*
+Try it now — no payment needed!
+
+—
+
+🇺🇦 *Привіт, ${firstName}!*
+Ласкаво просимо до *StudyFlush* — твій AI-помічник для навчання!
 
 ✨ *Що я вмію:*
 📄 Генерую звіти з будь-якого предмету
 📝 Роблю конспекти та шпаргалки
-🗄 Створюю бази даних і таблиці
 📊 Пишу лабораторні роботи
 🔢 Вирішую задачі по темі
 
-🎁 *Для тебе безкоштовно: 1 звіт!*
-Спробуй прямо зараз — нічого не потрібно платити!
+🎁 *Перший звіт — безкоштовно!*
 
-👇 Натисни кнопку нижче щоб почати:
+👇 Tap the button below / Натисни кнопку нижче:
 `,
 
   MAIN_MENU: `
@@ -94,7 +107,7 @@ ${!freeUsed ? "🎁 Безкоштовний звіт: *доступний*" : "
 ⚠️ *ВАЖЛИВО:* В коментарі до переказу обов'язково вкажи свій Telegram ID:
 \`${0}\`
 
-Після оплати натисни кнопку нижче або надішли скріншот:
+Після оплати надішли скріншот прямо сюди в чат з ботом 👇
 `,
 
   PAYMENT_CRYPTO: `
@@ -107,9 +120,7 @@ ${!freeUsed ? "🎁 Безкоштовний звіт: *доступний*" : "
 TLdH6NMj7g3jKcB6pnEPr5wfbUjqTe5GxP
 \`\`\`
 
-⚠️ *ВАЖЛИВО:* Після оплати надішли хеш транзакції
-
-Після оплати натисни кнопку нижче:
+⚠️ *ВАЖЛИВО:* Після оплати надішли скріншот транзакції прямо сюди в чат з ботом 👇
 `,
 
   PAYMENT_STARS: `
@@ -126,30 +137,31 @@ TLdH6NMj7g3jKcB6pnEPr5wfbUjqTe5GxP
 Ми перевіряємо твою оплату. Зазвичай це займає до 24 годин.
 Після підтвердження ти отримаєш повідомлення.
 
-Питання? Пиши: @studyflush_support
+Питання? Напиши /help або /menu
 `,
 
   REPORT_READY: (content: string) => `✅ *Готово!*\n\n${content}`,
 
   HELP: `
-ℹ️ *Довідка*
+ℹ️ *Help / Довідка*
 
-*Як користуватися ботом:*
-1️⃣ Натисни "Новий звіт"
+🇬🇧 *How to use the bot:*
+1️⃣ Tap "Open StudyFlush"
+2️⃣ Choose document type
+3️⃣ Select a subject
+4️⃣ Enter your topic
+5️⃣ Get your document!
+
+🇺🇦 *Як користуватися ботом:*
+1️⃣ Натисни "Open StudyFlush"
 2️⃣ Вибери тип документу
 3️⃣ Вибери предмет
 4️⃣ Введи тему
 5️⃣ Отримай готовий документ!
 
-*Типи документів:*
-📄 Звіт — офіційний звіт про роботу
-📝 Конспект — стислий виклад теми
-🗄 База даних — таблиці та схеми БД
-📊 Лабораторна — повна лабораторна робота
-📋 Реферат — розгорнутий реферат
-🔢 Задачі — розв'язання задач по темі
+📄 Reports, summaries, lab work, essays, coursework, diploma & more
 
-*Підтримка:* @studyflush_support
+💬 Need help? Send /menu or /help
 `,
 };
 

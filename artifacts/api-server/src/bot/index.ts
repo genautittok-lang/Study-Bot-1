@@ -53,6 +53,11 @@ function getWebAppUrl(): string {
   return "https://localhost";
 }
 
+function getAdminIds(): number[] {
+  const raw = process.env.ADMIN_IDS || process.env.ADMIN_TELEGRAM_ID || "999999999";
+  return raw.split(",").map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
+}
+
 async function sendWelcome(ctx: BotContext) {
   const tgUser = ctx.from!;
   await getOrCreateUser(tgUser.id, {
@@ -64,14 +69,14 @@ async function sendWelcome(ctx: BotContext) {
   const webAppUrl = getWebAppUrl();
 
   await ctx.replyWithMarkdown(
-    MESSAGES.WELCOME(tgUser.first_name || "Студент"),
+    MESSAGES.WELCOME(tgUser.first_name || "Student"),
     {
       reply_markup: {
         inline_keyboard: [
-          [{ text: "🚀 Відкрити StudyFlush", web_app: { url: webAppUrl } }],
+          [{ text: "🚀 Open StudyFlush", web_app: { url: webAppUrl } }],
           [
-            { text: "💰 Баланс", callback_data: "balance" },
-            { text: "ℹ️ Довідка", callback_data: "help" },
+            { text: "💰 Balance", callback_data: "balance" },
+            { text: "ℹ️ Help", callback_data: "help" },
           ],
         ],
       },
@@ -83,16 +88,16 @@ bot.start(sendWelcome);
 
 bot.command("menu", async (ctx: BotContext) => {
   const webAppUrl = getWebAppUrl();
-  await ctx.replyWithMarkdown("🏠 *Головне меню*\n\nОбери дію:", {
+  await ctx.replyWithMarkdown("🏠 *Menu / Меню*\n\nChoose an action / Обери дію:", {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "🚀 Відкрити StudyFlush", web_app: { url: webAppUrl } }],
-        [{ text: "📄 Новий звіт (тут)", callback_data: "new_report" }],
+        [{ text: "🚀 Open StudyFlush", web_app: { url: webAppUrl } }],
+        [{ text: "📄 New report / Новий звіт", callback_data: "new_report" }],
         [
-          { text: "💰 Баланс", callback_data: "balance" },
-          { text: "💳 Купити", callback_data: "buy" },
+          { text: "💰 Balance", callback_data: "balance" },
+          { text: "💳 Buy / Купити", callback_data: "buy" },
         ],
-        [{ text: "ℹ️ Довідка", callback_data: "help" }],
+        [{ text: "ℹ️ Help / Довідка", callback_data: "help" }],
       ],
     },
   });
@@ -100,10 +105,10 @@ bot.command("menu", async (ctx: BotContext) => {
 
 bot.command("app", async (ctx: BotContext) => {
   const webAppUrl = getWebAppUrl();
-  await ctx.reply("Натисни кнопку нижче, щоб відкрити StudyFlush:", {
+  await ctx.reply("Tap the button below to open StudyFlush / Натисни кнопку:", {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "🚀 Відкрити StudyFlush", web_app: { url: webAppUrl } }],
+        [{ text: "🚀 Open StudyFlush", web_app: { url: webAppUrl } }],
       ],
     },
   });
@@ -111,7 +116,7 @@ bot.command("app", async (ctx: BotContext) => {
 
 bot.command("balance", async (ctx: BotContext) => {
   const user = await getUser(ctx.from!.id);
-  if (!user) return ctx.reply("❌ Спочатку запусти бота командою /start");
+  if (!user) return ctx.reply("❌ Start the bot first / Спочатку запусти бота: /start");
 
   await ctx.replyWithMarkdown(
     MESSAGES.BALANCE(user.balance, user.freeReportsUsed, user.totalReports),
@@ -127,15 +132,15 @@ bot.action("main_menu", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
   ctx.session = {};
   const webAppUrl = getWebAppUrl();
-  await ctx.editMessageText("🏠 *Головне меню*\n\nОбери дію:", {
+  await ctx.editMessageText("🏠 *Menu / Меню*\n\nChoose an action / Обери дію:", {
     parse_mode: "Markdown",
     reply_markup: {
       inline_keyboard: [
-        [{ text: "🚀 Відкрити StudyFlush", web_app: { url: webAppUrl } }],
-        [{ text: "📄 Новий звіт (тут)", callback_data: "new_report" }],
+        [{ text: "🚀 Open StudyFlush", web_app: { url: webAppUrl } }],
+        [{ text: "📄 New report / Новий звіт", callback_data: "new_report" }],
         [
-          { text: "💰 Баланс", callback_data: "balance" },
-          { text: "💳 Купити", callback_data: "buy" },
+          { text: "💰 Balance", callback_data: "balance" },
+          { text: "💳 Buy / Купити", callback_data: "buy" },
         ],
       ],
     },
@@ -194,14 +199,14 @@ bot.action("balance", async (ctx: BotContext) => {
 bot.action("buy", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
   await ctx.editMessageText(
-    "💳 *Придбай звіти*\n\n📦 Пакет: *15 звітів*\nОбери спосіб оплати:",
+    "💳 *Buy reports / Придбай звіти*\n\n📦 Package: *15 reports*\nChoose payment / Обери спосіб оплати:",
     { parse_mode: "Markdown", ...paymentKeyboard }
   );
 });
 
 bot.action("pay_mono", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
-  const text = `💳 *Оплата через Monobank*\n\nСума: *250 грн* за 15 звітів\n\n📲 Переведи 250 грн на картку:\n\`\`\`\n5375 4141 2121 2120\n\`\`\`\nОтримувач: *StudyFlush*\n\n⚠️ *ВАЖЛИВО:* В коментарі до переказу вкажи свій Telegram ID:\n\`${ctx.from!.id}\`\n\nПісля оплати натисни кнопку нижче:`;
+  const text = `💳 *Оплата через Monobank*\n\nСума: *250 грн* за 15 звітів\n\n📲 Переведи 250 грн на картку:\n\`\`\`\n5375 4141 2121 2120\n\`\`\`\nОтримувач: *StudyFlush*\n\n⚠️ *ВАЖЛИВО:* В коментарі до переказу вкажи свій Telegram ID:\n\`${ctx.from!.id}\`\n\n📸 *Після оплати надішли скріншот чеку прямо сюди в цей чат* 👇`;
 
   await ctx.editMessageText(text, {
     parse_mode: "Markdown",
@@ -211,7 +216,7 @@ bot.action("pay_mono", async (ctx: BotContext) => {
 
 bot.action("pay_crypto", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
-  const text = `💎 *Оплата в криптовалюті*\n\nСума: *5 USDT* або *5 USDC*\n\n📍 Адреса гаманця (TRC-20):\n\`\`\`\nTLdH6NMj7g3jKcB6pnEPr5wfbUjqTe5GxP\n\`\`\`\n\n⚠️ Після оплати надішли хеш транзакції та натисни кнопку:`;
+  const text = `💎 *Crypto payment / Оплата криптою*\n\nAmount: *5 USDT / 5 USDC*\n\n📍 Wallet address (TRC-20):\n\`\`\`\nTLdH6NMj7g3jKcB6pnEPr5wfbUjqTe5GxP\n\`\`\`\n\n📸 *After payment, send a screenshot here in this chat* 👇\n📸 *Після оплати надішли скріншот транзакції прямо сюди* 👇`;
 
   await ctx.editMessageText(text, {
     parse_mode: "Markdown",
@@ -223,15 +228,15 @@ bot.action("pay_stars", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
   try {
     await ctx.replyWithInvoice({
-      title: "📚 15 звітів StudyFlush",
-      description: "Пакет із 15 AI-згенерованих звітів, конспектів або лабораторних",
+      title: "📚 15 reports StudyFlush",
+      description: "Pack of 15 AI-generated reports, summaries, or lab work",
       payload: `stars_${ctx.from!.id}_${Date.now()}`,
       currency: "XTR",
-      prices: [{ label: "15 звітів", amount: 500 }],
+      prices: [{ label: "15 reports", amount: 500 }],
     });
   } catch (err) {
     logger.error({ err }, "Failed to send invoice");
-    await ctx.reply("⭐ Оплата через Telegram Stars тимчасово недоступна. Спробуй інший спосіб.");
+    await ctx.reply("⭐ Telegram Stars payment temporarily unavailable. Try another method.");
   }
 });
 
@@ -255,7 +260,7 @@ bot.on("successful_payment", async (ctx: BotContext) => {
 
   const user = await getUser(ctx.from!.id);
   await ctx.replyWithMarkdown(
-    `✅ *Оплата успішна!*\n\nТвій баланс поповнено на *15 звітів*!\n💰 Поточний баланс: *${user?.balance ?? 15} звітів*`,
+    `✅ *Payment successful!*\n\nYour balance has been topped up by *15 reports*!\n💰 Current balance: *${user?.balance ?? 15} reports*\n\nThank you! Start generating 🚀`,
     mainMenuKeyboard
   );
 });
@@ -270,7 +275,7 @@ bot.action("payment_confirm", async (ctx: BotContext) => {
   });
 
   await ctx.editMessageText(
-    "⏳ *Очікуємо підтвердження оплати*\n\nМи перевіряємо твою оплату. Зазвичай це займає до 24 годин.\nПісля підтвердження ти отримаєш повідомлення! 🎉",
+    "⏳ *Waiting for confirmation / Очікуємо підтвердження*\n\nWe're verifying your payment. Usually takes up to 24 hours.\nYou'll receive a notification once confirmed! 🎉\n\n📸 You can also send a screenshot of your receipt here.",
     { parse_mode: "Markdown", ...backToMenuKeyboard }
   );
 });
@@ -284,52 +289,135 @@ bot.action("help", async (ctx: BotContext) => {
 });
 
 bot.action(/^approve_pay_(\d+)$/, async (ctx: BotContext) => {
-  await ctx.answerCbQuery("✅ Обробляю...");
+  await ctx.answerCbQuery("✅ Processing...");
   const paymentId = parseInt(ctx.match[1], 10);
   try {
     const payment = await confirmPayment(paymentId);
     if (!payment) {
-      await ctx.editMessageCaption("⚠️ Платіж не знайдено або вже оброблено.", { parse_mode: "Markdown" });
+      await ctx.editMessageCaption("⚠️ Payment not found or already processed.", { parse_mode: "Markdown" });
       return;
     }
     const user = await getUser(payment.telegramId);
     const newBalance = user?.balance ?? payment.reportsAdded;
     await ctx.editMessageCaption(
-      `✅ *Платіж #${paymentId} ПІДТВЕРДЖЕНО*\n\nКористувач отримав +${payment.reportsAdded} звітів.\nНовий баланс: ${newBalance} звітів.`,
+      `✅ *Payment #${paymentId} CONFIRMED*\n\nUser received +${payment.reportsAdded} reports.\nNew balance: ${newBalance} reports.`,
       { parse_mode: "Markdown" }
     );
     await bot.telegram.sendMessage(
       payment.telegramId,
-      `🎉 *Платіж підтверджено!*\n\nТвій баланс поповнено на *${payment.reportsAdded} звітів*!\n💰 Поточний баланс: *${newBalance} звітів*\n\nДякуємо! Генеруй академічні роботи 🚀`,
+      `🎉 *Payment confirmed!*\n\nYour balance has been topped up by *${payment.reportsAdded} reports*!\n💰 Current balance: *${newBalance} reports*\n\nEnjoy! 🚀`,
       { parse_mode: "Markdown", ...mainMenuKeyboard }
     );
   } catch (err) {
     logger.error({ err }, "approve_pay error");
-    await ctx.answerCbQuery("❌ Помилка");
+    await ctx.answerCbQuery("❌ Error");
   }
 });
 
 bot.action(/^reject_pay_(\d+)$/, async (ctx: BotContext) => {
-  await ctx.answerCbQuery("❌ Обробляю...");
+  await ctx.answerCbQuery("❌ Processing...");
   const paymentId = parseInt(ctx.match[1], 10);
   try {
     const payment = await denyPayment(paymentId);
     if (!payment) {
-      await ctx.editMessageCaption("⚠️ Платіж не знайдено або вже оброблено.", { parse_mode: "Markdown" });
+      await ctx.editMessageCaption("⚠️ Payment not found or already processed.", { parse_mode: "Markdown" });
       return;
     }
     await ctx.editMessageCaption(
-      `❌ *Платіж #${paymentId} ВІДХИЛЕНО*\n\nБаланс не поповнено.`,
+      `❌ *Payment #${paymentId} REJECTED*\n\nBalance not topped up.`,
       { parse_mode: "Markdown" }
     );
     await bot.telegram.sendMessage(
       payment.telegramId,
-      `❌ *Платіж відхилено*\n\nНа жаль, твій платіж не підтверджено.\n\nЯкщо це помилка — напиши у підтримку @studyflush_support з деталями транзакції.`,
+      `❌ *Payment rejected*\n\nUnfortunately your payment was not confirmed.\n\nIf this is a mistake — please send the receipt screenshot here and we'll check again.`,
       { parse_mode: "Markdown", ...mainMenuKeyboard }
     );
   } catch (err) {
     logger.error({ err }, "reject_pay error");
-    await ctx.answerCbQuery("❌ Помилка");
+    await ctx.answerCbQuery("❌ Error");
+  }
+});
+
+bot.on("photo", async (ctx: BotContext) => {
+  const adminIds = getAdminIds();
+  const fromId = ctx.from!.id;
+
+  if (adminIds.includes(fromId)) return;
+
+  const photo = ctx.message.photo;
+  const bestPhoto = photo[photo.length - 1];
+  const caption = (ctx.message as any).caption || "";
+
+  await savePayment({
+    telegramId: fromId,
+    amount: 250,
+    currency: "UAH",
+    paymentMethod: "manual",
+  });
+
+  await ctx.replyWithMarkdown(
+    "📸 *Receipt received!*\n\nWe've forwarded your screenshot to the admin for verification.\nYou'll be notified once confirmed (usually within 24 hours).\n\n✅ Скріншот отримано! Адмін перевірить та підтвердить оплату."
+  );
+
+  for (const adminId of adminIds) {
+    try {
+      await bot.telegram.sendPhoto(adminId, bestPhoto.file_id, {
+        caption: `💳 *New payment screenshot*\n\nFrom: ${ctx.from!.first_name || ""} ${ctx.from!.last_name || ""}\nUsername: @${ctx.from!.username || "—"}\nTelegram ID: \`${fromId}\`\n\n${caption ? `Message: ${caption}` : "No caption"}`,
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: "✅ Approve", callback_data: `approve_user_${fromId}` },
+              { text: "❌ Reject", callback_data: `reject_user_${fromId}` },
+            ],
+          ],
+        },
+      });
+    } catch (err) {
+      logger.error({ err, adminId }, "Failed to forward screenshot to admin");
+    }
+  }
+});
+
+bot.action(/^approve_user_(\d+)$/, async (ctx: BotContext) => {
+  await ctx.answerCbQuery("✅ Approving...");
+  const userId = parseInt(ctx.match[1], 10);
+  try {
+    await addBalance(userId, 15);
+    const user = await getUser(userId);
+    const newBalance = user?.balance ?? 15;
+
+    await ctx.editMessageCaption(
+      `✅ *APPROVED* — User ${userId} received +15 reports.\nNew balance: ${newBalance}`,
+      { parse_mode: "Markdown" }
+    );
+
+    await bot.telegram.sendMessage(
+      userId,
+      `🎉 *Payment confirmed!*\n\nYour balance has been topped up by *15 reports*!\n💰 Current balance: *${newBalance} reports*\n\n✅ *Оплату підтверджено!*\nБаланс поповнено на *15 звітів*!\n\nEnjoy! 🚀`,
+      { parse_mode: "Markdown", ...mainMenuKeyboard }
+    );
+  } catch (err) {
+    logger.error({ err }, "approve_user error");
+  }
+});
+
+bot.action(/^reject_user_(\d+)$/, async (ctx: BotContext) => {
+  await ctx.answerCbQuery("❌ Rejecting...");
+  const userId = parseInt(ctx.match[1], 10);
+  try {
+    await ctx.editMessageCaption(
+      `❌ *REJECTED* — User ${userId} payment not confirmed.`,
+      { parse_mode: "Markdown" }
+    );
+
+    await bot.telegram.sendMessage(
+      userId,
+      `❌ *Payment not confirmed*\n\nPlease send a clearer screenshot or try again.\n\n❌ *Оплата не підтверджена*\nНадішли чіткіший скріншот або спробуй ще раз.`,
+      { parse_mode: "Markdown", ...mainMenuKeyboard }
+    );
+  } catch (err) {
+    logger.error({ err }, "reject_user error");
   }
 });
 
@@ -344,7 +432,7 @@ bot.on("text", async (ctx: BotContext) => {
     ctx.session.step = "enter_group";
 
     await ctx.replyWithMarkdown(
-      "👥 *Введи групу/клас (необов'язково)*\n\nНаприклад: ІТ-21, 11-А\n\nАбо відправ /skip щоб пропустити"
+      "👥 *Enter group/class (optional)*\n\nE.g.: IT-21, 11-A\n\nOr send /skip to skip"
     );
     return;
   }
@@ -390,7 +478,7 @@ bot.on("text", async (ctx: BotContext) => {
       for (let i = 0; i < chunks.length; i++) {
         if (i === chunks.length - 1) {
           await ctx.replyWithMarkdown(
-            `✅ *Готово!*\n\n${chunks[i]}`,
+            `✅ *Done!*\n\n${chunks[i]}`,
             mainMenuKeyboard
           );
         } else {
@@ -401,7 +489,7 @@ bot.on("text", async (ctx: BotContext) => {
       logger.error({ err }, "Failed to generate report");
       await ctx.telegram.deleteMessage(ctx.chat.id, loadingMsg.message_id);
       await ctx.replyWithMarkdown(
-        "❌ *Помилка генерації*\n\nСпробуй ще раз. Якщо проблема не вирішується — напиши @studyflush_support",
+        "❌ *Generation error*\n\nPlease try again. If the problem persists — send /help",
         mainMenuKeyboard
       );
     }
@@ -409,11 +497,11 @@ bot.on("text", async (ctx: BotContext) => {
   }
 
   const webAppUrl = getWebAppUrl();
-  await ctx.replyWithMarkdown("🏠 Скористайся додатком або меню:", {
+  await ctx.replyWithMarkdown("🏠 Use the app or menu / Скористайся додатком:", {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "🚀 Відкрити StudyFlush", web_app: { url: webAppUrl } }],
-        [{ text: "📄 Новий звіт", callback_data: "new_report" }],
+        [{ text: "🚀 Open StudyFlush", web_app: { url: webAppUrl } }],
+        [{ text: "📄 New report", callback_data: "new_report" }],
       ],
     },
   });
