@@ -173,7 +173,7 @@ export async function confirmPayment(paymentId: number) {
 
   await db
     .update(paymentsTable)
-    .set({ status: "confirmed" })
+    .set({ status: "completed" })
     .where(eq(paymentsTable.id, paymentId));
 
   await addBalance(payment.telegramId, payment.reportsAdded);

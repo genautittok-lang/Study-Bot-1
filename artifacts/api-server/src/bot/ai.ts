@@ -273,7 +273,7 @@ Format: 18-22 slides plan. For EACH slide (all text in ${langName}):
 **Speaker notes:** (what to say — 5-8 sentences, detailed)
 ---
 
-MANDATORY slides: Title, Contents, Relevance & Goal, 10+ content slides with real data/tables/formulas, Practical significance, Comparative table, Conclusions, References, "Thank you! Questions?"`;
+MANDATORY slides: Title, Contents, Relevance & Goal, 10+ content slides with real data/tables/formulas, Practical significance, Comparative table, Conclusions, "Thank you! Questions?"`;
   }
 
   if (reportType === "test") {
@@ -406,8 +406,7 @@ ${group ? `**Група:** ${group}` : ""}
 ## РОЗДІЛ 2. ПРАКТИЧНА ЧАСТИНА (3 підрозділи з таблицями, кодом, розрахунками)
 ## РОЗДІЛ 3. РЕЗУЛЬТАТИ ТА РЕКОМЕНДАЦІЇ (2 підрозділи)
 ## ВИСНОВКИ
-## СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ (20+)
-## ДОДАТКИ`;
+## ДОДАТКИ (за наявності)`;
   }
 
   if (reportType === "diploma") {
@@ -420,8 +419,7 @@ ${group ? `**Група:** ${group}` : ""}
 ## РОЗДІЛ 1. АНАЛІЗ ПРЕДМЕТНОЇ ОБЛАСТІ (4-5 підрозділів по 15-20 речень)
 ## РОЗДІЛ 2. РОЗРОБКА ТА ПРОЕКТУВАННЯ (3-4 підрозділи)
 ## РОЗДІЛ 3. РЕАЛІЗАЦІЯ ТА ТЕСТУВАННЯ (3-4 підрозділи)
-## ВИСНОВКИ (1 сторінка)
-## СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ (25+ ДСТУ 8302:2015)`;
+## ВИСНОВКИ (1 сторінка)`;
   }
 
   if (reportType === "presentation") {
@@ -433,7 +431,7 @@ ${group ? `**Група:** ${group}` : ""}
 **Візуал:** [діаграма/графік/таблиця — описати конкретно]
 **Нотатки доповідача:** (5-8 речень)
 
-ОБОВ'ЯЗКОВО: Титульний, Зміст, Актуальність, 10+ слайдів контенту з даними, Висновки, Джерела, "Дякую! Запитання?"`;
+ОБОВ'ЯЗКОВО: Титульний, Зміст, Актуальність, 10+ слайдів контенту з даними, Висновки, "Дякую! Запитання?"`;
   }
 
   if (reportType === "test") {
