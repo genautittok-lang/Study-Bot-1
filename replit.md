@@ -43,7 +43,8 @@ artifacts-monorepo/
 
 ## Bot Features
 
-- **Free first report** for every new user
+- **Free first report** for every new user (any length)
+- **Tiered pricing**: Short (1💎), Medium (2💎), Full (3💎) — credits deducted based on document length
 - **11 document types**: Report, Summary, Database, Lab Work, Essay, Tasks, Course Work, Diploma, Presentation, Test Paper, Notes
 - **150+ subjects** in **17 categories**: School Math (7-11), Ukrainian Language & Lit (7-11), Sciences (7-11), History & Geography (7-11), Foreign Languages, Other School; College IT, College Tech; University Math, IT, Humanities, Business, Law, Engineering, Medicine; Other
 - **Education level filter**: All / School / College / University tabs in category selection

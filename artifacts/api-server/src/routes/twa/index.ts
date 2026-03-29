@@ -61,7 +61,8 @@ router.post("/generate", async (req, res) => {
   }
 
   try {
-    const check = await canUserGenerateReport(body.telegramId);
+    const cost = Math.max(1, Math.min(3, body.cost ?? 2));
+    const check = await canUserGenerateReport(body.telegramId, cost);
 
     if (!check.canGenerate) {
       return res.json({ success: false, error: "no_balance" });
@@ -76,7 +77,7 @@ router.post("/generate", async (req, res) => {
       body.language
     );
 
-    await useReport(body.telegramId);
+    await useReport(body.telegramId, cost);
     const [report] = await saveReport({
       telegramId: body.telegramId,
       subject: body.subject,

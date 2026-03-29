@@ -53,6 +53,10 @@ export const TwaGenerateBody = zod.object({
     .string()
     .optional()
     .describe("Language code for AI output (e.g. en, ru, uk, de, fr)"),
+  cost: zod
+    .number()
+    .optional()
+    .describe("Number of credits to deduct (1=short, 2=medium, 3=full)"),
 });
 
 export const TwaGenerateResponse = zod.object({

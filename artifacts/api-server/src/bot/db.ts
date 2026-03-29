@@ -62,7 +62,7 @@ export async function getUser(telegramId: number) {
   return result[0] ?? null;
 }
 
-export async function canUserGenerateReport(telegramId: number): Promise<{ canGenerate: boolean; reason: string }> {
+export async function canUserGenerateReport(telegramId: number, cost: number = 1): Promise<{ canGenerate: boolean; reason: string }> {
   const user = await getUser(telegramId);
   if (!user) return { canGenerate: false, reason: "user_not_found" };
 
@@ -70,14 +70,14 @@ export async function canUserGenerateReport(telegramId: number): Promise<{ canGe
     return { canGenerate: true, reason: "free" };
   }
 
-  if (user.balance > 0) {
+  if (user.balance >= cost) {
     return { canGenerate: true, reason: "balance" };
   }
 
   return { canGenerate: false, reason: "no_balance" };
 }
 
-export async function useReport(telegramId: number): Promise<void> {
+export async function useReport(telegramId: number, cost: number = 1): Promise<void> {
   const user = await getUser(telegramId);
   if (!user) return;
 
@@ -94,7 +94,7 @@ export async function useReport(telegramId: number): Promise<void> {
     await db
       .update(usersTable)
       .set({
-        balance: sql`GREATEST(${usersTable.balance} - 1, 0)`,
+        balance: sql`GREATEST(${usersTable.balance} - ${cost}, 0)`,
         totalReports: sql`${usersTable.totalReports} + 1`,
         updatedAt: new Date(),
       })

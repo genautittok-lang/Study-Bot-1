@@ -99,16 +99,17 @@ export default function NewReport() {
     else { setLocation("/"); }
   });
 
-  const canGenerate = user ? (!user.freeReportsUsed || user.balance > 0) : false;
   const TYPES = getReportTypes();
   const CATS = getSubjectCategories();
 
   const LENGTH_OPTIONS = [
-    { id: "short" as const, label: t("lengthShort"), desc: t("lengthShortDesc"), words: 500, time: 15 },
-    { id: "medium" as const, label: t("lengthMedium"), desc: t("lengthMediumDesc"), words: 1500, time: 30 },
-    { id: "full" as const, label: t("lengthFull"), desc: t("lengthFullDesc"), words: 3000, time: 60 },
+    { id: "short" as const, label: t("lengthShort"), desc: t("lengthShortDesc"), words: 500, time: 15, cost: 1 },
+    { id: "medium" as const, label: t("lengthMedium"), desc: t("lengthMediumDesc"), words: 1500, time: 30, cost: 2 },
+    { id: "full" as const, label: t("lengthFull"), desc: t("lengthFullDesc"), words: 3000, time: 60, cost: 3 },
   ];
   const selectedLength = LENGTH_OPTIONS.find(l => l.id === length) || LENGTH_OPTIONS[1];
+  const currentCost = selectedLength.cost;
+  const canGenerate = user ? (!user.freeReportsUsed || user.balance >= currentCost) : false;
 
   const filteredCats = useMemo(() => {
     if (eduLevel === "all") return CATS;
@@ -127,7 +128,7 @@ export default function NewReport() {
     const fullTopic = topic.trim() + lengthHint;
 
     try {
-      const res = await generateReport({ telegramId: user.telegramId, reportType, subject, topic: fullTopic, group: group.trim() || undefined, imageData: imageData || undefined, language: getLang() });
+      const res = await generateReport({ telegramId: user.telegramId, reportType, subject, topic: fullTopic, group: group.trim() || undefined, imageData: imageData || undefined, language: getLang(), cost: currentCost });
       clearInterval(iv); setProgress(100);
       if (res.success && res.content) {
         hapticSuccess(); setResult(res.content);
@@ -562,7 +563,7 @@ export default function NewReport() {
             {LENGTH_OPTIONS.map(opt => (
               <motion.button key={opt.id} whileTap={{ scale: 0.96 }}
                 onClick={() => { hapticSelection(); setLength(opt.id); }}
-                className="flex-1 py-2.5 rounded-[10px] text-center transition-all"
+                className="flex-1 py-2.5 rounded-[10px] text-center transition-all relative"
                 style={{
                   color: length === opt.id ? "#1a1a2e" : "#9ca3af",
                   background: length === opt.id ? "white" : "transparent",
@@ -570,6 +571,9 @@ export default function NewReport() {
                 }}>
                 <div className="text-[11px] font-bold">{opt.label}</div>
                 <div className="text-[9px] mt-0.5" style={{ color: length === opt.id ? "#7C5CFC" : "#b0b0c0" }}>{opt.desc}</div>
+                <div className="text-[9px] font-bold mt-1" style={{ color: length === opt.id ? "#10B981" : "#c4c4d0" }}>
+                  {user && !user.freeReportsUsed ? "🎁 Free" : `💎 ${opt.cost}`}
+                </div>
               </motion.button>
             ))}
           </div>
@@ -628,12 +632,12 @@ export default function NewReport() {
           </AnimatePresence>
         </div>
       </div>
-      {!canGenerate && (
+      {!canGenerate && user?.freeReportsUsed && (
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
           className="mt-3.5 rounded-[14px] p-3 text-[12px] flex items-center gap-2.5"
           style={{ background: "rgba(255,107,107,0.06)", border: "1px solid rgba(255,107,107,0.1)" }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-          <span className="text-[#FF6B6B]">{t("noBalance")}. <button onClick={() => setLocation("/balance")} className="underline font-semibold">{t("topUpBalance")}</button></span>
+          <span className="text-[#FF6B6B]">{t("noBalance")} (💎 {currentCost}). <button onClick={() => setLocation("/balance")} className="underline font-semibold">{t("topUpBalance")}</button></span>
         </motion.div>
       )}
       <motion.button whileTap={{ scale: 0.97 }} onClick={handleGenerate} disabled={!topic.trim() || !canGenerate}
@@ -646,7 +650,7 @@ export default function NewReport() {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
         </svg>
-        {t("generate")}
+        {t("generate")} {user && !user.freeReportsUsed ? "🎁" : `· 💎 ${currentCost}`}
       </motion.button>
     </motion.div>
   );

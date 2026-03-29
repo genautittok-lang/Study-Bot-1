@@ -59,6 +59,7 @@ export async function generateReport(data: {
   group?: string;
   imageData?: string;
   language?: string;
+  cost?: number;
 }): Promise<GenerateResponse> {
   return request<GenerateResponse>("/generate", {
     method: "POST",

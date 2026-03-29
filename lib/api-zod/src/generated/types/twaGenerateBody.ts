@@ -16,4 +16,6 @@ export interface TwaGenerateBody {
   imageData?: string;
   /** Language code for AI output (e.g. en, ru, uk, de, fr) */
   language?: string;
+  /** Number of credits to deduct (1=short, 2=medium, 3=full) */
+  cost?: number;
 }
