@@ -13,6 +13,14 @@ type Step = "type" | "category" | "subject" | "details" | "structure" | "generat
 const STEPS = ["type", "category", "subject", "details"] as const;
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
+const PAYWALL_KEY_PREFIX = "studyflush_paywall_shown_";
+function wasPaywallShown(userId?: number): boolean {
+  try { return localStorage.getItem(PAYWALL_KEY_PREFIX + (userId || "0")) === "1"; } catch { return false; }
+}
+function markPaywallShown(userId?: number): void {
+  try { localStorage.setItem(PAYWALL_KEY_PREFIX + (userId || "0"), "1"); } catch {}
+}
+
 function StepBar({ step }: { step: Step }) {
   const idx = STEPS.indexOf(step as typeof STEPS[number]);
   if (idx < 0) return null;
@@ -69,14 +77,93 @@ function EduTabs({ value, onChange }: { value: EduLevel; onChange: (v: EduLevel)
   );
 }
 
+function PaywallModal({ onClose, onBuy }: { onClose: () => void; onBuy: () => void }) {
+  const [timer, setTimer] = useState(600);
+  useEffect(() => {
+    const iv = setInterval(() => setTimer(t => t > 0 ? t - 1 : 0), 1000);
+    return () => clearInterval(iv);
+  }, []);
+  const min = Math.floor(timer / 60);
+  const sec = timer % 60;
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] flex items-center justify-center"
+      style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }}>
+      <motion.div initial={{ scale: 0.85, y: 30 }} animate={{ scale: 1, y: 0 }}
+        transition={{ type: "spring", bounce: 0.3 }}
+        className="mx-5 w-full max-w-[360px] rounded-[28px] overflow-hidden"
+        style={{ background: "white", boxShadow: "0 24px 80px rgba(0,0,0,0.25)" }}>
+        <div className="relative p-6 text-center"
+          style={{ background: "linear-gradient(145deg, #8B6CFF, #6336F5)" }}>
+          <div className="absolute top-0 right-0 w-36 h-36 rounded-full opacity-20"
+            style={{ background: "radial-gradient(circle, white 0%, transparent 70%)", transform: "translate(25%, -35%)" }} />
+          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring", bounce: 0.5 }}
+            className="text-[48px] mb-3">🎉</motion.div>
+          <h2 className="text-[22px] font-extrabold text-white mb-1">{t("wantMore")}</h2>
+          <p className="text-[13px] text-white/60">{t("firstPurchaseOffer")}</p>
+        </div>
+
+        <div className="p-5">
+          <div className="flex items-center justify-center gap-2 mb-4 py-2.5 rounded-[14px]"
+            style={{ background: "rgba(255,107,107,0.06)", border: "1px solid rgba(255,107,107,0.1)" }}>
+            <span className="text-[12px] font-bold text-[#FF6B6B]">{t("limitedOffer")}</span>
+            <span className="text-[14px] font-extrabold text-[#FF6B6B] tabular">{min}:{sec.toString().padStart(2, "0")}</span>
+          </div>
+
+          <div className="space-y-2 mb-4">
+            {[
+              { label: "15 reports", price: "250 UAH", sale: "125 UAH", tag: "-50%" },
+            ].map((pkg, i) => (
+              <motion.button key={i} whileTap={{ scale: 0.97 }} onClick={onBuy}
+                className="w-full card-3d rounded-[18px] p-4 text-left flex items-center gap-3 relative overflow-hidden"
+                style={{ borderColor: "rgba(124,92,252,0.15)" }}>
+                <div className="absolute top-0 right-0 px-2.5 py-1 rounded-bl-[12px] text-[9px] font-bold text-white"
+                  style={{ background: "linear-gradient(135deg, #FF6B6B, #FF4757)" }}>{pkg.tag}</div>
+                <div className="w-11 h-11 rounded-[14px] flex items-center justify-center"
+                  style={{ background: "rgba(124,92,252,0.06)" }}>
+                  <span className="text-[18px]">💎</span>
+                </div>
+                <div className="flex-1">
+                  <div className="text-[14px] font-bold">{pkg.label}</div>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-[12px] text-[#9ca3af] line-through">{pkg.price}</span>
+                    <span className="text-[14px] font-extrabold text-[#7C5CFC]">{pkg.sale}</span>
+                  </div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </motion.button>
+            ))}
+          </div>
+
+          <motion.button whileTap={{ scale: 0.97 }} onClick={onClose}
+            className="w-full py-3 rounded-[14px] text-[13px] font-semibold text-[#9ca3af] text-center"
+            style={{ background: "rgba(0,0,0,0.03)" }}>
+            {t("maybeLater")}
+          </motion.button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function NewReport() {
   const user = useUser();
   const [, setLocation] = useLocation();
   useLang();
-  const [step, setStep] = useState<Step>("type");
-  const [reportType, setReportType] = useState("");
+
+  const urlParams = useMemo(() => new URLSearchParams(window.location.search), []);
+  const prefillType = urlParams.get("type") || "";
+  const prefillSubject = urlParams.get("subject") || "";
+
+  const [step, setStep] = useState<Step>(() => {
+    if (prefillType && prefillSubject) return "details";
+    if (prefillType) return "category";
+    return "type";
+  });
+  const [reportType, setReportType] = useState(prefillType);
   const [category, setCategory] = useState("");
-  const [subject, setSubject] = useState("");
+  const [subject, setSubject] = useState(prefillSubject);
   const [topic, setTopic] = useState("");
   const [group, setGroup] = useState("");
   const [result, setResult] = useState("");
@@ -96,11 +183,12 @@ export default function NewReport() {
   const [structureText, setStructureText] = useState("");
   const [structureLoading, setStructureLoading] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
-  const [paywallTimer, setPaywallTimer] = useState(300);
 
   useBackButton(() => {
+    if (showPaywall) { setShowPaywall(false); return; }
     if (step === "done" || step === "error") { reset(); }
-    else if (step === "generating" || step === "structure") { /* don't interrupt */ }
+    else if (step === "generating") { /* don't interrupt */ }
+    else if (step === "structure") { setStep("details"); }
     else if (step === "details") { setStep("subject"); }
     else if (step === "subject") { setStep("category"); }
     else if (step === "category") { setStep("type"); }
@@ -126,10 +214,55 @@ export default function NewReport() {
 
   useEffect(() => { if (result) setWordCount(result.split(/\s+/).filter(Boolean).length); }, [result]);
 
+  useEffect(() => {
+    if (step !== "done" || !result || typingDone) return;
+    let idx = 0;
+    const len = result.length;
+    const speed = Math.max(1, Math.floor(len / 300));
+    typingRef.current = window.setInterval(() => {
+      idx += speed;
+      if (idx >= len) {
+        idx = len;
+        setDisplayedResult(result);
+        setTypingDone(true);
+        if (typingRef.current) clearInterval(typingRef.current);
+      } else {
+        setDisplayedResult(result.substring(0, idx));
+      }
+    }, 8);
+    return () => { if (typingRef.current) clearInterval(typingRef.current); };
+  }, [step, result, typingDone]);
+
+  function skipTyping() {
+    if (typingRef.current) clearInterval(typingRef.current);
+    setDisplayedResult(result);
+    setTypingDone(true);
+  }
+
+  async function handleStructurePreview() {
+    if (!topic.trim()) return;
+    setStructureLoading(true);
+    setStep("structure");
+    hapticFeedback("medium");
+    try {
+      const res = await getStructurePreview({ reportType, subject, topic: topic.trim(), language: getLang() });
+      if (res.success && res.structure) {
+        setStructureText(res.structure);
+      } else {
+        setStructureText(`${t("planIntro")}\n${t("planMain")}\n${t("planConclusion")}`);
+      }
+    } catch {
+      setStructureText(`${t("planIntro")}\n${t("planMain")}\n${t("planConclusion")}`);
+    } finally {
+      setStructureLoading(false);
+    }
+  }
+
   async function handleGenerate() {
     if (!user || !topic.trim()) return;
     if (!canGenerate) { hapticError(); setLocation("/balance"); return; }
     setStep("generating"); setProgress(0); hapticFeedback("medium");
+    setTypingDone(false); setDisplayedResult("");
     const iv = setInterval(() => { setProgress(p => Math.min(p + Math.random() * 5 + 1.5, 92)); }, 700);
 
     const lengthHint = length === "short" ? " (short, ~500 words)" : length === "full" ? " (detailed, ~3000 words)" : "";
@@ -140,18 +273,49 @@ export default function NewReport() {
       clearInterval(iv); setProgress(100);
       if (res.success && res.content) {
         hapticSuccess(); setResult(res.content);
+        const wasFree = !user.freeReportsUsed;
         setUser({ ...user, balance: res.remainingBalance ?? user.balance, freeReportsUsed: true, totalReports: user.totalReports + 1 });
         const selType = TYPES.find(rt => rt.id === reportType);
         addRecentItem({ reportType, subject, subjectName: getSubjectName(subject), typeName: selType?.label || reportType, typeIcon: selType?.icon || "📄" });
-        setTimeout(() => setStep("done"), 400);
+        setTimeout(() => {
+          setStep("done");
+          if (wasFree && !wasPaywallShown(user.telegramId)) {
+            setTimeout(() => { setShowPaywall(true); markPaywallShown(user.telegramId); }, 2000);
+          }
+        }, 400);
       } else { hapticError(); setErrorMsg(res.error === "no_balance" ? t("noBalance") : t("error")); setStep("error"); }
     } catch { clearInterval(iv); hapticError(); setErrorMsg(t("connectionError")); setStep("error"); }
+  }
+
+  async function handleImprove(action: "rephrase" | "harder" | "simpler" | "humanize") {
+    if (!result || improving) return;
+    setImproving(true);
+    hapticFeedback("medium");
+    try {
+      const res = await improveText({ content: result, action, language: getLang() });
+      if (res.success && res.content) {
+        hapticSuccess();
+        setResult(res.content);
+        setDisplayedResult(res.content);
+        setTypingDone(true);
+        setWordCount(res.content.split(/\s+/).filter(Boolean).length);
+      }
+    } catch {} finally {
+      setImproving(false);
+    }
   }
 
   function shareResult() {
     const selType = TYPES.find(rt => rt.id === reportType);
     const preview = result.substring(0, 300).replace(/[#*_]/g, "") + "...";
     shareViaTelegram(`${selType?.icon} ${selType?.label}: ${topic.trim()}\n\n${preview}\n\n${t("shareText")}`);
+  }
+
+  function copyAsPost() {
+    const selType = TYPES.find(rt => rt.id === reportType);
+    const preview = result.substring(0, 200).replace(/[#*_]/g, "");
+    const post = `${selType?.icon} ${selType?.label}: ${topic.trim()}\n\n${preview}...\n\n🤖 Generated with StudyFlush`;
+    navigator.clipboard.writeText(post).then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); }).catch(() => {});
   }
 
   function downloadResult() {
@@ -169,7 +333,7 @@ export default function NewReport() {
     URL.revokeObjectURL(url);
   }
 
-  function reset() { setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); setLength("medium"); }
+  function reset() { setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); setLength("medium"); setTypingDone(false); setDisplayedResult(""); setStructureText(""); }
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -200,6 +364,47 @@ export default function NewReport() {
     const iv = setInterval(() => setTipIdx(i => (i + 1) % GEN_TIPS.length), 3000);
     return () => clearInterval(iv);
   }, [step]);
+
+  if (step === "structure") {
+    return (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pt-6 pb-4">
+        <BackBtn onClick={() => setStep("details")} />
+        <h2 className="text-[22px] font-extrabold tracking-tight mb-0.5">{t("structurePreview")}</h2>
+        <p className="text-[11px] text-[#9ca3af] mb-4">{topic.trim().substring(0, 60)}</p>
+
+        {structureLoading ? (
+          <div className="space-y-3 mb-6">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="skeleton h-4 rounded-[8px]" style={{ width: `${70 + Math.random() * 30}%`, opacity: 1 - i * 0.15 }} />
+            ))}
+          </div>
+        ) : (
+          <div className="card-3d rounded-[20px] p-4 mb-4 select-text">
+            <MarkdownRenderer content={structureText} />
+          </div>
+        )}
+
+        <div className="flex gap-2">
+          <motion.button whileTap={{ scale: 0.96 }} onClick={handleGenerate}
+            disabled={structureLoading}
+            className="flex-1 btn-main py-[15px] text-[14px] flex items-center justify-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+            </svg>
+            {t("approveStructure")}
+          </motion.button>
+          <motion.button whileTap={{ scale: 0.96 }} onClick={handleStructurePreview}
+            disabled={structureLoading}
+            className="btn-ghost px-4 py-3 text-[12px]">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+              <path d="M21 3v5h-5"/>
+            </svg>
+          </motion.button>
+        </div>
+      </motion.div>
+    );
+  }
 
   if (step === "generating") {
     const selType = TYPES.find(rt => rt.id === reportType);
@@ -317,6 +522,8 @@ export default function NewReport() {
     const readTime = Math.max(1, Math.round(wordCount / 200));
     return (
       <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="px-4 pt-6 pb-4">
+        <AnimatePresence>{showPaywall && <PaywallModal onClose={() => setShowPaywall(false)} onBuy={() => { setShowPaywall(false); setLocation("/balance"); }} />}</AnimatePresence>
+
         <div className="relative overflow-hidden rounded-[22px] p-5 mb-3"
           style={{ background: "linear-gradient(145deg, #10B981 0%, #059669 40%, #047857 100%)", boxShadow: "0 8px 32px rgba(16,185,129,0.25)" }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-20"
@@ -357,6 +564,37 @@ export default function NewReport() {
           </div>
         </div>
 
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
+          className="mb-3">
+          <div className="flex items-center gap-1.5 mb-2 px-0.5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="2">
+              <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+            </svg>
+            <span className="text-[10px] font-bold text-[#8b90a0] uppercase tracking-[0.08em]">AI {t("rephrase").split(" ")[0]}</span>
+            {improving && <div className="spinner w-3 h-3 ml-1" />}
+          </div>
+          <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-0.5 -mx-4 px-4">
+            {([
+              { action: "rephrase" as const, label: t("rephrase"), icon: "✏️", color: "#7C5CFC" },
+              { action: "harder" as const, label: t("makeHarder"), icon: "📈", color: "#3B82F6" },
+              { action: "simpler" as const, label: t("makeSimpler"), icon: "🧒", color: "#10B981" },
+              { action: "humanize" as const, label: t("humanize"), icon: "🧠", color: "#F97316" },
+            ]).map((btn, i) => (
+              <motion.button key={i}
+                initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + i * 0.05 }}
+                whileTap={{ scale: 0.95 }}
+                disabled={improving}
+                onClick={() => handleImprove(btn.action)}
+                className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-[12px] text-[11px] font-semibold disabled:opacity-40"
+                style={{ background: `${btn.color}08`, border: `1px solid ${btn.color}15`, color: btn.color }}>
+                <span className="text-[13px]">{btn.icon}</span>
+                {btn.label}
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+
         <motion.button whileTap={{ scale: 0.97 }}
           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
           onClick={() => { navigator.clipboard.writeText(result).then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); }).catch(() => {}); }}
@@ -371,7 +609,7 @@ export default function NewReport() {
             : <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{t("copy")}</>}
         </motion.button>
 
-        <div className="flex gap-2 mb-3">
+        <div className="flex gap-2 mb-2">
           <motion.button whileTap={{ scale: 0.96 }} onClick={downloadResult}
             initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
             className="flex-1 py-3 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1.5"
@@ -386,16 +624,47 @@ export default function NewReport() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
             {t("shareReport")}
           </motion.button>
-          <motion.button whileTap={{ scale: 0.96 }} onClick={reset}
+        </div>
+        <div className="flex gap-2 mb-3">
+          <motion.button whileTap={{ scale: 0.96 }} onClick={copyAsPost}
             initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
             className="flex-1 py-3 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1.5"
+            style={{ background: "rgba(236,72,153,0.06)", color: "#EC4899", border: "1px solid rgba(236,72,153,0.1)" }}>
+            <span className="text-[11px]">📋</span>
+            {t("copyAsPost")}
+          </motion.button>
+          <motion.button whileTap={{ scale: 0.96 }} onClick={() => {
+            hapticFeedback("medium");
+            const selType = TYPES.find(rt => rt.id === reportType);
+            const cardText = `📚 ${selType?.label}: ${topic.trim()}\n📊 ${wordCount} words\n🤖 AI-generated · StudyFlush`;
+            shareViaTelegram(cardText);
+          }}
+            initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+            className="flex-1 py-3 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1.5"
             style={{ background: "rgba(124,92,252,0.05)", color: "#7C5CFC", border: "1px solid rgba(124,92,252,0.08)" }}>
+            <span className="text-[11px]">🎴</span>
+            {t("shareAsCard")}
+          </motion.button>
+          <motion.button whileTap={{ scale: 0.96 }} onClick={reset}
+            initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+            className="py-3 px-4 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1.5"
+            style={{ background: "rgba(0,0,0,0.03)", color: "#6b7280" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
-            {t("newOne")}
           </motion.button>
         </div>
-        <div className="g-card rounded-[16px] p-4 max-h-[60vh] overflow-y-auto scrollbar-hide select-text">
-          <MarkdownRenderer content={result} />
+
+        {!typingDone && (
+          <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} whileTap={{ scale: 0.96 }}
+            onClick={skipTyping}
+            className="w-full mb-2 py-2 rounded-[12px] text-[11px] font-semibold text-[#9ca3af] text-center"
+            style={{ background: "rgba(0,0,0,0.03)" }}>
+            {t("skipTyping")} ⏭
+          </motion.button>
+        )}
+
+        <div className="g-card rounded-[16px] p-4 max-h-[60vh] overflow-y-auto scrollbar-hide select-text relative">
+          {!typingDone && <span className="typing-cursor" />}
+          <MarkdownRenderer content={displayedResult || result} />
         </div>
       </motion.div>
     );
@@ -648,18 +917,29 @@ export default function NewReport() {
           <span className="text-[#FF6B6B]">{t("noBalance")} (💎 {currentCost}). <button onClick={() => setLocation("/balance")} className="underline font-semibold">{t("topUpBalance")}</button></span>
         </motion.div>
       )}
-      <motion.button whileTap={{ scale: 0.97 }} onClick={handleGenerate} disabled={!topic.trim() || !canGenerate}
-        className="mt-4 w-full py-[16px] rounded-[18px] text-[15px] font-bold flex items-center justify-center gap-2.5 disabled:opacity-30"
-        style={{
-          background: (!topic.trim() || !canGenerate) ? "rgba(42,171,238,0.3)" : "linear-gradient(145deg, #2AABEE 0%, #229ED9 100%)",
-          color: "white",
-          boxShadow: (!topic.trim() || !canGenerate) ? "none" : "0 10px 30px rgba(42,171,238,0.35), 0 2px 6px rgba(0,0,0,0.06)",
-        }}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
-        </svg>
-        {t("generate")} {user && !user.freeReportsUsed ? "🎁" : `· 💎 ${currentCost}`}
-      </motion.button>
+      <div className="flex gap-2 mt-4">
+        <motion.button whileTap={{ scale: 0.97 }} onClick={handleStructurePreview} disabled={!topic.trim()}
+          className="py-[16px] px-5 rounded-[18px] text-[13px] font-bold flex items-center justify-center gap-2 disabled:opacity-30"
+          style={{ background: "rgba(124,92,252,0.06)", color: "#7C5CFC", border: "1px solid rgba(124,92,252,0.1)" }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          {t("structurePreview")}
+        </motion.button>
+        <motion.button whileTap={{ scale: 0.97 }} onClick={handleGenerate} disabled={!topic.trim() || !canGenerate}
+          className="flex-1 py-[16px] rounded-[18px] text-[15px] font-bold flex items-center justify-center gap-2.5 disabled:opacity-30"
+          style={{
+            background: (!topic.trim() || !canGenerate) ? "rgba(42,171,238,0.3)" : "linear-gradient(145deg, #2AABEE 0%, #229ED9 100%)",
+            color: "white",
+            boxShadow: (!topic.trim() || !canGenerate) ? "none" : "0 10px 30px rgba(42,171,238,0.35), 0 2px 6px rgba(0,0,0,0.06)",
+          }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+          </svg>
+          {t("generate")} {user && !user.freeReportsUsed ? "🎁" : `· 💎 ${currentCost}`}
+        </motion.button>
+      </div>
     </motion.div>
   );
 }

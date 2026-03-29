@@ -43,8 +43,16 @@ artifacts-monorepo/
 
 ## Bot Features
 
-- **Free first report** for every new user (any length)
+- **Free first report** for every new user (any length), followed by paywall modal (-50% first purchase offer with 10-min countdown)
 - **Tiered pricing**: Short (1💎), Medium (2💎), Full (3💎) — credits deducted based on document length
+- **AI Typing Effect**: Character-by-character result display with "Show all" skip button
+- **Improve Text**: Post-generation AI buttons — Rephrase / More complex / Simplify / Humanize (calls `/api/twa/improve`)
+- **Structure Preview**: Optional document plan preview before generation (calls `/api/twa/structure-preview`)
+- **Smart Quick Start**: 3 template cards on home page (History Report, IT Lab, Lecture Notes) that prefill the report flow via URL params
+- **Daily Streak**: 🔥 counter with localStorage persistence (scoped by date)
+- **Referral Progress Bar**: Visual progress toward invite-3-get-10 goal
+- **Trust Indicators**: "10,000+ students" / "4.8 ⭐ rating" social proof on home
+- **Share Options**: Copy result / Download file / Share via Telegram / Copy as post / Share as card
 - **11 document types**: Report, Summary, Database, Lab Work, Essay, Tasks, Course Work, Diploma, Presentation, Test Paper, Notes
 - **150+ subjects** in **17 categories**: School Math (7-11), Ukrainian Language & Lit (7-11), Sciences (7-11), History & Geography (7-11), Foreign Languages, Other School; College IT, College Tech; University Math, IT, Humanities, Business, Law, Engineering, Medicine; Other
 - **Education level filter**: All / School / College / University tabs in category selection

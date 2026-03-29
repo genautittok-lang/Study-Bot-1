@@ -23,14 +23,27 @@ function getGreeting(): { emoji: string; text: string } {
   return { emoji: "🌆", text: "" };
 }
 
-const TIPS = [
-  "Be specific with your topic for better results",
-  "Attach a photo of your task for precise output",
-  "Use 'Full' length for detailed academic papers",
-  "Try different document types for varied formats",
-  "Invite friends to earn free reports",
-  "Generated content supports tables and code blocks",
-];
+const STREAK_KEY = "studyflush_streak";
+const STREAK_DATE_KEY = "studyflush_streak_date";
+
+function getStreak(): number {
+  try {
+    const today = new Date().toDateString();
+    const lastDate = localStorage.getItem(STREAK_DATE_KEY);
+    const streak = parseInt(localStorage.getItem(STREAK_KEY) || "0", 10);
+    if (lastDate === today) return streak;
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (lastDate === yesterday) {
+      const newStreak = streak + 1;
+      localStorage.setItem(STREAK_KEY, String(newStreak));
+      localStorage.setItem(STREAK_DATE_KEY, today);
+      return newStreak;
+    }
+    localStorage.setItem(STREAK_KEY, "1");
+    localStorage.setItem(STREAK_DATE_KEY, today);
+    return 1;
+  } catch { return 1; }
+}
 
 function ProgressRing({ progress, size = 56, stroke = 4 }: { progress: number; size?: number; stroke?: number }) {
   const r = (size - stroke) / 2;
@@ -107,7 +120,7 @@ export default function Home() {
   const [recent, setRecent] = useState<ReportItem[]>([]);
   const [copied, setCopied] = useState(false);
   const [recentItems] = useState<RecentItem[]>(() => getRecentItems());
-  const [tipIdx, setTipIdx] = useState(() => Math.floor(Math.random() * TIPS.length));
+  const [streak] = useState(() => getStreak());
 
   const bal = user ? (!user.freeReportsUsed ? user.balance + 1 : user.balance) : 0;
   const lvl = getUserLevel(user?.totalReports || 0);
@@ -116,16 +129,14 @@ export default function Home() {
   const progress = nxt
     ? Math.min(((user?.totalReports || 0) - lvl.min) / (lvl.max - lvl.min + 1) * 100, 100)
     : 100;
+  const refCount = user?.referralCount || 0;
+  const refGoal = 3;
+  const refProgress = Math.min((refCount / refGoal) * 100, 100);
 
   useEffect(() => {
     if (!user) return;
     getReports(user.telegramId).then(r => setRecent(r.reports.slice(0, 3))).catch(() => {});
   }, [user]);
-
-  useEffect(() => {
-    const iv = setInterval(() => setTipIdx(i => (i + 1) % TIPS.length), 5000);
-    return () => clearInterval(iv);
-  }, []);
 
   const refLink = `https://t.me/studyflush_bot?start=ref_${user?.referralCode || "---"}`;
   const hasRefCode = !!user?.referralCode && user.referralCode !== "---";
@@ -144,6 +155,12 @@ export default function Home() {
   }
 
   const { emoji: greetEmoji } = getGreeting();
+
+  const quickTemplates = [
+    { icon: "📄", label: t("quickReport"), type: "report", subject: "history", color: "#7C5CFC" },
+    { icon: "💻", label: t("quickLab"), type: "lab", subject: "programming", color: "#3B82F6" },
+    { icon: "📚", label: t("quickSummary"), type: "notes", subject: "literature", color: "#06D6A0" },
+  ];
 
   return (
     <div className="px-3.5 pt-4 pb-4">
@@ -170,24 +187,47 @@ export default function Home() {
             {user?.firstName || "Student"}
           </h1>
         </div>
-        <motion.button whileTap={{ scale: 0.88 }} onClick={() => { hapticFeedback("light"); go("/balance"); }}
-          aria-label={t("balance")}
-          className="relative shrink-0">
-          <div className="w-10 h-10 rounded-[13px] flex items-center justify-center"
-            style={{ background: "rgba(124,92,252,0.06)", border: "1px solid rgba(124,92,252,0.08)" }}>
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.8">
-              <rect width="20" height="14" x="2" y="5" rx="2"/>
-              <line x1="2" x2="22" y1="10" y2="10"/>
-            </svg>
-          </div>
-          {bal > 0 && (
+        <div className="flex items-center gap-1.5">
+          {streak > 0 && (
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", bounce: 0.5 }}
-              className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 text-[8px] font-bold text-white"
-              style={{ background: "linear-gradient(135deg, #7C5CFC, #3B82F6)", boxShadow: "0 2px 8px rgba(124,92,252,0.4)" }}>
-              {bal}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-[10px]"
+              style={{ background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.1)" }}>
+              <span className="text-[12px]">🔥</span>
+              <span className="text-[11px] font-bold text-[#F97316] tabular">{streak}</span>
             </motion.div>
           )}
-        </motion.button>
+          <motion.button whileTap={{ scale: 0.88 }} onClick={() => { hapticFeedback("light"); go("/balance"); }}
+            aria-label={t("balance")}
+            className="relative shrink-0">
+            <div className="w-10 h-10 rounded-[13px] flex items-center justify-center"
+              style={{ background: "rgba(124,92,252,0.06)", border: "1px solid rgba(124,92,252,0.08)" }}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.8">
+                <rect width="20" height="14" x="2" y="5" rx="2"/>
+                <line x1="2" x2="22" y1="10" y2="10"/>
+              </svg>
+            </div>
+            {bal > 0 && (
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", bounce: 0.5 }}
+                className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 text-[8px] font-bold text-white"
+                style={{ background: "linear-gradient(135deg, #7C5CFC, #3B82F6)", boxShadow: "0 2px 8px rgba(124,92,252,0.4)" }}>
+                {bal}
+              </motion.div>
+            )}
+          </motion.button>
+        </div>
+      </motion.div>
+
+      <motion.div {...anim(0.5)} className="flex items-center gap-3 mb-3.5 px-1">
+        <div className="flex items-center gap-1.5">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
+          <span className="text-[10px] font-bold text-[#10B981]">10,000+</span>
+          <span className="text-[9px] text-[#9ca3af]">{t("studentsUsing")}</span>
+        </div>
+        <div className="w-0.5 h-0.5 rounded-full bg-[#d1d5db]" />
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] font-bold text-[#F59E0B]">4.8 ⭐</span>
+          <span className="text-[9px] text-[#9ca3af]">{t("avgRating")}</span>
+        </div>
       </motion.div>
 
       <motion.div {...anim(1)}>
@@ -232,6 +272,30 @@ export default function Home() {
         </TiltCard>
       </motion.div>
 
+      <motion.div {...anim(1.5)} className="mb-3">
+        <div className="flex items-center gap-1.5 mb-2 px-0.5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="2">
+            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+          </svg>
+          <span className="text-[10px] font-bold text-[#8b90a0] uppercase tracking-[0.08em]">{t("quickStart")}</span>
+        </div>
+        <div className="flex gap-2">
+          {quickTemplates.map((tmpl, i) => (
+            <motion.button key={i}
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 + i * 0.06, ease }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => { hapticFeedback("light"); go(`/new?type=${tmpl.type}&subject=${tmpl.subject}`); }}
+              className="flex-1 card-3d rounded-[18px] p-3 text-left"
+              style={{ borderColor: `${tmpl.color}12` }}>
+              <div className="text-[22px] mb-2">{tmpl.icon}</div>
+              <div className="text-[11px] font-bold leading-tight">{tmpl.label}</div>
+              <div className="text-[8px] mt-1 font-semibold" style={{ color: tmpl.color }}>{t("generate")} →</div>
+            </motion.button>
+          ))}
+        </div>
+      </motion.div>
+
       <motion.div {...anim(2)} className="flex gap-2 mb-3">
         <TiltCard
           onClick={() => { hapticFeedback("light"); go("/balance"); }}
@@ -265,7 +329,7 @@ export default function Home() {
         </motion.button>
       </motion.div>
 
-      <motion.div {...anim(3)} className="mb-3">
+      <motion.div {...anim(2.5)} className="mb-3">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-3.5 px-3.5">
           {[
             { iconId: "topup", label: t("topUp"), desc: "15 rep", go: "/balance", accent: "#06D6A0", bg: "rgba(6,214,160,0.04)" },
@@ -300,33 +364,7 @@ export default function Home() {
         </div>
       </motion.div>
 
-      <motion.div {...anim(3.5)} className="mb-3">
-        <div className="tip-card p-3.5">
-          <div className="flex items-center gap-2.5">
-            <motion.div
-              animate={{ rotate: [0, 15, -15, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="w-9 h-9 rounded-[12px] flex items-center justify-center shrink-0"
-              style={{ background: "rgba(124,92,252,0.06)" }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.8">
-                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
-              </svg>
-            </motion.div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[8px] font-bold text-[#7C5CFC] uppercase tracking-wider mb-0.5">AI Tip</div>
-              <AnimatePresence mode="wait">
-                <motion.p key={tipIdx}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="text-[11px] text-[#4a4e69] font-medium leading-snug">{TIPS[tipIdx]}</motion.p>
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      <motion.div {...anim(4)} className="grid grid-cols-3 gap-2 mb-3">
+      <motion.div {...anim(3)} className="grid grid-cols-3 gap-2 mb-3">
         {[
           { val: user?.totalReports || 0, label: t("total"), gradient: "linear-gradient(135deg, #7C5CFC, #6336F5)", path: "/history" },
           { val: bal, label: t("balance"), gradient: "linear-gradient(135deg, #3B82F6, #3D7FE8)", path: "/balance" },
@@ -344,8 +382,28 @@ export default function Home() {
         ))}
       </motion.div>
 
+      <motion.div {...anim(3.5)} className="mb-3">
+        <div className="card-3d rounded-[20px] p-4">
+          <div className="flex items-center justify-between mb-2.5">
+            <div className="flex items-center gap-2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+              <span className="text-[11px] font-bold">{t("referralProgress")}</span>
+            </div>
+            <span className="text-[9px] font-semibold text-[#10B981]">{refCount}/{refGoal}</span>
+          </div>
+          <div className="w-full h-[6px] rounded-full overflow-hidden mb-2" style={{ background: "rgba(16,185,129,0.08)" }}>
+            <motion.div className="h-full rounded-full"
+              style={{ background: "linear-gradient(90deg, #10B981, #06D6A0)" }}
+              initial={{ width: 0 }}
+              animate={{ width: `${refProgress}%` }}
+              transition={{ delay: 0.3, duration: 0.8, ease }} />
+          </div>
+          <div className="text-[10px] text-[#9ca3af]">{t("invite3Get10")}</div>
+        </div>
+      </motion.div>
+
       {recentItems.length > 0 && (
-        <motion.div {...anim(4.5)} className="mb-3">
+        <motion.div {...anim(4)} className="mb-3">
           <div className="flex items-center gap-1.5 mb-2 px-0.5">
             <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#7C5CFC" }} />
             <span className="text-[10px] font-bold text-[#8b90a0] uppercase tracking-[0.08em]">{t("recentSubjects")}</span>
@@ -370,7 +428,7 @@ export default function Home() {
       )}
 
       {recent.length > 0 && (
-        <motion.div {...anim(5)} className="mb-3">
+        <motion.div {...anim(4.5)} className="mb-3">
           <div className="flex items-center justify-between mb-2 px-0.5">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
@@ -409,7 +467,7 @@ export default function Home() {
         </motion.div>
       )}
 
-      <motion.div {...anim(6)} className="rounded-[22px] overflow-hidden relative"
+      <motion.div {...anim(5)} className="rounded-[22px] overflow-hidden relative"
         style={{
           background: "linear-gradient(145deg, #2AABEE 0%, #229ED9 40%, #1E96CC 70%, #1A8FBF 100%)",
           boxShadow: "0 12px 40px rgba(42,171,238,0.25), 0 4px 12px rgba(0,0,0,0.06)",
@@ -487,7 +545,7 @@ export default function Home() {
         </div>
       </motion.div>
 
-      <motion.div {...anim(7)} className="flex items-center justify-center pt-4 pb-1 gap-2">
+      <motion.div {...anim(6)} className="flex items-center justify-center pt-4 pb-1 gap-2">
         <div className="w-[22px] h-[22px] rounded-[7px] flex items-center justify-center"
           style={{ background: "linear-gradient(145deg, #7C5CFC, #6336F5)" }}>
           <span className="text-white font-extrabold text-[11px]">S</span>
