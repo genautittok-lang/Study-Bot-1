@@ -133,7 +133,7 @@ export async function savePayment(data: {
     amount: data.amount,
     currency: data.currency,
     paymentMethod: data.paymentMethod,
-    reportsAdded: 15,
+    reportsAdded: 30,
     status: "pending",
     externalId: data.externalId,
   }).returning();

@@ -1,13 +1,21 @@
 import OpenAI from "openai";
 
-if (!process.env.AI_INTEGRATIONS_OPENAI_BASE_URL || !process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
-  throw new Error("OpenAI AI integration env vars are missing");
+const baseURL = process.env.AI_INTEGRATIONS_GEMINI_BASE_URL
+  || process.env.GEMINI_BASE_URL
+  || (process.env.GEMINI_API_KEY ? "https://generativelanguage.googleapis.com/v1beta/openai" : null)
+  || process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
+
+const apiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY
+  || process.env.GEMINI_API_KEY
+  || process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
+
+if (!baseURL || !apiKey) {
+  throw new Error("AI integration env vars are missing. Set GEMINI or OpenAI env vars.");
 }
 
-const openai = new OpenAI({
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-});
+const ai = new OpenAI({ baseURL, apiKey });
+
+const MODEL = process.env.AI_MODEL || "gemini-2.5-flash";
 
 const REPORT_TYPE_NAMES: Record<string, Record<string, string>> = {
   report: { en: "Report", ru: "Звіт", uk: "Звіт", kk: "Есеп", uz: "Hisobot", ky: "Отчёт", tg: "Ҳисобот", tk: "Hasabat", az: "Hesabat", hy: "Զեdelays", ka: "ანგარიში", be: "Справаздача", md: "Raport", mn: "Тайлан", tr: "Rapor", pl: "Raport", de: "Bericht", fr: "Rapport", es: "Informe", pt: "Relatório", it: "Relazione", ro: "Raport", cs: "Zpráva", bg: "Доклад", sr: "Извештај", hr: "Izvještaj", ar: "تقرير", hi: "रिपोर्ट", zh: "报告", ja: "レポート" },
@@ -56,8 +64,16 @@ function getSystemPrompt(language: string): string {
 10. MARKDOWN: # ## ### для заголовків, **жирний**, *курсив*, \`код\`, таблиці, списки, > цитати для визначень.
 11. ОБСЯГ: МАКСИМАЛЬНИЙ. Розгорнуто та детально. Кожен розділ повноцінний.
 12. ЯКІСТЬ: Робота має виглядати так, ніби це зробив реальний студент-відмінник вручну.
-13. ВІЗУАЛЬНІ ЕЛЕМЕНТИ: Включай таблиці, порівняльні діаграми, ASCII-схеми/блок-схеми де це доречно. Контент має бути візуально насиченим.
+13. ВІЗУАЛЬНІ ЕЛЕМЕНТИ (ОБОВ'ЯЗКОВО):
+    - Мінімум 2-3 Markdown таблиці з реальними даними (порівняння, характеристики, статистика)
+    - ASCII-діаграми та блок-схеми: використовуй ┌─┐│└─┘├┤┬┴┼ для структурних схем
+    - Порівняльні таблиці: | Критерій | Варіант A | Варіант B |
+    - Нумеровані/маркіровані списки для класифікацій
+    - > Блок-цитати для ключових визначень і формул
+    - \`\`\`code\`\`\` блоки для коду, SQL, формул
+    Кожен великий розділ повинен мати хоча б один візуальний елемент!
 14. СТРУКТУРА: Використовуй чітку нумерацію розділів (1.1, 1.2, 2.1 тощо), правильну ієрархію та логічний зв'язок між розділами.
+15. ДЖЕРЕЛА: Список використаних джерел з реальними авторами, назвами, роками видання. Формат ДСТУ 8302:2015.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 СПЕЦІАЛЬНІ СЦЕНАРІЇ:
@@ -89,8 +105,16 @@ CRITICAL RULES (MANDATORY):
 11. VOLUME: MAXIMUM. Detailed and comprehensive. Every section should be thorough.
 12. QUALITY: The paper should look like it was done by a real top student manually.
 13. LOCAL STANDARDS: Use citation and formatting standards appropriate for the country/region where ${langName} is spoken. E.g.: German → DIN, French → AFNOR, Spanish → APA adapted, etc.
-14. VISUAL ELEMENTS: Include tables, comparison charts, ASCII diagrams/flowcharts where appropriate. Make content visually rich.
+14. VISUAL ELEMENTS (MANDATORY):
+    - At least 2-3 Markdown tables with real data (comparisons, characteristics, statistics)
+    - ASCII diagrams and flowcharts using ┌─┐│└─┘├┤┬┴┼ for structural schemes
+    - Comparison tables: | Criterion | Option A | Option B |
+    - Numbered/bulleted lists for classifications
+    - > Blockquotes for key definitions and formulas
+    - \`\`\`code\`\`\` blocks for code, SQL, formulas
+    Every major section must include at least one visual element!
 15. STRUCTURE: Use clear section numbering (1.1, 1.2, 2.1 etc.), proper hierarchy, and logical flow between sections.
+16. REFERENCES: List of references with real authors, titles, publication years. Use citation format appropriate for the region.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SPECIAL SCENARIOS:
@@ -479,8 +503,8 @@ export async function generateReport(
     userContent[0].text += photoWarning;
   }
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-5.2",
+  const response = await ai.chat.completions.create({
+    model: MODEL,
     max_completion_tokens: 16384,
     messages: [
       { role: "system", content: systemPrompt },
@@ -519,8 +543,8 @@ export async function improveText(
       : `Make this text more human-like — as if written by a real student. Add slight stylistic imperfections, more conversational tone, but keep the content accurate and grammatically correct. Keep Markdown. Write in ${langName}.`,
   };
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-5.2",
+  const response = await ai.chat.completions.create({
+    model: MODEL,
     max_completion_tokens: 16384,
     messages: [
       { role: "system", content: prompts[action] || prompts.rephrase },
@@ -564,8 +588,8 @@ Description of section content...
 
 Don't write the actual paper — only the structure with description of each section (3-5 sentences per section). Write in ${langName}.`;
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-5.2",
+  const response = await ai.chat.completions.create({
+    model: MODEL,
     max_completion_tokens: 4096,
     messages: [
       { role: "system", content: isUkRu ? "Ти — академічний AI-асистент. Створи чіткий план роботи." : `You are an academic AI assistant. Create a clear paper structure plan. Write in ${langName}.` },

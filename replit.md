@@ -16,7 +16,7 @@ pnpm workspace monorepo using TypeScript. Main product is **StudyFlush** (v2.2) 
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (ESM bundle)
 - **Telegram Bot**: Telegraf
-- **AI**: OpenAI via Replit AI Integrations (gpt-5.2) — env vars: `AI_INTEGRATIONS_OPENAI_BASE_URL`, `AI_INTEGRATIONS_OPENAI_API_KEY` (auto-provisioned, do NOT modify)
+- **AI**: Google Gemini via OpenAI-compatible SDK (gemini-2.5-flash) — env vars: `AI_INTEGRATIONS_GEMINI_BASE_URL`, `AI_INTEGRATIONS_GEMINI_API_KEY` (Replit) or `GEMINI_API_KEY` + `GEMINI_BASE_URL` (Railway)
 - **Frontend**: React + Vite + Framer Motion + Tailwind CSS
 
 ## Structure
@@ -59,10 +59,10 @@ artifacts-monorepo/
 - **11 document types + freeform**: Report, Summary, Database, Lab Work, Essay, Tasks, Course Work, Diploma, Presentation, Test Paper, Notes, + Any Task (freeform)
 - **150+ subjects** in **17 categories**: School Math (7-11), Ukrainian Language & Lit (7-11), Sciences (7-11), History & Geography (7-11), Foreign Languages, Other School; College IT, College Tech; University Math, IT, Humanities, Business, Law, Engineering, Medicine; Other
 - **Education level filter**: All / School / College / University tabs in category selection
-- **3 payment methods**: Card (250 UAH, card 5232 4410 5654 6307 — Ukraine only), Crypto USDT (5 USDT TRC-20, address TRYbty4Ew9knf61brdrixeY5M34mQTt3zY), Telegram Stars (500 XTR)
+- **3 payment methods**: Card (250 UAH, card 5232 4410 5654 6307 — Ukraine only), Crypto USDT (5 USDT TRC-20, address TRYbty4Ew9knf61brdrixeY5M34mQTt3zY), Telegram Stars (500 XTR) — all give 30 credits per purchase
 - **Card visibility**: Card payment only shown when user language is "uk" (Ukrainian); all other users see Stars + Crypto only
 - **Receipt flow**: After card/crypto payment, user sends screenshot to @studyflush_bot for manual verification by admin
-- **AI generation**: gpt-5.2 with structured prompts per document type (specific prompts for all 11 types), vision support for photo attachments
+- **AI generation**: gemini-2.5-flash with structured prompts per document type (specific prompts for all 11 types), mandatory tables/diagrams/visual elements, vision support for photo attachments
 - **File upload**: Users can attach photos of tasks from textbooks (base64, max 5MB, JPG/PNG), AI reads the image via vision
 - **Referral system**: +2 reports for referrer and invitee, unique codes per user
 - **Level progression**: Beginner (0-5), Student (6-20), Expert (21-50), Master (51-100), Legend (101+)
@@ -186,8 +186,11 @@ Premium React + Vite fintech-grade TWA with light premium design. Features:
 
 - `TELEGRAM_BOT_TOKEN` — Bot token from @BotFather
 - `DATABASE_URL` — PostgreSQL (auto-provisioned)
-- `AI_INTEGRATIONS_OPENAI_BASE_URL` — Replit AI proxy URL
-- `AI_INTEGRATIONS_OPENAI_API_KEY` — Replit AI proxy key
+- `AI_INTEGRATIONS_GEMINI_BASE_URL` — Replit AI proxy URL (auto-provisioned)
+- `AI_INTEGRATIONS_GEMINI_API_KEY` — Replit AI proxy key (auto-provisioned)
+- `GEMINI_API_KEY` — Google Gemini API key (Railway fallback)
+- `GEMINI_BASE_URL` — Gemini OpenAI-compatible endpoint (Railway fallback, defaults to `https://generativelanguage.googleapis.com/v1beta/openai`)
+- `AI_MODEL` — AI model name (default: `gemini-2.5-flash`)
 - `ADMIN_IDS` — Comma-separated Telegram IDs for admin access (default: `999999999`)
 
 ## DB Schema

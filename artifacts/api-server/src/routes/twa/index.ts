@@ -162,7 +162,7 @@ router.post("/payment", async (req, res) => {
       const user = await getUser(body.telegramId);
       const username = user?.username ? `@${user.username}` : `ID: ${body.telegramId}`;
       const methodLabel = body.paymentMethod === "card" ? "💳 Картка (250 UAH)" : "💎 Крипто USDT (5 USDT)";
-      const caption = `📥 *Новий запит на поповнення!*\n\n👤 Користувач: ${username}\n🆔 Telegram ID: \`${body.telegramId}\`\n💰 Метод: ${methodLabel}\n🎟 Звітів: 15\n#️⃣ Платіж: #${payment.id}\n\nПеревір оплату та натисни:`;
+      const caption = `📥 *Новий запит на поповнення!*\n\n👤 Користувач: ${username}\n🆔 Telegram ID: \`${body.telegramId}\`\n💰 Метод: ${methodLabel}\n🎟 Звітів: 30\n#️⃣ Платіж: #${payment.id}\n\nПеревір оплату та натисни:`;
 
       try {
         if (screenshotData) {
@@ -221,11 +221,11 @@ router.post("/create-invoice", async (req, res) => {
     }
 
     const invoiceLink = await bot.telegram.createInvoiceLink({
-      title: "📚 15 звітів StudyFlush",
-      description: "Пакет із 15 AI-згенерованих звітів, конспектів або лабораторних",
+      title: "📚 30 звітів StudyFlush",
+      description: "Пакет із 30 AI-згенерованих звітів, конспектів або лабораторних",
       payload: `stars_${telegramId}_${Date.now()}`,
       currency: "XTR",
-      prices: [{ label: "15 звітів", amount: 500 }],
+      prices: [{ label: "30 звітів", amount: 500 }],
     });
 
     res.json({ success: true, invoiceUrl: invoiceLink });

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
-import { useUser, setUser, useLang, addRecentItem } from "@/lib/store";
+import { useUser, setUser, useLang, addRecentItem, saveLastResult, getLastResult, clearLastResult } from "@/lib/store";
 import { generateReport, improveText, getStructurePreview } from "@/lib/api";
 import { getReportTypes, getSubjectCategories, getSubjectName, getEduLevels, getCategoryEduLevel, t, getLang } from "@/lib/i18n";
 import type { EduLevel } from "@/lib/i18n";
@@ -113,7 +113,7 @@ function PaywallModal({ onClose, onBuy }: { onClose: () => void; onBuy: () => vo
 
           <div className="space-y-2 mb-4">
             {[
-              { label: "15 reports", price: "250 UAH", sale: "125 UAH", tag: "-50%" },
+              { label: "30 reports", price: "250 UAH", sale: "125 UAH", tag: "-50%" },
             ].map((pkg, i) => (
               <motion.button key={i} whileTap={{ scale: 0.97 }} onClick={onBuy}
                 className="w-full card-3d rounded-[18px] p-4 text-left flex items-center gap-3 relative overflow-hidden"
@@ -156,29 +156,32 @@ export default function NewReport() {
   const prefillType = urlParams.get("type") || "";
   const prefillSubject = urlParams.get("subject") || "";
 
+  const savedResult = useMemo(() => getLastResult(), []);
+
   const [step, setStep] = useState<Step>(() => {
+    if (savedResult) return "done";
     if (prefillType === "freeform") return "freeform";
     if (prefillType && prefillSubject) return "details";
     if (prefillType) return "category";
     return "type";
   });
-  const [reportType, setReportType] = useState(prefillType);
+  const [reportType, setReportType] = useState(savedResult?.reportType || prefillType);
   const [category, setCategory] = useState("");
-  const [subject, setSubject] = useState(prefillType === "freeform" ? "any" : prefillSubject);
-  const [topic, setTopic] = useState("");
+  const [subject, setSubject] = useState(savedResult?.subject || (prefillType === "freeform" ? "any" : prefillSubject));
+  const [topic, setTopic] = useState(savedResult?.topic || "");
   const [group, setGroup] = useState("");
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState(savedResult?.result || "");
   const [errorMsg, setErrorMsg] = useState("");
   const [progress, setProgress] = useState(0);
-  const [wordCount, setWordCount] = useState(0);
+  const [wordCount, setWordCount] = useState(savedResult?.wordCount || 0);
   const [searchQ, setSearchQ] = useState("");
   const [eduLevel, setEduLevel] = useState<EduLevel>("all");
   const [copied, setCopied] = useState(false);
   const [imageData, setImageData] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [length, setLength] = useState<"short" | "medium" | "full">("medium");
-  const [typingDone, setTypingDone] = useState(false);
-  const [displayedResult, setDisplayedResult] = useState("");
+  const [typingDone, setTypingDone] = useState(!!savedResult);
+  const [displayedResult, setDisplayedResult] = useState(savedResult?.result || "");
   const typingRef = useRef<number | null>(null);
   const [improving, setImproving] = useState(false);
   const [structureText, setStructureText] = useState("");
@@ -187,7 +190,7 @@ export default function NewReport() {
   const [showFormatPicker, setShowFormatPicker] = useState(false);
   const [genStartTime, setGenStartTime] = useState<number>(0);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
-  const [finalGenTime, setFinalGenTime] = useState(0);
+  const [finalGenTime, setFinalGenTime] = useState(savedResult?.finalGenTime || 0);
 
   useEffect(() => {
     if (step !== "generating" || !genStartTime) return;
@@ -294,10 +297,13 @@ export default function NewReport() {
       setFinalGenTime(Math.round((Date.now() - startTs) / 1000));
       if (res.success && res.content) {
         hapticSuccess(); setResult(res.content);
+        const genTime = Math.round((Date.now() - startTs) / 1000);
+        const wc = res.content.split(/\s+/).filter(Boolean).length;
         const wasFree = !user.freeReportsUsed;
         setUser({ ...user, balance: res.remainingBalance ?? user.balance, freeReportsUsed: true, totalReports: user.totalReports + 1 });
         const rType = getTypeMeta();
         addRecentItem({ reportType, subject, subjectName: getSubjectName(subject), typeName: rType?.label || reportType, typeIcon: rType?.icon || "📄" });
+        saveLastResult({ result: res.content, reportType, subject, topic: topic.trim(), wordCount: wc, finalGenTime: genTime, ts: Date.now() });
         setTimeout(() => {
           setStep("done");
           if (wasFree && !wasPaywallShown(user.telegramId)) {
@@ -319,7 +325,9 @@ export default function NewReport() {
         setResult(res.content);
         setDisplayedResult(res.content);
         setTypingDone(true);
-        setWordCount(res.content.split(/\s+/).filter(Boolean).length);
+        const newWc = res.content.split(/\s+/).filter(Boolean).length;
+        setWordCount(newWc);
+        saveLastResult({ result: res.content, reportType, subject, topic, wordCount: newWc, finalGenTime, ts: Date.now() });
       }
     } catch {} finally {
       setImproving(false);
@@ -419,7 +427,7 @@ ${markdownToHtml(result)}
       .replace(/<p><\/p>/g, "");
   }
 
-  function reset() { setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); setLength("medium"); setTypingDone(false); setDisplayedResult(""); setStructureText(""); setShowFormatPicker(false); }
+  function reset() { clearLastResult(); setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); setLength("medium"); setTypingDone(false); setDisplayedResult(""); setStructureText(""); setShowFormatPicker(false); }
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -730,20 +738,23 @@ ${markdownToHtml(result)}
                 className="absolute left-0 right-0 top-full mt-1.5 z-20 card-3d rounded-[16px] p-2 flex gap-1.5"
                 style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
                 {([
-                  { fmt: "txt" as const, label: "TXT", desc: t("plainText"), icon: "📄", color: "#6b7280" },
-                  { fmt: "md" as const, label: "MD", desc: "Markdown", icon: "📝", color: "#7C5CFC" },
-                  { fmt: "html" as const, label: "HTML", desc: t("formatted"), icon: "🌐", color: "#3B82F6" },
+                  { fmt: "txt" as const, label: "TXT", desc: t("plainText"), icon: "📄", color: "#6b7280", gradient: "linear-gradient(135deg, rgba(107,114,128,0.08), rgba(107,114,128,0.02))" },
+                  { fmt: "md" as const, label: "Markdown", desc: "GitHub / Notion", icon: "📝", color: "#7C5CFC", gradient: "linear-gradient(135deg, rgba(124,92,252,0.1), rgba(59,130,246,0.04))" },
+                  { fmt: "html" as const, label: "HTML", desc: t("formatted"), icon: "🌐", color: "#3B82F6", gradient: "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(6,214,160,0.04))" },
                 ]).map((f, i) => (
                   <motion.button key={f.fmt}
-                    initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.04 }}
-                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    whileTap={{ scale: 0.93 }}
                     onClick={() => downloadResult(f.fmt)}
-                    className="flex-1 rounded-[12px] py-2.5 px-2 text-center"
-                    style={{ background: `${f.color}08`, border: `1px solid ${f.color}15` }}>
-                    <div className="text-[16px] mb-1">{f.icon}</div>
-                    <div className="text-[11px] font-bold" style={{ color: f.color }}>{f.label}</div>
-                    <div className="text-[8px] text-[#9ca3af] mt-0.5">{f.desc}</div>
+                    className="flex-1 rounded-[14px] py-3 px-2.5 text-center relative overflow-hidden"
+                    style={{ background: f.gradient, border: `1.5px solid ${f.color}18` }}>
+                    <div className="text-[20px] mb-1.5">{f.icon}</div>
+                    <div className="text-[12px] font-extrabold tracking-tight" style={{ color: f.color }}>{f.label}</div>
+                    <div className="text-[9px] text-[#9ca3af] mt-0.5 font-medium">{f.desc}</div>
+                    <div className="absolute top-1 right-1.5">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={f.color} strokeWidth="2" opacity="0.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    </div>
                   </motion.button>
                 ))}
               </motion.div>

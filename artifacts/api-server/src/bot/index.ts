@@ -222,14 +222,14 @@ bot.action("balance", async (ctx: BotContext) => {
 bot.action("buy", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
   await ctx.editMessageText(
-    "💳 *Buy reports / Придбай звіти*\n\n📦 Package: *15 reports*\nChoose payment / Обери спосіб оплати:",
+    "💳 *Buy reports / Придбай звіти*\n\n📦 Package: *30 reports*\nChoose payment / Обери спосіб оплати:",
     { parse_mode: "Markdown", ...paymentKeyboard }
   );
 });
 
 bot.action("pay_mono", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
-  const text = `💳 *Оплата через Monobank*\n\nСума: *250 грн* за 15 звітів\n\n📲 Переведи 250 грн на картку:\n\`\`\`\n5232 4410 5654 6307\n\`\`\`\nОтримувач: *StudyFlush*\n\n⚠️ *ВАЖЛИВО:* В коментарі до переказу вкажи свій Telegram ID:\n\`${ctx.from!.id}\`\n\n📸 *Після оплати надішли скріншот чеку прямо сюди в цей чат* 👇`;
+  const text = `💳 *Оплата через Monobank*\n\nСума: *250 грн* за 30 звітів\n\n📲 Переведи 250 грн на картку:\n\`\`\`\n5232 4410 5654 6307\n\`\`\`\nОтримувач: *StudyFlush*\n\n⚠️ *ВАЖЛИВО:* В коментарі до переказу вкажи свій Telegram ID:\n\`${ctx.from!.id}\`\n\n📸 *Після оплати надішли скріншот чеку прямо сюди в цей чат* 👇`;
 
   await ctx.editMessageText(text, {
     parse_mode: "Markdown",
@@ -251,11 +251,11 @@ bot.action("pay_stars", async (ctx: BotContext) => {
   await ctx.answerCbQuery();
   try {
     await ctx.replyWithInvoice({
-      title: "📚 15 reports StudyFlush",
-      description: "Pack of 15 AI-generated reports, summaries, or lab work",
+      title: "📚 30 reports StudyFlush",
+      description: "Pack of 30 AI-generated reports, summaries, or lab work",
       payload: `stars_${ctx.from!.id}_${Date.now()}`,
       currency: "XTR",
-      prices: [{ label: "15 reports", amount: 500 }],
+      prices: [{ label: "30 reports", amount: 500 }],
     });
   } catch (err) {
     logger.error({ err }, "Failed to send invoice");
@@ -279,11 +279,11 @@ bot.on("successful_payment", async (ctx: BotContext) => {
     externalId: payment.telegram_payment_charge_id,
   });
 
-  await addBalance(ctx.from!.id, 15);
+  await addBalance(ctx.from!.id, 30);
 
   const user = await getUser(ctx.from!.id);
   await ctx.replyWithMarkdown(
-    `✅ *Payment successful!*\n\nYour balance has been topped up by *15 reports*!\n💰 Current balance: *${user?.balance ?? 15} reports*\n\nThank you! Start generating 🚀`,
+    `✅ *Payment successful!*\n\nYour balance has been topped up by *30 reports*!\n💰 Current balance: *${user?.balance ?? 30} reports*\n\nThank you! Start generating 🚀`,
     mainMenuKeyboard
   );
 });
@@ -406,18 +406,18 @@ bot.action(/^approve_user_(\d+)$/, async (ctx: BotContext) => {
   await ctx.answerCbQuery("✅ Approving...");
   const userId = parseInt(ctx.match[1], 10);
   try {
-    await addBalance(userId, 15);
+    await addBalance(userId, 30);
     const user = await getUser(userId);
-    const newBalance = user?.balance ?? 15;
+    const newBalance = user?.balance ?? 30;
 
     await ctx.editMessageCaption(
-      `✅ *APPROVED* — User ${userId} received +15 reports.\nNew balance: ${newBalance}`,
+      `✅ *APPROVED* — User ${userId} received +30 reports.\nNew balance: ${newBalance}`,
       { parse_mode: "Markdown" }
     );
 
     await bot.telegram.sendMessage(
       userId,
-      `🎉 *Payment confirmed!*\n\nYour balance has been topped up by *15 reports*!\n💰 Current balance: *${newBalance} reports*\n\n✅ *Оплату підтверджено!*\nБаланс поповнено на *15 звітів*!\n\nEnjoy! 🚀`,
+      `🎉 *Payment confirmed!*\n\nYour balance has been topped up by *30 reports*!\n💰 Current balance: *${newBalance} reports*\n\n✅ *Оплату підтверджено!*\nБаланс поповнено на *30 звітів*!\n\nEnjoy! 🚀`,
       { parse_mode: "Markdown", ...mainMenuKeyboard }
     );
   } catch (err) {

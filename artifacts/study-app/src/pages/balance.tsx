@@ -135,7 +135,7 @@ export default function Balance() {
       if (res.success && res.invoiceUrl) {
         tg.openInvoice(res.invoiceUrl, (status) => {
           setStarsLoading(false);
-          if (status === "paid") { hapticSuccess(); updateBalance(user.balance + 15); setStep("done"); setMethod("stars"); setTimeout(() => refreshUser(), 2000); }
+          if (status === "paid") { hapticSuccess(); updateBalance(user.balance + 30); setStep("done"); setMethod("stars"); setTimeout(() => refreshUser(), 2000); }
           else if (status === "failed") hapticError();
         });
       } else { setStarsLoading(false); setMethod("stars"); setStep("details"); }
@@ -340,7 +340,7 @@ export default function Balance() {
               <span className="text-[9px] text-white/20 font-medium">{isStars ? "500 XTR" : isCrypto ? "5 USDT" : "250 UAH"}</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-[44px] font-extrabold text-white tabular tracking-tight leading-none">15</span>
+              <span className="text-[44px] font-extrabold text-white tabular tracking-tight leading-none">30</span>
               <span className="text-[12px] text-white/30 font-medium">{t("reportsAvailable").toLowerCase()}</span>
             </div>
           </div>
@@ -479,7 +479,7 @@ export default function Balance() {
             <div className="flex-1 text-left">
               <div className="font-bold text-[14px] leading-tight">{t("telegramStars")}</div>
               <div className="text-[11px] text-[#9ca3af] mt-0.5 font-medium">{t("starsPaymentDesc")}</div>
-              <div className="text-[10px] text-[#FF9F43] mt-0.5 font-bold">500 XTR · 15 {t("reportsAvailable").toLowerCase()}</div>
+              <div className="text-[10px] text-[#FF9F43] mt-0.5 font-bold">500 XTR · 30 {t("reportsAvailable").toLowerCase()}</div>
             </div>
             <div className="shrink-0 px-2.5 py-1 rounded-full text-[9px] font-extrabold"
               style={{ background: "linear-gradient(135deg, #FFA502, #FF9F43)", color: "white" }}>
@@ -504,7 +504,7 @@ export default function Balance() {
                   </span>
                 </div>
                 <div className="text-[11px] text-[#9ca3af] mt-0.5 font-medium">{t("cardPaymentDesc")}</div>
-                <div className="text-[10px] text-[#7C5CFC] mt-0.5 font-bold">250 UAH · 15 {t("reportsAvailable").toLowerCase()}</div>
+                <div className="text-[10px] text-[#7C5CFC] mt-0.5 font-bold">250 UAH · 30 {t("reportsAvailable").toLowerCase()}</div>
               </div>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
             </motion.button>
@@ -520,7 +520,7 @@ export default function Balance() {
             <div className="flex-1 text-left">
               <div className="font-bold text-[14px] leading-tight">{t("cryptoPayment")}</div>
               <div className="text-[11px] text-[#9ca3af] mt-0.5 font-medium">{t("cryptoPaymentDesc")}</div>
-              <div className="text-[10px] text-[#00C48C] mt-0.5 font-bold">5 USDT · 15 {t("reportsAvailable").toLowerCase()}</div>
+              <div className="text-[10px] text-[#00C48C] mt-0.5 font-bold">5 USDT · 30 {t("reportsAvailable").toLowerCase()}</div>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
           </motion.button>

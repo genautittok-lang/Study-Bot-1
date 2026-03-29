@@ -15,6 +15,38 @@ export interface RecentItem {
 
 const RECENT_KEY = "studyflush_recent";
 const MAX_RECENT = 4;
+const LAST_RESULT_PREFIX = "studyflush_last_result_";
+
+function getResultKey(): string {
+  const tgUser = getTelegramUser();
+  const uid = tgUser?.id || "anon";
+  return `${LAST_RESULT_PREFIX}${uid}`;
+}
+
+export interface LastResult {
+  result: string;
+  reportType: string;
+  subject: string;
+  topic: string;
+  wordCount: number;
+  finalGenTime: number;
+  ts: number;
+}
+
+export function saveLastResult(data: LastResult) {
+  try { localStorage.setItem(getResultKey(), JSON.stringify(data)); } catch {}
+}
+
+export function getLastResult(): LastResult | null {
+  try {
+    const raw = localStorage.getItem(getResultKey());
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+export function clearLastResult() {
+  try { localStorage.removeItem(getResultKey()); } catch {}
+}
 
 export function getRecentItems(): RecentItem[] {
   try {

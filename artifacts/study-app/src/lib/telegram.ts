@@ -61,6 +61,7 @@ declare global {
         openInvoice: (url: string, callback?: (status: string) => void) => void;
         openTelegramLink: (url: string) => void;
         openLink: (url: string, options?: { try_instant_view?: boolean }) => void;
+        switchInlineQuery: (query: string, chooseChatTypes?: string[]) => void;
         version: string;
       };
     };
@@ -160,9 +161,22 @@ export function openTelegramLink(url: string) {
 }
 
 export function shareViaTelegram(text: string) {
+  const tg = getTelegramWebApp();
+  if (tg && typeof tg.switchInlineQuery === "function") {
+    try {
+      tg.switchInlineQuery(text, ["users"]);
+      return;
+    } catch {}
+  }
   const encoded = encodeURIComponent(text);
-  const url = `https://t.me/share/url?url=${encodeURIComponent("https://t.me/studyflush_bot")}&text=${encoded}`;
-  openTelegramLink(url);
+  const shareUrl = `https://t.me/share/url?url=${encodeURIComponent("https://t.me/studyflush_bot")}&text=${encoded}`;
+  if (tg && typeof tg.openTelegramLink === "function") {
+    try {
+      tg.openTelegramLink(shareUrl);
+      return;
+    } catch {}
+  }
+  window.open(shareUrl, "_blank");
 }
 
 export function openExternalLink(url: string) {
