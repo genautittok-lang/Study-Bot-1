@@ -230,60 +230,65 @@ export default function Profile() {
         </div>
       </motion.div>
 
-      <motion.div {...a(3)} className="card-3d rounded-[24px] p-4 mb-3.5">
-        <div className="flex items-center gap-3 mb-3.5">
-          <Icon3D id="invite" size={42} />
-          <div className="flex-1">
-            <div className="font-bold text-[14px] leading-tight">{t("referralSystem")}</div>
-            <div className="text-[11px] text-[#9ca3af] mt-0.5">{t("referralBonus")}</div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-1 mb-3.5 px-1">
-          {[t("referralStep1"), t("referralStep2"), t("referralStep3")].map((step, i) => (
-            <div key={i} className="flex items-center gap-1 flex-1">
-              <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
-                style={{ background: i === 2 ? "#00C48C" : "linear-gradient(135deg, #7C5CFC, #3B82F6)" }}>
-                {i + 1}
-              </div>
-              <span className="text-[8px] text-[#9ca3af] font-medium leading-tight">{step}</span>
-              {i < 2 && <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="3" className="shrink-0 ml-auto"><polyline points="9 18 15 12 9 6"/></svg>}
+      <motion.div {...a(3)} className="relative rounded-[24px] overflow-hidden mb-3.5"
+        style={{
+          background: "linear-gradient(145deg, #2AABEE 0%, #229ED9 40%, #1E96CC 70%, #1A8FBF 100%)",
+          boxShadow: "0 12px 40px rgba(42,171,238,0.25), 0 4px 12px rgba(0,0,0,0.06)",
+        }}>
+        <div className="absolute top-0 right-0 w-44 h-44 rounded-full opacity-20"
+          style={{ background: "radial-gradient(circle, white 0%, transparent 65%)", transform: "translate(30%, -40%)" }} />
+        <div className="relative z-10 p-5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-[44px] h-[44px] rounded-[14px] flex items-center justify-center shrink-0"
+              style={{ background: "rgba(255,255,255,0.18)", backdropFilter: "blur(8px)" }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <line x1="19" x2="19" y1="8" y2="14"/>
+                <line x1="22" x2="16" y1="11" y2="11"/>
+              </svg>
             </div>
-          ))}
-        </div>
+            <div className="flex-1">
+              <div className="font-extrabold text-[15px] text-white leading-tight">{t("referralSystem")}</div>
+              <div className="text-[11px] text-white/50 mt-0.5">{t("referralBonus")}</div>
+            </div>
+          </div>
 
-        <div className="flex gap-2 mb-3.5">
-          <div className="flex-1 rounded-[14px] py-2.5 px-3 text-center" style={{ background: "rgba(0,196,140,0.04)", border: "1px solid rgba(0,196,140,0.08)" }}>
-            <div className="text-[22px] font-extrabold tabular leading-none" style={{ color: "#00C48C" }}>{refCount}</div>
-            <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-1">{t("friendsJoined")}</div>
+          <div className="flex gap-2 mb-4">
+            <div className="flex-1 rounded-[14px] py-2.5 px-3 text-center"
+              style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.12)" }}>
+              <div className="text-[22px] font-extrabold tabular leading-none text-white">{refCount}</div>
+              <div className="text-[7px] text-white/40 font-bold uppercase tracking-wider mt-1">{t("friendsJoined")}</div>
+            </div>
+            <div className="flex-1 rounded-[14px] py-2.5 px-3 text-center"
+              style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.12)" }}>
+              <div className="text-[22px] font-extrabold tabular leading-none text-white">{refCount * 2}</div>
+              <div className="text-[7px] text-white/40 font-bold uppercase tracking-wider mt-1">{t("earnedReports")}</div>
+            </div>
           </div>
-          <div className="flex-1 rounded-[14px] py-2.5 px-3 text-center" style={{ background: "rgba(124,92,252,0.04)", border: "1px solid rgba(124,92,252,0.08)" }}>
-            <div className="text-[22px] font-extrabold tabular gradient-text leading-none">{refCount * 2}</div>
-            <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-1">{t("earnedReports")}</div>
-          </div>
-        </div>
 
-        <div className="flex items-center gap-2 rounded-[16px] p-3 mb-3.5"
-          style={{ background: "rgba(124,92,252,0.03)", border: "1px solid rgba(124,92,252,0.06)" }}>
-          <div className="flex-1">
-            <div className="text-[8px] text-[#b0b0c0] font-bold uppercase tracking-wider mb-0.5">{t("referralCode")}</div>
-            <div className="font-mono text-[16px] font-extrabold tracking-[0.1em] gradient-text">{refCode}</div>
+          <div className="flex items-center gap-2 rounded-[14px] p-3 mb-4"
+            style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
+            <div className="flex-1 min-w-0">
+              <div className="text-[8px] text-white/30 font-bold uppercase tracking-wider mb-0.5">{t("referralCode")}</div>
+              <div className="font-mono text-[15px] font-extrabold tracking-[0.1em] text-white">{refCode}</div>
+            </div>
+            <motion.button whileTap={{ scale: 0.88 }} onClick={copyRef}
+              className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
+              style={{ background: copied ? "rgba(52,211,153,0.2)" : "rgba(255,255,255,0.12)" }}>
+              {copied
+                ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>}
+            </motion.button>
           </div>
-          <motion.button whileTap={{ scale: 0.88 }} onClick={copyRef}
-            aria-label={t("copyLink")}
-            className="w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0"
-            style={{ background: copied ? "rgba(0,196,140,0.06)" : "rgba(124,92,252,0.06)" }}>
-            {copied
-              ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00C48C" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.8"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>}
+
+          <motion.button whileTap={{ scale: 0.97 }} onClick={shareRefTelegram}
+            className="w-full py-[13px] text-[13px] font-bold flex items-center justify-center gap-2 rounded-[14px]"
+            style={{ background: "rgba(255,255,255,0.95)", color: "#229ED9" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            {t("sendInvite")}
           </motion.button>
         </div>
-
-        <motion.button whileTap={{ scale: 0.97 }} onClick={shareRefTelegram}
-          className="w-full btn-accent py-[13px] text-[13px] flex items-center justify-center gap-2 rounded-[16px]">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-          {t("sendInvite")}
-        </motion.button>
       </motion.div>
 
       <motion.div {...a(4)} className="space-y-1.5 mb-3.5">

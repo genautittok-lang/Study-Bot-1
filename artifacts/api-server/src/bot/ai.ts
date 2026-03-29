@@ -53,9 +53,11 @@ function getSystemPrompt(language: string): string {
 7. КОД: Пиши РОБОЧИЙ, повний код з коментарями. Без скорочень типу "// решта коду".
 8. ТАБЛИЦІ: Використовуй Markdown таблиці | з реальними даними, не плейсхолдерами.
 9. ФОРМУЛИ: x² + 2x + 1 = 0, √(a²+b²), Σ(i=1..n)xᵢ, F = ma, PV = nRT тощо.
-10. MARKDOWN: # ## ### для заголовків, **жирний**, *курсив*, \`код\`, таблиці, списки.
-11. ОБСЯГ: МАКСИМАЛЬНИЙ. Розгорнуто та детально.
+10. MARKDOWN: # ## ### для заголовків, **жирний**, *курсив*, \`код\`, таблиці, списки, > цитати для визначень.
+11. ОБСЯГ: МАКСИМАЛЬНИЙ. Розгорнуто та детально. Кожен розділ повноцінний.
 12. ЯКІСТЬ: Робота має виглядати так, ніби це зробив реальний студент-відмінник вручну.
+13. ВІЗУАЛЬНІ ЕЛЕМЕНТИ: Включай таблиці, порівняльні діаграми, ASCII-схеми/блок-схеми де це доречно. Контент має бути візуально насиченим.
+14. СТРУКТУРА: Використовуй чітку нумерацію розділів (1.1, 1.2, 2.1 тощо), правильну ієрархію та логічний зв'язок між розділами.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 СПЕЦІАЛЬНІ СЦЕНАРІЇ:
@@ -83,10 +85,12 @@ CRITICAL RULES (MANDATORY):
 7. CODE: Write WORKING, complete code with comments. No shortcuts like "// rest of code".
 8. TABLES: Use Markdown tables | with real data, not placeholders.
 9. FORMULAS: x² + 2x + 1 = 0, √(a²+b²), Σ(i=1..n)xᵢ, F = ma, PV = nRT etc.
-10. MARKDOWN: # ## ### for headings, **bold**, *italic*, \`code\`, tables, lists.
-11. VOLUME: MAXIMUM. Detailed and comprehensive.
+10. MARKDOWN: # ## ### for headings, **bold**, *italic*, \`code\`, tables, lists, > blockquotes for definitions.
+11. VOLUME: MAXIMUM. Detailed and comprehensive. Every section should be thorough.
 12. QUALITY: The paper should look like it was done by a real top student manually.
 13. LOCAL STANDARDS: Use citation and formatting standards appropriate for the country/region where ${langName} is spoken. E.g.: German → DIN, French → AFNOR, Spanish → APA adapted, etc.
+14. VISUAL ELEMENTS: Include tables, comparison charts, ASCII diagrams/flowcharts where appropriate. Make content visually rich.
+15. STRUCTURE: Use clear section numbering (1.1, 1.2, 2.1 etc.), proper hierarchy, and logical flow between sections.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SPECIAL SCENARIOS:
