@@ -233,4 +233,59 @@ router.post("/create-invoice", async (req, res) => {
   }
 });
 
+router.post("/support", async (req, res) => {
+  try {
+    const { telegramId, category, message } = req.body as {
+      telegramId: number;
+      category: string;
+      message: string;
+    };
+
+    if (!telegramId || !message || typeof message !== "string") {
+      return res.status(400).json({ success: false, error: "Missing fields" });
+    }
+
+    const allowedCategories = ["payment", "generation", "bug", "feature", "other", ""];
+    if (category && !allowedCategories.includes(category)) {
+      return res.status(400).json({ success: false, error: "Invalid category" });
+    }
+
+    const user = await getUser(telegramId);
+    const username = user?.username ? `@${user.username}` : "—";
+    const name = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "—";
+    const catLabels: Record<string, string> = {
+      payment: "💳 Payment",
+      generation: "⚙️ Generation",
+      bug: "🐛 Bug Report",
+      feature: "💡 Feature Request",
+      other: "📩 Other",
+    };
+    const catLabel = catLabels[category] || "📩 Other";
+
+    const adminId = process.env.ADMIN_TELEGRAM_ID;
+    if (adminId) {
+      const safeMsg = message.slice(0, 800).replace(/[_*[\]()~`>#+=|{}.!\\-]/g, "\\$&");
+      const text = `📬 *New Support Request*\n\n👤 ${name} (${username})\n🆔 Telegram ID: \`${telegramId}\`\n📂 Category: ${catLabel}\n\n💬 *Message:*\n${safeMsg}`;
+
+      try {
+        await bot.telegram.sendMessage(Number(adminId), text, {
+          parse_mode: "Markdown",
+          reply_markup: {
+            inline_keyboard: [[
+              { text: "💬 Reply", url: `tg://user?id=${telegramId}` },
+            ]],
+          },
+        });
+      } catch (botErr) {
+        req.log.error({ botErr }, "Failed to forward support message");
+      }
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    req.log.error({ err }, "TWA support error");
+    res.status(500).json({ success: false, error: "Failed to send" });
+  }
+});
+
 export default router;

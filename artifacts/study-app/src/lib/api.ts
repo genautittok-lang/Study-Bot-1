@@ -86,3 +86,14 @@ export async function createInvoice(telegramId: number): Promise<{ success: bool
     body: JSON.stringify({ telegramId }),
   });
 }
+
+export async function sendSupportMessage(data: {
+  telegramId: number;
+  category: string;
+  message: string;
+}): Promise<{ success: boolean }> {
+  return request<{ success: boolean }>("/support", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}

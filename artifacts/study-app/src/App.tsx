@@ -12,6 +12,7 @@ import NewReport from "@/pages/new-report";
 import History from "@/pages/history";
 import Balance from "@/pages/balance";
 import Profile from "@/pages/profile";
+import Support from "@/pages/support";
 import Admin from "@/pages/admin";
 
 const queryClient = new QueryClient();
@@ -277,6 +278,7 @@ function AppContent() {
             <Route path="/history" component={History} />
             <Route path="/balance" component={Balance} />
             <Route path="/profile" component={Profile} />
+            <Route path="/support" component={Support} />
             <Route path="/admin" component={Admin} />
             <Route><Home /></Route>
           </Switch>

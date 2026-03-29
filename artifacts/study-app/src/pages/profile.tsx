@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useUser, usePhotoUrl, useLang } from "@/lib/store";
 import { hapticFeedback, hapticSuccess, shareViaTelegram } from "@/lib/telegram";
 import { t, getLang, setLang, LANGUAGES, getUserLevel, getNextLevel } from "@/lib/i18n";
+import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import Icon3D from "@/components/icons-3d";
 
@@ -31,6 +32,7 @@ export default function Profile() {
   const [showLangs, setShowLangs] = useState(false);
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState(false);
+  const [, go] = useLocation();
   const curLang = getLang();
   const curLangObj = LANGUAGES.find(l => l.code === curLang);
 
@@ -278,10 +280,10 @@ export default function Profile() {
           },
           {
             label: t("support") || "Support",
-            desc: "@studyflush_support",
-            action: () => { hapticFeedback("light"); window.open("https://t.me/studyflush_support", "_blank"); },
+            desc: t("supportDesc") || "Get help",
+            action: () => { hapticFeedback("light"); go("/support"); },
             icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
-            bg: "rgba(74,144,255,0.05)",
+            bg: "rgba(59,130,246,0.05)",
           },
           {
             label: t("rateApp") || "Rate App",

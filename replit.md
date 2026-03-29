@@ -32,7 +32,7 @@ artifacts-monorepo/
 │   │           └── admin/  # Admin API routes (stats, users, payments, broadcast)
 │   └── study-app/          # React Vite Mini App (TWA)
 │       └── src/
-│           ├── pages/      # home, new-report, history, balance, profile, admin
+│           ├── pages/      # home, new-report, history, balance, profile, support, admin
 │           └── lib/        # api, admin-api, store, telegram, i18n
 ├── lib/
 │   ├── api-spec/           # OpenAPI spec
@@ -49,7 +49,7 @@ artifacts-monorepo/
 - **Education level filter**: All / School / College / University tabs in category selection
 - **3 payment methods**: Card (250 UAH, card 5232 4410 5654 6307 — Ukraine only), Crypto USDT (5 USDT TRC-20, address TRYbty4Ew9knf61brdrixeY5M34mQTt3zY), Telegram Stars (500 XTR)
 - **Card visibility**: Card payment only shown when user language is "uk" (Ukrainian); all other users see Stars + Crypto only
-- **Receipt flow**: After card/crypto payment, user sends screenshot to @studyflush_support admin for manual verification
+- **Receipt flow**: After card/crypto payment, user sends screenshot to @studyflush_bot for manual verification by admin
 - **AI generation**: gpt-5.2 with structured prompts per document type (specific prompts for all 11 types), vision support for photo attachments
 - **File upload**: Users can attach photos of tasks from textbooks (base64, max 5MB, JPG/PNG), AI reads the image via vision
 - **Referral system**: +2 reports for referrer and invitee, unique codes per user
@@ -106,6 +106,7 @@ Premium React + Vite fintech-grade TWA with light premium design:
 
 ### Pages
 - **Home**: Time-based greeting with avatar, 3D tilt CTA card "Create Report" with rotating sparkle icon, balance card with SVG progress ring, horizontal scroll quick actions (with 3D icons), bento stats grid, recent subjects horizontal scroll, referral section with step-by-step flow + stats cards + Telegram share CTA
+- **Support**: In-app support form with category picker (payment/generation/bug/feature/other), message textarea with char counter, sends message to admin via bot with "Reply" button; success state; link to open @studyflush_bot directly
 - **Create**: 4-step gradient progress bar, 11 report types grid with 3D icons, education level segmented tabs, search with clear, details form with photo upload/preview, dual-ring AI generation animation with localized tips carousel + progress bar
 - **History**: Search bar with clear, report type filter tabs (dynamic), skeleton loading, detail viewer with Markdown + copy + word count, share via Telegram, repeat button, better empty state with CTA
 - **Balance**: Credit-card style blue gradient balance display, featured Telegram Stars button with HOT badge, Card/Crypto tiles with 3D icons, unified payment flow with dark package card
@@ -139,6 +140,7 @@ Premium React + Vite fintech-grade TWA with light premium design:
 - `GET /reports?telegram_id=X` — list reports
 - `POST /payment` — create payment request
 - `POST /create-invoice` — create Telegram Stars invoice
+- `POST /support` — send support message (forwarded to admin via bot)
 
 ### Admin API Routes (/api/admin)
 - `GET /stats` — dashboard statistics
@@ -179,5 +181,6 @@ Premium React + Vite fintech-grade TWA with light premium design:
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API types
 
 ## Support
-- Telegram: @studyflush_support
+- In-app support form at `/support` route → forwards to admin via bot
+- Telegram: @studyflush_bot
 - Payment recipient: StudyFlush
