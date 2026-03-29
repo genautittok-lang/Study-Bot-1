@@ -3,7 +3,7 @@ import { useUser, usePhotoUrl, useLang } from "@/lib/store";
 import { hapticFeedback, hapticSuccess, hapticSelection, shareViaTelegram, openExternalLink, openTelegramLink } from "@/lib/telegram";
 import { t, getLang, setLang, LANGUAGES, getUserLevel, getNextLevel } from "@/lib/i18n";
 import { useLocation } from "wouter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Icon3D from "@/components/icons-3d";
 
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
@@ -85,8 +85,9 @@ export default function Profile() {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pt-5 pb-4">
         <motion.button whileTap={{ scale: 0.95 }}
           onClick={() => { hapticFeedback("light"); setShowLangs(false); }}
-          className="text-[#9ca3af] text-[13px] font-semibold mb-4 flex items-center gap-1 active:text-[#6b7280] transition-colors">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
+          className="flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-full text-[12px] font-semibold"
+          style={{ background: "rgba(124,92,252,0.07)", color: "#7C5CFC" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"/></svg>
           {t("back")}
         </motion.button>
         <h2 className="text-[22px] font-extrabold tracking-tight mb-0.5">{t("chooseLanguage")}</h2>
@@ -106,17 +107,18 @@ export default function Profile() {
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.008 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { hapticSelection(); setLang(lang.code); setTimeout(() => setShowLangs(false), 150); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-[14px] transition-all ${active ? "g-card" : "active:bg-black/[0.02]"}`}>
+                className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-[16px] transition-all ${active ? "card-3d ring-glow" : "active:bg-black/[0.02]"}`}>
                 <span className="text-lg">{lang.flag}</span>
                 <div className="flex-1 text-left">
                   <div className="font-semibold text-[13px]">{lang.nativeName}</div>
                   <div className="text-[10px] text-[#9ca3af]">{lang.name}</div>
                 </div>
                 {active && (
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center"
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", bounce: 0.5 }}
+                    className="w-5 h-5 rounded-full flex items-center justify-center"
                     style={{ background: "#7C5CFC" }}>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
-                  </div>
+                  </motion.div>
                 )}
               </motion.button>
             );
@@ -129,35 +131,41 @@ export default function Profile() {
   return (
     <div className="px-4 pt-5 pb-4">
       <motion.div {...a(0)} className="relative rounded-[28px] overflow-hidden mb-4"
-        style={{ background: "linear-gradient(145deg, #7C5CFC 0%, #6336F5 40%, #5226E8 100%)", boxShadow: "0 12px 40px rgba(124,92,252,0.25)" }}>
-        <div className="absolute top-0 right-0 w-44 h-44 rounded-full opacity-15"
+        style={{ background: "linear-gradient(145deg, #8B6CFF 0%, #7C5CFC 30%, #6336F5 60%, #5226E8 100%)", boxShadow: "0 14px 44px rgba(124,92,252,0.28)" }}>
+        <div className="absolute top-0 right-0 w-48 h-48 rounded-full opacity-15"
           style={{ background: "radial-gradient(circle, white 0%, transparent 70%)", transform: "translate(30%, -30%)" }} />
+        <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full opacity-8"
+          style={{ background: "radial-gradient(circle, #06D6A0 0%, transparent 70%)", transform: "translate(-20%, 20%)" }} />
         <div className="p-5 relative z-10">
           <div className="flex items-center gap-4 mb-4">
-            <div className="avatar-ring">
+            <motion.div initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", bounce: 0.4, delay: 0.15 }}
+              className="avatar-ring">
               {photo
-                ? <img src={photo} alt="" className="w-[56px] h-[56px] rounded-full object-cover" />
-                : <div className="w-[56px] h-[56px] rounded-full flex items-center justify-center text-xl font-bold text-white"
+                ? <img src={photo} alt="" className="w-[58px] h-[58px] rounded-full object-cover" />
+                : <div className="w-[58px] h-[58px] rounded-full flex items-center justify-center text-xl font-bold text-white"
                     style={{ background: "rgba(255,255,255,0.15)" }}>
                     {(user?.firstName || "S")[0].toUpperCase()}
                   </div>}
-            </div>
+            </motion.div>
             <div className="flex-1 min-w-0">
-              <div className="text-[20px] font-extrabold text-white tracking-tight truncate leading-tight">
+              <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
+                className="text-[20px] font-extrabold text-white tracking-tight truncate leading-tight">
                 {user?.firstName || "Student"} {user?.lastName || ""}
-              </div>
+              </motion.div>
               {user?.username && (
-                <div className="text-[12px] font-medium mt-0.5 text-white/55 leading-tight">@{user.username}</div>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+                  className="text-[12px] font-medium mt-0.5 text-white/50 leading-tight">@{user.username}</motion.div>
               )}
             </div>
           </div>
 
-          <div className="flex items-center gap-3 px-3.5 py-2.5 rounded-[14px]"
-            style={{ background: "rgba(255,255,255,0.1)" }}>
-            <span className="text-[14px]">{lvl.icon}</span>
+          <div className="flex items-center gap-3 px-3.5 py-3 rounded-[16px]"
+            style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)" }}>
+            <span className="text-[15px]">{lvl.icon}</span>
             <div className="flex-1">
-              <div className="text-[11px] font-semibold text-white/60">{lvl.name}</div>
-              <div className="w-full h-[3px] rounded-full mt-1 overflow-hidden" style={{ background: "rgba(255,255,255,0.15)" }}>
+              <div className="text-[11px] font-semibold text-white/60 mb-1">{lvl.name}</div>
+              <div className="w-full h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.15)" }}>
                 <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }}
                   transition={{ delay: 0.4, duration: 0.8, ease }}
                   className="h-full rounded-full bg-white" />
@@ -170,38 +178,42 @@ export default function Profile() {
 
       <motion.div {...a(1)} className="grid grid-cols-3 gap-2 mb-4">
         {[
-          { val: total, label: t("total"), color: "#7C5CFC" },
-          { val: bal, label: t("balance"), color: "#3B82F6" },
-          { val: refCount, label: t("invited"), color: "#00C48C" },
+          { val: total, label: t("total"), color: "#7C5CFC", gradient: "linear-gradient(135deg, #7C5CFC, #6336F5)" },
+          { val: bal, label: t("balance"), color: "#3B82F6", gradient: "linear-gradient(135deg, #3B82F6, #2563EB)" },
+          { val: refCount, label: t("invited"), color: "#00C48C", gradient: "linear-gradient(135deg, #10B981, #06D6A0)" },
         ].map((s, i) => (
-          <div key={i} className="g-card rounded-[18px] py-3.5 px-2 text-center">
-            <div className="text-[26px] font-extrabold tabular leading-none" style={{ color: s.color }}>{s.val}</div>
-            <div className="text-[8px] text-[#b0b0c0] mt-1.5 font-bold uppercase tracking-wider">{s.label}</div>
-          </div>
+          <motion.div key={i} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 + i * 0.08, type: "spring", bounce: 0.3 }}
+            className="stat-card py-4 px-2 text-center">
+            <div className="absolute top-0 left-0 right-0 h-[2.5px]" style={{ background: s.gradient }} />
+            <div className="text-[28px] font-extrabold tabular leading-none" style={{ color: s.color }}>{s.val}</div>
+            <div className="text-[8px] text-[#b0b0c0] mt-2 font-bold uppercase tracking-wider">{s.label}</div>
+          </motion.div>
         ))}
       </motion.div>
 
       <motion.div {...a(2)} className="mb-4">
         <div className="flex items-center gap-2 mb-2.5 px-0.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#FF9F43] animate-pulse" />
+          <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
+            className="w-1.5 h-1.5 rounded-full bg-[#FF9F43]" />
           <span className="text-[11px] font-bold text-[#9ca3af] uppercase tracking-wider">{t("achievements")}</span>
           <span className="text-[9px] text-[#d1d5db] font-medium ml-auto">{achievements.filter(a => a.ok).length}/{achievements.length}</span>
         </div>
         <div className="grid grid-cols-2 gap-2">
           {achievements.map((ac, i) => (
             <motion.div key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.25 + i * 0.06, ease }}
-              className="g-card rounded-[18px] p-3 flex items-center gap-3"
-              style={{ opacity: ac.ok ? 1 : 0.45 }}>
+              transition={{ delay: 0.25 + i * 0.06, type: "spring", bounce: 0.2 }}
+              className="card-3d rounded-[20px] p-3.5 flex items-center gap-3"
+              style={{ opacity: ac.ok ? 1 : 0.4, boxShadow: ac.ok ? `0 4px 16px ${ac.color}15, 0 2px 8px rgba(0,0,0,0.03)` : undefined }}>
               <div className="relative shrink-0">
-                <ProgressRing progress={ac.p} size={42} stroke={3} color={ac.color} />
-                <div className="absolute inset-0 flex items-center justify-center text-[16px]">{ac.icon}</div>
+                <ProgressRing progress={ac.p} size={44} stroke={3} color={ac.color} />
+                <div className="absolute inset-0 flex items-center justify-center text-[17px]">{ac.icon}</div>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-[11px] font-bold leading-snug truncate">{ac.name}</div>
-                <div className="text-[9px] text-[#b0b0c0] mt-0.5 font-semibold">
+                <div className="text-[9px] mt-0.5 font-semibold" style={{ color: ac.ok ? ac.color : "#b0b0c0" }}>
                   {ac.ok ? "✓ Done" : `${Math.round(ac.p)}%`}
                 </div>
               </div>
@@ -210,8 +222,8 @@ export default function Profile() {
         </div>
       </motion.div>
 
-      <motion.div {...a(3)} className="g-card rounded-[22px] p-4 mb-3">
-        <div className="flex items-center gap-3 mb-3">
+      <motion.div {...a(3)} className="card-3d rounded-[24px] p-4 mb-3.5">
+        <div className="flex items-center gap-3 mb-3.5">
           <Icon3D id="invite" size={42} />
           <div className="flex-1">
             <div className="font-bold text-[14px] leading-tight">{t("referralSystem")}</div>
@@ -219,7 +231,7 @@ export default function Profile() {
           </div>
         </div>
 
-        <div className="flex items-center gap-1 mb-3 px-1">
+        <div className="flex items-center gap-1 mb-3.5 px-1">
           {[t("referralStep1"), t("referralStep2"), t("referralStep3")].map((step, i) => (
             <div key={i} className="flex items-center gap-1 flex-1">
               <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
@@ -232,25 +244,26 @@ export default function Profile() {
           ))}
         </div>
 
-        <div className="flex gap-2 mb-3">
-          <div className="flex-1 rounded-[12px] py-2.5 px-3 text-center" style={{ background: "rgba(0,196,140,0.05)" }}>
-            <div className="text-[20px] font-extrabold tabular" style={{ color: "#00C48C" }}>{refCount}</div>
-            <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-0.5">{t("friendsJoined")}</div>
+        <div className="flex gap-2 mb-3.5">
+          <div className="flex-1 rounded-[14px] py-2.5 px-3 text-center" style={{ background: "rgba(0,196,140,0.04)", border: "1px solid rgba(0,196,140,0.08)" }}>
+            <div className="text-[22px] font-extrabold tabular leading-none" style={{ color: "#00C48C" }}>{refCount}</div>
+            <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-1">{t("friendsJoined")}</div>
           </div>
-          <div className="flex-1 rounded-[12px] py-2.5 px-3 text-center" style={{ background: "rgba(124,92,252,0.05)" }}>
-            <div className="text-[20px] font-extrabold tabular" style={{ color: "#7C5CFC" }}>{refCount * 2}</div>
-            <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-0.5">{t("earnedReports")}</div>
+          <div className="flex-1 rounded-[14px] py-2.5 px-3 text-center" style={{ background: "rgba(124,92,252,0.04)", border: "1px solid rgba(124,92,252,0.08)" }}>
+            <div className="text-[22px] font-extrabold tabular gradient-text leading-none">{refCount * 2}</div>
+            <div className="text-[8px] text-[#9ca3af] font-bold uppercase tracking-wider mt-1">{t("earnedReports")}</div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 rounded-[14px] p-3 mb-3"
+        <div className="flex items-center gap-2 rounded-[16px] p-3 mb-3.5"
           style={{ background: "rgba(124,92,252,0.03)", border: "1px solid rgba(124,92,252,0.06)" }}>
           <div className="flex-1">
             <div className="text-[8px] text-[#b0b0c0] font-bold uppercase tracking-wider mb-0.5">{t("referralCode")}</div>
             <div className="font-mono text-[16px] font-extrabold tracking-[0.1em] gradient-text">{refCode}</div>
           </div>
-          <motion.button whileTap={{ scale: 0.9 }} onClick={copyRef}
-            className="w-9 h-9 rounded-[11px] flex items-center justify-center shrink-0"
+          <motion.button whileTap={{ scale: 0.88 }} onClick={copyRef}
+            aria-label={t("copyLink")}
+            className="w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0"
             style={{ background: copied ? "rgba(0,196,140,0.06)" : "rgba(124,92,252,0.06)" }}>
             {copied
               ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00C48C" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -259,13 +272,13 @@ export default function Profile() {
         </div>
 
         <motion.button whileTap={{ scale: 0.97 }} onClick={shareRefTelegram}
-          className="w-full btn-accent py-[12px] text-[13px] flex items-center justify-center gap-2">
+          className="w-full btn-accent py-[13px] text-[13px] flex items-center justify-center gap-2 rounded-[16px]">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
           {t("sendInvite")}
         </motion.button>
       </motion.div>
 
-      <motion.div {...a(4)} className="space-y-1.5 mb-3">
+      <motion.div {...a(4)} className="space-y-1.5 mb-3.5">
         <div className="flex items-center gap-2 mb-1 px-0.5">
           <div className="w-1.5 h-1.5 rounded-full bg-[#3B82F6]" />
           <span className="text-[11px] font-bold text-[#9ca3af] uppercase tracking-wider">{t("settings") || "Settings"}</span>
@@ -274,7 +287,7 @@ export default function Profile() {
           {
             label: t("language"),
             desc: `${curLangObj?.flag} ${curLangObj?.nativeName}`,
-            action: () => { hapticFeedback("light"); setShowLangs(true); },
+            action: () => { hapticSelection(); setShowLangs(true); },
             icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
             bg: "rgba(124,92,252,0.05)",
           },
@@ -306,9 +319,9 @@ export default function Profile() {
             bg: "rgba(245,158,11,0.05)",
           },
         ].map((item, i) => (
-          <motion.button key={i} whileTap={{ scale: 0.98 }} onClick={item.action}
-            className="w-full g-card rounded-[18px] p-3.5 flex items-center gap-3">
-            <div className="w-[38px] h-[38px] rounded-[12px] flex items-center justify-center shrink-0"
+          <motion.button key={i} whileTap={{ scale: 0.97 }} onClick={item.action}
+            className="w-full card-3d rounded-[20px] p-3.5 flex items-center gap-3">
+            <div className="w-[40px] h-[40px] rounded-[13px] flex items-center justify-center shrink-0"
               style={{ background: item.bg }}>{item.icon}</div>
             <div className="flex-1 text-left">
               <div className="font-semibold text-[14px]">{item.label}</div>
@@ -319,12 +332,12 @@ export default function Profile() {
         ))}
       </motion.div>
 
-      <motion.div {...a(5)} className="g-card rounded-[18px] p-3.5 mb-3">
-        <div className="flex items-center gap-2 mb-2.5">
+      <motion.div {...a(5)} className="card-3d rounded-[20px] p-3.5 mb-3.5">
+        <div className="flex items-center gap-2 mb-3">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
           <span className="text-[11px] font-bold text-[#9ca3af] uppercase tracking-wider">{t("about") || "About"}</span>
         </div>
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-[12px] text-[#6b7280]">Telegram ID</span>
             <span className="text-[12px] font-mono font-semibold text-[#1a1a2e]">{user?.telegramId || "—"}</span>
@@ -343,9 +356,9 @@ export default function Profile() {
         </div>
       </motion.div>
 
-      <div className="text-center pt-3 pb-2">
+      <motion.div {...a(6)} className="text-center pt-2 pb-2">
         <p className="text-[9px] text-[#d1d5db] font-medium">StudyFlush v2.2 · Made with 💜</p>
-      </div>
+      </motion.div>
     </div>
   );
 }

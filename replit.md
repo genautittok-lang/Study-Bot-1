@@ -73,9 +73,14 @@ Premium React + Vite fintech-grade TWA with light premium design:
 #### CSS Classes
 - `.hero-card` — Gradient card with radial glow overlays (`.hero-purple`, `.hero-blue`, `.hero-dark`)
 - `.hero-shimmer` — Animated shimmer sweep on hero cards
+- `.hero-glow` — Shimmer sweep animation on hero CTA cards
 - `.g-card` — White frosted glass card with backdrop-blur (22px radius)
 - `.g-card-glow` — Glass card with purple border glow
 - `.g-card-s` — Smaller glass card variant
+- `.card-3d` — Premium 3D card with deep glassmorphism, multi-layer shadows, active press effect
+- `.stat-card` — Stats display card with colored top gradient bar, glassmorphism
+- `.tip-card` — AI tip card with gradient border accent
+- `.card-hover-lift` — Lift-on-active card interaction effect
 - `.btn-main` — Purple gradient with shadow and glass highlight
 - `.btn-accent` — Green gradient with glow
 - `.btn-ghost` — Transparent with border
@@ -83,18 +88,28 @@ Premium React + Vite fintech-grade TWA with light premium design:
 - `.gradient-text` — Purple→blue→cyan gradient text
 - `.gradient-text-animated` — Animated flowing gradient text
 - `.gradient-border` — Animated gradient border using mask
+- `.text-gradient-gold` — Gold gradient text
+- `.text-gradient-green` — Green gradient text
+- `.shine-text` — Animated shining gradient text sweep
 - `.avatar-ring` — Holographic spinning border ring (CSS `@property --holo-angle`)
+- `.ring-glow` — Glowing ring shadow effect
+- `.glow-dot` — Blurred glow behind dot elements
 - `.badge` / `.badge-g` / `.badge-blue` / `.badge-orange` — Pill badges
 - `.input-field` — Clean focus ring with purple glow (16px radius)
 - `.icon-box` — 44px icon container (15px radius)
 - `.icon-box-sm` — 36px icon container
+- `.icon-float` — Floating animation for icons
+- `.float-slow` — Slow floating animation (6s cycle)
+- `.breathe` — Breathing scale animation
 - `.section-label` — Uppercase tracking label (11px, 750 weight)
 - `.nav-floating` — Floating pill nav bar (24px radius, blur 40px, elevated shadow)
 - `.spinner` — Purple loading spinner
 - `.progress-bar` — White/translucent progress bar
 - `.skeleton` — Animated shimmer loading placeholder
 - `.glass-strong` — Heavy glassmorphism (blur 40px)
+- `.premium-shadow` — Multi-layer premium shadow
 - `.slide-up` / `.pop-in` — Entry animations
+- `.achievement-unlock` — Bouncy unlock animation for achievements
 - `.create-btn-glow` — Pulsing glow animation for create button
 
 **Nav**: Floating pill-shaped bar with 24px border-radius, centered raised purple Create (+) button with glow animation, animated gradient indicator line on active tab.
