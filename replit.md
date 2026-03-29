@@ -2,7 +2,7 @@
 
 ## Overview
 
-pnpm workspace monorepo using TypeScript. Main product is **StudyFlush** — a Telegram bot + Mini App that generates academic reports, summaries, lab work, essays and more for students using AI. Supports 30 languages with CIS focus.
+pnpm workspace monorepo using TypeScript. Main product is **StudyFlush** (v2.2) — a Telegram bot + Mini App that generates academic reports, summaries, lab work, essays and more for students using AI. Supports 39 languages (EN/RU/UK full, CIS→RU fallback, others→EN).
 
 ## Stack
 

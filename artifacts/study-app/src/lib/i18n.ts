@@ -245,6 +245,8 @@ type TranslationKeys = {
   support: string;
   shareApp: string;
   shareAppDesc: string;
+  rateBot: string;
+  rateBotDesc: string;
   about: string;
   version: string;
   speedAch: string;
@@ -484,6 +486,8 @@ const translations: Record<string, TranslationKeys> = {
     support: "Support",
     shareApp: "Share App",
     shareAppDesc: "Tell friends about StudyFlush",
+    rateBot: "Rate Bot",
+    rateBotDesc: "Leave a review on Telegram",
     about: "About",
     version: "Version",
     speedAch: "Speed Runner",
@@ -721,6 +725,8 @@ const translations: Record<string, TranslationKeys> = {
     support: "Поддержка",
     shareApp: "Поделиться",
     shareAppDesc: "Расскажи друзьям о StudyFlush",
+    rateBot: "Оценить бота",
+    rateBotDesc: "Оставить отзыв в Telegram",
     about: "О приложении",
     version: "Версия",
     speedAch: "Скоростной",
@@ -958,6 +964,8 @@ const translations: Record<string, TranslationKeys> = {
     support: "Підтримка",
     shareApp: "Поділитися",
     shareAppDesc: "Розкажи друзям про StudyFlush",
+    rateBot: "Оцінити бота",
+    rateBotDesc: "Залишити відгук в Telegram",
     about: "Про додаток",
     version: "Версія",
     speedAch: "Швидкий старт",

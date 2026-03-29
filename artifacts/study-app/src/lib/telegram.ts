@@ -57,6 +57,9 @@ declare global {
         viewportStableHeight: number;
         platform: string;
         openInvoice: (url: string, callback?: (status: string) => void) => void;
+        openTelegramLink: (url: string) => void;
+        openLink: (url: string, options?: { try_instant_view?: boolean }) => void;
+        version: string;
       };
     };
   }
@@ -69,6 +72,10 @@ export function getTelegramWebApp() {
 export function getTelegramUser() {
   const tg = getTelegramWebApp();
   return tg?.initDataUnsafe?.user ?? null;
+}
+
+export function getTelegramVersion(): string {
+  return getTelegramWebApp()?.version || "6.0";
 }
 
 export function initTelegramApp() {
@@ -97,6 +104,18 @@ export function hapticError() {
   } catch {}
 }
 
+export function hapticWarning() {
+  try {
+    getTelegramWebApp()?.HapticFeedback?.notificationOccurred("warning");
+  } catch {}
+}
+
+export function hapticSelection() {
+  try {
+    getTelegramWebApp()?.HapticFeedback?.selectionChanged();
+  } catch {}
+}
+
 export function showBackButton(cb: () => void) {
   try {
     const tg = getTelegramWebApp();
@@ -117,8 +136,26 @@ export function hideBackButton(cb: () => void) {
   } catch {}
 }
 
+export function openTelegramLink(url: string) {
+  const tg = getTelegramWebApp();
+  if (tg && typeof tg.openTelegramLink === "function") {
+    tg.openTelegramLink(url);
+  } else {
+    window.open(url, "_blank");
+  }
+}
+
 export function shareViaTelegram(text: string) {
   const encoded = encodeURIComponent(text);
   const url = `https://t.me/share/url?url=${encodeURIComponent("https://t.me/studyflush_bot")}&text=${encoded}`;
-  window.open(url, "_blank");
+  openTelegramLink(url);
+}
+
+export function openExternalLink(url: string) {
+  const tg = getTelegramWebApp();
+  if (tg && typeof tg.openLink === "function") {
+    tg.openLink(url);
+  } else {
+    window.open(url, "_blank");
+  }
 }

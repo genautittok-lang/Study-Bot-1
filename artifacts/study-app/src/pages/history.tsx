@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
 import { useUser, useLang } from "@/lib/store";
 import { getReports, type ReportItem } from "@/lib/api";
-import { hapticFeedback, hapticSuccess, shareViaTelegram } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, hapticSelection, shareViaTelegram } from "@/lib/telegram";
 import { t, getReportTypeMap, getSubjectMap } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import MarkdownRenderer from "@/components/markdown-renderer";
@@ -128,7 +128,7 @@ export default function History() {
           {usedTypes.length > 1 && (
             <div className="flex gap-1.5 mb-3 overflow-x-auto scrollbar-hide pb-0.5 -mx-4 px-4">
               <motion.button whileTap={{ scale: 0.95 }}
-                onClick={() => { hapticFeedback("light"); setFilterType("all"); }}
+                onClick={() => { hapticSelection(); setFilterType("all"); }}
                 className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all"
                 style={{
                   background: filterType === "all" ? "linear-gradient(135deg, #7C5CFC, #3B82F6)" : "rgba(0,0,0,0.03)",
@@ -138,7 +138,7 @@ export default function History() {
               </motion.button>
               {usedTypes.map(type => (
                 <motion.button key={type} whileTap={{ scale: 0.95 }}
-                  onClick={() => { hapticFeedback("light"); setFilterType(type); }}
+                  onClick={() => { hapticSelection(); setFilterType(type); }}
                   className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all"
                   style={{
                     background: filterType === type ? "linear-gradient(135deg, #7C5CFC, #3B82F6)" : "rgba(0,0,0,0.03)",
@@ -163,19 +163,33 @@ export default function History() {
         </div>
       ) : reports.length === 0 ? (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease }}
-          className="flex flex-col items-center justify-center pt-14 text-center">
-          <div className="relative mb-5">
-            <div className="w-20 h-20 rounded-[22px] flex items-center justify-center"
+          className="flex flex-col items-center justify-center pt-10 text-center">
+          <div className="relative mb-6">
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="w-24 h-24 rounded-[28px] flex items-center justify-center"
               style={{ background: "rgba(124,92,252,0.04)" }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1" opacity="0.3">
-                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-            </div>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1" opacity="0.4">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" x2="8" y1="13" y2="13"/>
+                <line x1="16" x2="8" y1="17" y2="17"/>
+                <line x1="10" x2="8" y1="9" y2="9"/>
+              </svg>
+            </motion.div>
+            <motion.div className="absolute -inset-4 rounded-[32px]"
+              style={{ border: "1.5px solid rgba(124,92,252,0.06)" }}
+              animate={{ scale: [1, 1.06, 1], opacity: [0.4, 0.1, 0.4] }}
+              transition={{ duration: 2.5, repeat: Infinity }} />
           </div>
-          <h3 className="text-base font-bold mb-1">{t("noHistory")}</h3>
-          <p className="text-[12px] text-[#9ca3af] max-w-[220px] mb-4">{t("noHistoryDesc")}</p>
+          <h3 className="text-[16px] font-extrabold mb-1.5">{t("noHistory")}</h3>
+          <p className="text-[12px] text-[#9ca3af] max-w-[240px] mb-5 leading-relaxed">{t("noHistoryDesc")}</p>
           <motion.button whileTap={{ scale: 0.96 }} onClick={() => { hapticFeedback("medium"); go("/new"); }}
-            className="btn-main px-6 py-2.5 text-[13px] flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+            className="btn-main px-7 py-3 text-[13px] flex items-center gap-2">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+            </svg>
             {t("createReport")}
           </motion.button>
         </motion.div>

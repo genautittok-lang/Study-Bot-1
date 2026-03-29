@@ -4,7 +4,7 @@ import { useUser, setUser, useLang, addRecentItem } from "@/lib/store";
 import { generateReport } from "@/lib/api";
 import { getReportTypes, getSubjectCategories, getSubjectName, getEduLevels, getCategoryEduLevel, t } from "@/lib/i18n";
 import type { EduLevel } from "@/lib/i18n";
-import { hapticFeedback, hapticSuccess, hapticError, shareViaTelegram } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, hapticError, hapticSelection, shareViaTelegram } from "@/lib/telegram";
 import { motion, AnimatePresence } from "framer-motion";
 import MarkdownRenderer from "@/components/markdown-renderer";
 import Icon3D, { REPORT_ICON_MAP } from "@/components/icons-3d";
@@ -55,7 +55,7 @@ function EduTabs({ value, onChange }: { value: EduLevel; onChange: (v: EduLevel)
     <div className="flex gap-1 mb-3 p-1 rounded-[14px]" style={{ background: "rgba(0,0,0,0.03)" }}>
       {levels.map(lv => (
         <motion.button key={lv.id} whileTap={{ scale: 0.96 }}
-          onClick={() => { hapticFeedback("light"); onChange(lv.id); }}
+          onClick={() => { hapticSelection(); onChange(lv.id); }}
           className="flex-1 py-2 rounded-[10px] text-[11px] font-semibold transition-all"
           style={{
             color: value === lv.id ? "#1a1a2e" : "#9ca3af",
@@ -170,54 +170,109 @@ export default function NewReport() {
 
   if (step === "generating") {
     const selType = TYPES.find(rt => rt.id === reportType);
+    const progressPct = Math.round(progress);
     return (
-      <div className="px-4 pt-10 pb-4 flex flex-col items-center justify-center min-h-[70vh]">
-        <div className="relative mb-8">
-          <motion.div
-            className="w-28 h-28 rounded-full"
-            style={{ border: "3px solid rgba(0,0,0,0.04)", borderTopColor: "#7C5CFC", borderRightColor: "#3B82F6" }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }} />
-          <motion.div
-            className="absolute inset-2 rounded-full"
-            style={{ border: "2px solid rgba(0,0,0,0.02)", borderTopColor: "#06D6A0", borderLeftColor: "#00C48C" }}
-            animate={{ rotate: -360 }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }} />
-          <div className="absolute inset-0 flex items-center justify-center flex-col">
-            <span className="text-[24px] font-extrabold tabular gradient-text leading-none">{Math.round(progress)}%</span>
+      <div className="px-4 pt-6 pb-4 flex flex-col items-center justify-center min-h-[70vh]">
+        <div className="relative mb-6">
+          <motion.div className="absolute inset-[-20px] rounded-full"
+            style={{ background: "radial-gradient(circle, rgba(124,92,252,0.08) 0%, transparent 70%)" }}
+            animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.2, 0.5] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} />
+          <motion.div className="absolute inset-[-35px] rounded-full"
+            style={{ background: "radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 70%)" }}
+            animate={{ scale: [1.1, 0.95, 1.1], opacity: [0.3, 0.1, 0.3] }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }} />
+
+          <svg width="120" height="120" viewBox="0 0 120 120" className="relative z-10">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(0,0,0,0.03)" strokeWidth="4" />
+            <motion.circle cx="60" cy="60" r="54" fill="none" stroke="url(#genGrad)" strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray={2 * Math.PI * 54}
+              initial={{ strokeDashoffset: 2 * Math.PI * 54 }}
+              animate={{ strokeDashoffset: (1 - progress / 100) * 2 * Math.PI * 54 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              style={{ transform: "rotate(-90deg)", transformOrigin: "center" }} />
+            <circle cx="60" cy="60" r="44" fill="none" stroke="rgba(0,0,0,0.02)" strokeWidth="2" />
+            <motion.circle cx="60" cy="60" r="44" fill="none" stroke="url(#genGrad2)" strokeWidth="2"
+              strokeLinecap="round"
+              strokeDasharray={2 * Math.PI * 44}
+              animate={{ strokeDashoffset: [2 * Math.PI * 44, 0, 2 * Math.PI * 44], rotate: [0, 360] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              style={{ transformOrigin: "center" }} />
+            <defs>
+              <linearGradient id="genGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#7C5CFC" />
+                <stop offset="50%" stopColor="#3B82F6" />
+                <stop offset="100%" stopColor="#06D6A0" />
+              </linearGradient>
+              <linearGradient id="genGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#06D6A0" />
+                <stop offset="100%" stopColor="#7C5CFC" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center flex-col z-20">
+            <motion.span
+              key={progressPct}
+              initial={{ scale: 1.1, opacity: 0.7 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="text-[28px] font-extrabold tabular gradient-text leading-none">{progressPct}%</motion.span>
           </div>
+
+          {[0, 1, 2, 3, 4, 5].map(i => (
+            <motion.div key={i} className="absolute w-1.5 h-1.5 rounded-full"
+              style={{
+                background: ["#7C5CFC", "#3B82F6", "#06D6A0", "#F59E0B", "#EC4899", "#10B981"][i],
+                top: "50%", left: "50%",
+              }}
+              animate={{
+                x: [0, Math.cos((i * Math.PI * 2) / 6) * 70],
+                y: [0, Math.sin((i * Math.PI * 2) / 6) * 70],
+                opacity: [0, 0.8, 0],
+                scale: [0, 1, 0],
+              }}
+              transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.4, ease: "easeOut" }} />
+          ))}
         </div>
 
         <motion.h2 initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-          className="text-lg font-bold mb-1">{t("generating")}</motion.h2>
-        <p className="text-[12px] text-[#9ca3af] mb-4 text-center px-8">{t("generatingDesc")}</p>
+          className="text-[18px] font-extrabold mb-1 tracking-tight">{t("generating")}</motion.h2>
+        <p className="text-[12px] text-[#9ca3af] mb-3 text-center px-8">{t("generatingDesc")}</p>
 
-        <div className="w-56 h-[4px] rounded-full overflow-hidden mb-5" style={{ background: "rgba(0,0,0,0.05)" }}>
-          <motion.div className="h-full rounded-full"
-            style={{ background: "linear-gradient(90deg, #7C5CFC, #3B82F6, #06D6A0)" }}
-            animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
-        </div>
-
-        <div className="flex gap-2 flex-wrap justify-center mb-5">
+        <div className="flex gap-2 flex-wrap justify-center mb-4">
           {[selType?.icon + " " + (selType?.label || ""), getSubjectName(subject)].filter(Boolean).map((tag, i) => (
             <span key={i} className="badge text-[10px]">{tag}</span>
           ))}
         </div>
 
+        <div className="w-64 mb-5">
+          <div className="h-[5px] rounded-full overflow-hidden" style={{ background: "rgba(0,0,0,0.04)" }}>
+            <motion.div className="h-full rounded-full gen-progress-bar"
+              animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
+          </div>
+          <div className="flex justify-between mt-1.5 px-0.5">
+            <span className="text-[9px] text-[#b0b0c0] font-medium">{t("generating")}...</span>
+            <span className="text-[9px] text-[#7C5CFC] font-bold tabular">{progressPct}%</span>
+          </div>
+        </div>
+
         <AnimatePresence mode="wait">
           <motion.div key={tipIdx}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3 }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-[14px]"
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.35 }}
+            className="flex items-center gap-2.5 px-5 py-3 rounded-[16px] max-w-[300px]"
             style={{ background: "rgba(124,92,252,0.04)", border: "1px solid rgba(124,92,252,0.08)" }}>
-            <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="2">
+            <motion.div
+              animate={{ rotate: [0, 180, 360], scale: [1, 1.2, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="shrink-0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="2">
                 <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
               </svg>
             </motion.div>
-            <span className="text-[11px] font-medium text-[#7C5CFC]">{GEN_TIPS[tipIdx]}</span>
+            <span className="text-[11px] font-medium text-[#6b5ce0] leading-snug">{GEN_TIPS[tipIdx]}</span>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -226,19 +281,49 @@ export default function NewReport() {
 
   if (step === "done") {
     const selType = TYPES.find(rt => rt.id === reportType);
+    const readTime = Math.max(1, Math.round(wordCount / 200));
     return (
       <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="px-4 pt-6 pb-4">
-        <div className="g-card rounded-[20px] p-4 mb-3 flex items-center gap-3">
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", bounce: 0.5 }}
-            className="w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ background: "rgba(0,196,140,0.08)" }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00C48C" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          </motion.div>
-          <div className="flex-1">
-            <h2 className="text-base font-bold leading-tight">{t("done")}</h2>
-            <p className="text-[11px] text-[#9ca3af] mt-0.5">{selType?.icon} {selType?.label} · {wordCount.toLocaleString()} words</p>
+        <div className="relative overflow-hidden rounded-[22px] p-5 mb-3"
+          style={{ background: "linear-gradient(145deg, #10B981 0%, #059669 40%, #047857 100%)", boxShadow: "0 8px 32px rgba(16,185,129,0.25)" }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-20"
+            style={{ background: "radial-gradient(circle, white 0%, transparent 70%)", transform: "translate(25%, -35%)" }} />
+
+          {[0,1,2,3,4,5,6,7].map(i => (
+            <motion.div key={i} className="absolute w-1.5 h-1.5 rounded-full"
+              style={{
+                background: ["#FFD700","#FF6B9D","#00D4FF","#FFB800","#FF5733","#C0F","#0FF","#FFF"][i],
+                left: `${10 + i * 12}%`, top: "-10px",
+              }}
+              animate={{ y: [0, 80], opacity: [1, 0], rotate: [0, 720] }}
+              transition={{ duration: 1.5, delay: 0.1 + i * 0.08, ease: "easeOut" }} />
+          ))}
+
+          <div className="relative z-10 flex items-center gap-3">
+            <motion.div initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", bounce: 0.5, delay: 0.2 }}
+              className="w-12 h-12 rounded-full flex items-center justify-center bg-white/20">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </motion.div>
+            <div className="flex-1">
+              <h2 className="text-[17px] font-extrabold text-white leading-tight">{t("done")}</h2>
+              <p className="text-[11px] text-white/60 mt-0.5">{selType?.icon} {selType?.label}</p>
+            </div>
+          </div>
+
+          <div className="relative z-10 flex gap-3 mt-3">
+            {[
+              { val: wordCount.toLocaleString(), label: t("estimatedWords") },
+              { val: `~${readTime} min`, label: t("estimatedTime") },
+            ].map((s, i) => (
+              <div key={i} className="flex-1 rounded-[12px] py-2 text-center" style={{ background: "rgba(255,255,255,0.12)" }}>
+                <div className="text-[16px] font-extrabold text-white tabular">{s.val}</div>
+                <div className="text-[8px] text-white/50 font-bold uppercase tracking-wider mt-0.5">{s.label}</div>
+              </div>
+            ))}
           </div>
         </div>
+
         <div className="flex gap-2 mb-3">
           <motion.button whileTap={{ scale: 0.96 }}
             onClick={() => { navigator.clipboard.writeText(result).then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); }).catch(() => {}); }}
@@ -264,15 +349,41 @@ export default function NewReport() {
 
   if (step === "error") {
     return (
-      <div className="px-4 pt-16 pb-4 flex flex-col items-center justify-center min-h-[70vh]">
+      <div className="px-4 pt-12 pb-4 flex flex-col items-center justify-center min-h-[70vh]">
         <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-          className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
-          style={{ background: "rgba(255,107,107,0.08)" }}>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>
+          transition={{ type: "spring", bounce: 0.4 }}
+          className="relative mb-6">
+          <div className="w-20 h-20 rounded-[24px] flex items-center justify-center"
+            style={{ background: "rgba(255,107,107,0.06)" }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" strokeWidth="1.5">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" x2="9" y1="9" y2="15"/>
+              <line x1="9" x2="15" y1="9" y2="15"/>
+            </svg>
+          </div>
+          <motion.div className="absolute -inset-3 rounded-[28px]"
+            style={{ border: "1.5px solid rgba(255,107,107,0.1)" }}
+            animate={{ scale: [1, 1.08, 1], opacity: [0.4, 0.1, 0.4] }}
+            transition={{ duration: 2, repeat: Infinity }} />
         </motion.div>
-        <h2 className="text-lg font-bold mb-1">{t("error")}</h2>
-        <p className="text-[13px] text-[#9ca3af] text-center mb-5 px-8">{errorMsg}</p>
-        <button onClick={() => setStep("details")} className="btn-main px-10 py-3 text-[13px]">{t("tryAgain")}</button>
+        <h2 className="text-[18px] font-extrabold mb-1.5">{t("error")}</h2>
+        <p className="text-[13px] text-[#9ca3af] text-center mb-6 px-8 leading-relaxed">{errorMsg}</p>
+        <div className="flex gap-2">
+          <motion.button whileTap={{ scale: 0.96 }}
+            onClick={() => { hapticFeedback("medium"); setStep("details"); }}
+            className="btn-main px-8 py-3 text-[13px] flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+              <path d="M21 3v5h-5"/>
+            </svg>
+            {t("tryAgain")}
+          </motion.button>
+          <motion.button whileTap={{ scale: 0.96 }}
+            onClick={() => { hapticFeedback("light"); reset(); }}
+            className="btn-ghost px-5 py-3 text-[13px]">
+            {t("back")}
+          </motion.button>
+        </div>
       </div>
     );
   }
@@ -405,7 +516,7 @@ export default function NewReport() {
           <div className="flex gap-1.5 p-1 rounded-[14px]" style={{ background: "rgba(0,0,0,0.03)" }}>
             {LENGTH_OPTIONS.map(opt => (
               <motion.button key={opt.id} whileTap={{ scale: 0.96 }}
-                onClick={() => { hapticFeedback("light"); setLength(opt.id); }}
+                onClick={() => { hapticSelection(); setLength(opt.id); }}
                 className="flex-1 py-2.5 rounded-[10px] text-center transition-all"
                 style={{
                   color: length === opt.id ? "#1a1a2e" : "#9ca3af",

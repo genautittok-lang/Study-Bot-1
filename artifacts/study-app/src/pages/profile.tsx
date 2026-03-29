@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser, usePhotoUrl, useLang } from "@/lib/store";
-import { hapticFeedback, hapticSuccess, shareViaTelegram } from "@/lib/telegram";
+import { hapticFeedback, hapticSuccess, hapticSelection, shareViaTelegram, openExternalLink, openTelegramLink } from "@/lib/telegram";
 import { t, getLang, setLang, LANGUAGES, getUserLevel, getNextLevel } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
@@ -105,7 +105,7 @@ export default function Profile() {
               <motion.button key={lang.code}
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.008 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => { hapticSuccess(); setLang(lang.code); setTimeout(() => setShowLangs(false), 150); }}
+                onClick={() => { hapticSelection(); setLang(lang.code); setTimeout(() => setShowLangs(false), 150); }}
                 className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-[14px] transition-all ${active ? "g-card" : "active:bg-black/[0.02]"}`}>
                 <span className="text-lg">{lang.flag}</span>
                 <div className="flex-1 text-left">
@@ -295,6 +295,16 @@ export default function Profile() {
             icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF9F43" strokeWidth="1.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>,
             bg: "rgba(255,159,67,0.05)",
           },
+          {
+            label: t("rateBot") || "Rate Bot",
+            desc: t("rateBotDesc") || "Leave a review on Telegram",
+            action: () => {
+              hapticFeedback("light");
+              openTelegramLink("https://t.me/studyflush_bot");
+            },
+            icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+            bg: "rgba(245,158,11,0.05)",
+          },
         ].map((item, i) => (
           <motion.button key={i} whileTap={{ scale: 0.98 }} onClick={item.action}
             className="w-full g-card rounded-[18px] p-3.5 flex items-center gap-3">
@@ -310,24 +320,31 @@ export default function Profile() {
       </motion.div>
 
       <motion.div {...a(5)} className="g-card rounded-[18px] p-3.5 mb-3">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-2.5">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
           <span className="text-[11px] font-bold text-[#9ca3af] uppercase tracking-wider">{t("about") || "About"}</span>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           <div className="flex items-center justify-between">
             <span className="text-[12px] text-[#6b7280]">Telegram ID</span>
             <span className="text-[12px] font-mono font-semibold text-[#1a1a2e]">{user?.telegramId || "—"}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-[12px] text-[#6b7280]">{t("version") || "Version"}</span>
-            <span className="text-[12px] font-mono font-semibold text-[#1a1a2e]">2.1.0</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[12px] font-mono font-semibold text-[#1a1a2e]">2.2.0</span>
+              <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ background: "linear-gradient(135deg, #10B981, #06D6A0)" }}>NEW</span>
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-[12px] text-[#6b7280]">{t("total")}</span>
+            <span className="text-[12px] font-mono font-semibold text-[#7C5CFC]">{user?.totalReports || 0} reports</span>
           </div>
         </div>
       </motion.div>
 
       <div className="text-center pt-3 pb-2">
-        <p className="text-[9px] text-[#d1d5db] font-medium">StudyFlush v2.1 · Made with 💜</p>
+        <p className="text-[9px] text-[#d1d5db] font-medium">StudyFlush v2.2 · Made with 💜</p>
       </div>
     </div>
   );
