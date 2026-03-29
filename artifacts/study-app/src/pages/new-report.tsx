@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import MarkdownRenderer from "@/components/markdown-renderer";
 import Icon3D, { REPORT_ICON_MAP } from "@/components/icons-3d";
 
-type Step = "type" | "category" | "subject" | "details" | "structure" | "generating" | "done" | "error";
+type Step = "type" | "freeform" | "category" | "subject" | "details" | "structure" | "generating" | "done" | "error";
 const STEPS = ["type", "category", "subject", "details"] as const;
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
@@ -157,13 +157,14 @@ export default function NewReport() {
   const prefillSubject = urlParams.get("subject") || "";
 
   const [step, setStep] = useState<Step>(() => {
+    if (prefillType === "freeform") return "freeform";
     if (prefillType && prefillSubject) return "details";
     if (prefillType) return "category";
     return "type";
   });
   const [reportType, setReportType] = useState(prefillType);
   const [category, setCategory] = useState("");
-  const [subject, setSubject] = useState(prefillSubject);
+  const [subject, setSubject] = useState(prefillType === "freeform" ? "any" : prefillSubject);
   const [topic, setTopic] = useState("");
   const [group, setGroup] = useState("");
   const [result, setResult] = useState("");
@@ -183,12 +184,19 @@ export default function NewReport() {
   const [structureText, setStructureText] = useState("");
   const [structureLoading, setStructureLoading] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [showFormatPicker, setShowFormatPicker] = useState(false);
+
+  const isFreeform = reportType === "freeform";
+  const FREEFORM_TYPE = { id: "freeform", label: t("anyTask"), icon: "✨", desc: "" };
+  const getTypeMeta = () => TYPES.find(rt => rt.id === reportType) || (isFreeform ? FREEFORM_TYPE : undefined);
 
   useBackButton(() => {
     if (showPaywall) { setShowPaywall(false); return; }
+    if (showFormatPicker) { setShowFormatPicker(false); return; }
     if (step === "done" || step === "error") { reset(); }
     else if (step === "generating") { /* don't interrupt */ }
-    else if (step === "structure") { setStep("details"); }
+    else if (step === "structure") { setStep(isFreeform ? "freeform" : "details"); }
+    else if (step === "freeform") { setStep("type"); }
     else if (step === "details") { setStep("subject"); }
     else if (step === "subject") { setStep("category"); }
     else if (step === "category") { setStep("type"); }
@@ -275,8 +283,8 @@ export default function NewReport() {
         hapticSuccess(); setResult(res.content);
         const wasFree = !user.freeReportsUsed;
         setUser({ ...user, balance: res.remainingBalance ?? user.balance, freeReportsUsed: true, totalReports: user.totalReports + 1 });
-        const selType = TYPES.find(rt => rt.id === reportType);
-        addRecentItem({ reportType, subject, subjectName: getSubjectName(subject), typeName: selType?.label || reportType, typeIcon: selType?.icon || "📄" });
+        const rType = getTypeMeta();
+        addRecentItem({ reportType, subject, subjectName: getSubjectName(subject), typeName: rType?.label || reportType, typeIcon: rType?.icon || "📄" });
         setTimeout(() => {
           setStep("done");
           if (wasFree && !wasPaywallShown(user.telegramId)) {
@@ -306,34 +314,99 @@ export default function NewReport() {
   }
 
   function shareResult() {
-    const selType = TYPES.find(rt => rt.id === reportType);
+    const selType = getTypeMeta();
     const preview = result.substring(0, 300).replace(/[#*_]/g, "") + "...";
     shareViaTelegram(`${selType?.icon} ${selType?.label}: ${topic.trim()}\n\n${preview}\n\n${t("shareText")}`);
   }
 
   function copyAsPost() {
-    const selType = TYPES.find(rt => rt.id === reportType);
+    const selType = getTypeMeta();
     const preview = result.substring(0, 200).replace(/[#*_]/g, "");
     const post = `${selType?.icon} ${selType?.label}: ${topic.trim()}\n\n${preview}...\n\n🤖 Generated with StudyFlush`;
     navigator.clipboard.writeText(post).then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); }).catch(() => {});
   }
 
-  function downloadResult() {
+  function downloadResult(format: "txt" | "md" | "html" = "txt") {
     hapticSuccess();
-    const selType = TYPES.find(rt => rt.id === reportType);
-    const fileName = `${selType?.label || "document"} — ${topic.trim().substring(0, 40)}`.replace(/[/\\?%*:|"<>]/g, "_") + ".txt";
-    const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
+    setShowFormatPicker(false);
+    const selType = getTypeMeta();
+    const baseName = `${selType?.label || "document"} — ${topic.trim().substring(0, 40)}`.replace(/[/\\?%*:|"<>]/g, "_");
+
+    let content = result;
+    let mimeType = "text/plain;charset=utf-8";
+    let ext = ".txt";
+
+    if (format === "md") {
+      ext = ".md";
+      mimeType = "text/markdown;charset=utf-8";
+    } else if (format === "html") {
+      ext = ".html";
+      mimeType = "text/html;charset=utf-8";
+      content = `<!DOCTYPE html>
+<html lang="${getLang()}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(selType?.label || "Document")} — ${escapeHtml(topic.trim().substring(0, 60))}</title>
+<style>
+body { font-family: 'Inter', -apple-system, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 24px; color: #1a1a2e; line-height: 1.8; }
+h1 { font-size: 24px; font-weight: 900; margin: 32px 0 16px; }
+h2 { font-size: 20px; font-weight: 800; margin: 28px 0 12px; border-bottom: 2px solid #7C5CFC20; padding-bottom: 8px; }
+h3 { font-size: 17px; font-weight: 700; margin: 20px 0 8px; }
+p { margin: 0 0 14px; color: #4a4a6a; }
+ul, ol { padding-left: 20px; margin: 12px 0; }
+li { margin: 6px 0; color: #4a4a6a; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+th { background: #7C5CFC10; padding: 12px 16px; text-align: left; font-weight: 700; border: 1px solid #7C5CFC20; }
+td { padding: 10px 16px; border: 1px solid #eee; }
+blockquote { margin: 12px 0; padding: 12px 16px; border-left: 3px solid #7C5CFC; background: #7C5CFC08; border-radius: 0 8px 8px 0; }
+code { font-family: 'SF Mono', monospace; padding: 2px 6px; background: #7C5CFC08; border-radius: 4px; font-size: 13px; }
+pre { background: #1e1e2e; color: #e2e8f0; padding: 16px; border-radius: 12px; overflow-x: auto; }
+.footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #eee; color: #9ca3af; font-size: 12px; text-align: center; }
+</style>
+</head>
+<body>
+${markdownToHtml(result)}
+<div class="footer">Generated with StudyFlush</div>
+</body>
+</html>`;
+    } else {
+      content = result.replace(/#{1,6}\s/g, "").replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1").replace(/`(.*?)`/g, "$1");
+    }
+
+    const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = fileName;
+    a.download = baseName + ext;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
 
-  function reset() { setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); setLength("medium"); setTypingDone(false); setDisplayedResult(""); setStructureText(""); }
+  function escapeHtml(str: string): string {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function markdownToHtml(md: string): string {
+    const safe = escapeHtml(md);
+    return safe
+      .replace(/^### (.*$)/gm, "<h3>$1</h3>")
+      .replace(/^## (.*$)/gm, "<h2>$1</h2>")
+      .replace(/^# (.*$)/gm, "<h1>$1</h1>")
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/`(.*?)`/g, "<code>$1</code>")
+      .replace(/^\- (.*$)/gm, "<li>$1</li>")
+      .replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>")
+      .replace(/&gt; (.*$)/gm, "<blockquote><p>$1</p></blockquote>")
+      .replace(/\n{2,}/g, "</p><p>")
+      .replace(/^(?!<[hlubo])/gm, (line) => line ? `<p>${line}</p>` : "")
+      .replace(/<p><\/p>/g, "");
+  }
+
+  function reset() { setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); setLength("medium"); setTypingDone(false); setDisplayedResult(""); setStructureText(""); setShowFormatPicker(false); }
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -407,7 +480,7 @@ export default function NewReport() {
   }
 
   if (step === "generating") {
-    const selType = TYPES.find(rt => rt.id === reportType);
+    const selType = getTypeMeta();
     const progressPct = Math.round(progress);
     return (
       <div className="px-4 pt-6 pb-4 flex flex-col items-center justify-center min-h-[70vh]">
@@ -518,7 +591,7 @@ export default function NewReport() {
   }
 
   if (step === "done") {
-    const selType = TYPES.find(rt => rt.id === reportType);
+    const selType = getTypeMeta();
     const readTime = Math.max(1, Math.round(wordCount / 200));
     return (
       <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="px-4 pt-6 pb-4">
@@ -609,21 +682,52 @@ export default function NewReport() {
             : <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{t("copy")}</>}
         </motion.button>
 
-        <div className="flex gap-2 mb-2">
-          <motion.button whileTap={{ scale: 0.96 }} onClick={downloadResult}
-            initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
-            className="flex-1 py-3 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1.5"
-            style={{ background: "rgba(16,185,129,0.06)", color: "#10B981", border: "1px solid rgba(16,185,129,0.1)" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-            {t("downloadFile")}
-          </motion.button>
-          <motion.button whileTap={{ scale: 0.96 }} onClick={shareResult}
-            initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-            className="flex-1 py-3 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1.5"
-            style={{ background: "rgba(74,144,255,0.06)", color: "#3B82F6", border: "1px solid rgba(74,144,255,0.1)" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
-            {t("shareReport")}
-          </motion.button>
+        <div className="relative mb-2">
+          <div className="flex gap-2">
+            <motion.button whileTap={{ scale: 0.96 }} onClick={() => { hapticSelection(); setShowFormatPicker(!showFormatPicker); }}
+              initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+              className="flex-1 py-3 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1.5"
+              style={{ background: "rgba(16,185,129,0.06)", color: "#10B981", border: "1px solid rgba(16,185,129,0.1)" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              {t("downloadFile")} ▾
+            </motion.button>
+            <motion.button whileTap={{ scale: 0.96 }} onClick={shareResult}
+              initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+              className="flex-1 py-3 rounded-[14px] text-[12px] font-semibold flex items-center justify-center gap-1.5"
+              style={{ background: "rgba(74,144,255,0.06)", color: "#3B82F6", border: "1px solid rgba(74,144,255,0.1)" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+              {t("shareReport")}
+            </motion.button>
+          </div>
+          {showFormatPicker && (
+            <div className="fixed inset-0 z-10" onClick={() => setShowFormatPicker(false)} />
+          )}
+          <AnimatePresence>
+            {showFormatPicker && (
+              <motion.div key="format-picker" initial={{ opacity: 0, y: -8, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+                className="absolute left-0 right-0 top-full mt-1.5 z-20 card-3d rounded-[16px] p-2 flex gap-1.5"
+                style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
+                {([
+                  { fmt: "txt" as const, label: "TXT", desc: t("plainText"), icon: "📄", color: "#6b7280" },
+                  { fmt: "md" as const, label: "MD", desc: "Markdown", icon: "📝", color: "#7C5CFC" },
+                  { fmt: "html" as const, label: "HTML", desc: t("formatted"), icon: "🌐", color: "#3B82F6" },
+                ]).map((f, i) => (
+                  <motion.button key={f.fmt}
+                    initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.04 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => downloadResult(f.fmt)}
+                    className="flex-1 rounded-[12px] py-2.5 px-2 text-center"
+                    style={{ background: `${f.color}08`, border: `1px solid ${f.color}15` }}>
+                    <div className="text-[16px] mb-1">{f.icon}</div>
+                    <div className="text-[11px] font-bold" style={{ color: f.color }}>{f.label}</div>
+                    <div className="text-[8px] text-[#9ca3af] mt-0.5">{f.desc}</div>
+                  </motion.button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <div className="flex gap-2 mb-3">
           <motion.button whileTap={{ scale: 0.96 }} onClick={copyAsPost}
@@ -635,8 +739,8 @@ export default function NewReport() {
           </motion.button>
           <motion.button whileTap={{ scale: 0.96 }} onClick={() => {
             hapticFeedback("medium");
-            const selType = TYPES.find(rt => rt.id === reportType);
-            const cardText = `📚 ${selType?.label}: ${topic.trim()}\n📊 ${wordCount} words\n🤖 AI-generated · StudyFlush`;
+            const cType = getTypeMeta();
+            const cardText = `📚 ${cType?.label}: ${topic.trim()}\n📊 ${wordCount} words\n🤖 AI-generated · StudyFlush`;
             shareViaTelegram(cardText);
           }}
             initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
@@ -693,7 +797,7 @@ export default function NewReport() {
         <p className="text-[13px] text-[#9ca3af] text-center mb-6 px-8 leading-relaxed">{errorMsg}</p>
         <div className="flex gap-2">
           <motion.button whileTap={{ scale: 0.96 }}
-            onClick={() => { hapticFeedback("medium"); setStep("details"); }}
+            onClick={() => { hapticFeedback("medium"); setStep(isFreeform ? "freeform" : "details"); }}
             className="btn-main px-8 py-3 text-[13px] flex items-center gap-2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
@@ -711,12 +815,179 @@ export default function NewReport() {
     );
   }
 
+  if (step === "freeform") {
+    return (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pt-6 pb-4">
+        <BackBtn onClick={() => { setStep("type"); setReportType(""); }} />
+        <div className="flex items-center gap-2.5 mb-1">
+          <div className="w-10 h-10 rounded-[14px] flex items-center justify-center"
+            style={{ background: "linear-gradient(135deg, rgba(124,92,252,0.1), rgba(59,130,246,0.08))" }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.8">
+              <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-[20px] font-extrabold tracking-tight leading-tight">{t("anyTask")}</h2>
+            <p className="text-[11px] text-[#9ca3af]">{t("anyTaskDesc")}</p>
+          </div>
+        </div>
+
+        <div className="mt-4 space-y-3">
+          <div>
+            <label className="text-[12px] font-semibold text-[#6b7280] mb-1.5 block">{t("describeYourTask")}</label>
+            <textarea value={topic} onChange={e => setTopic(e.target.value)}
+              placeholder={t("anyTaskPlaceholder")}
+              className="input-field resize-none leading-relaxed" rows={5} />
+            {topic.length > 0 && (
+              <div className="flex justify-end mt-1"><div className="text-[10px] text-[#9ca3af] tabular">{topic.length}</div></div>
+            )}
+          </div>
+
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-0.5 -mx-4 px-4">
+            {([
+              { label: t("writeEssay"), prompt: t("writeEssayPrompt"), icon: "✍️" },
+              { label: t("solveTask"), prompt: t("solveTaskPrompt"), icon: "🧮" },
+              { label: t("writePoem"), prompt: t("writePoemPrompt"), icon: "📜" },
+              { label: t("explainTopic"), prompt: t("explainTopicPrompt"), icon: "💡" },
+            ]).map((hint, i) => (
+              <motion.button key={i}
+                initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 + i * 0.04 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => { hapticFeedback("light"); setTopic(hint.prompt); }}
+                className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-[12px] text-[11px] font-semibold"
+                style={{ background: "rgba(124,92,252,0.05)", border: "1px solid rgba(124,92,252,0.1)", color: "#7C5CFC" }}>
+                <span className="text-[13px]">{hint.icon}</span>
+                {hint.label}
+              </motion.button>
+            ))}
+          </div>
+
+          <div>
+            <label className="text-[12px] font-semibold text-[#6b7280] mb-1.5 block">{t("attachPhoto")}</label>
+            <AnimatePresence mode="wait">
+              {imagePreview ? (
+                <motion.div key="preview" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
+                  className="rounded-[14px] overflow-hidden relative border" style={{ borderColor: "rgba(124,92,252,0.15)" }}>
+                  <img src={imagePreview} alt="Task" className="w-full max-h-[180px] object-contain rounded-[14px]" style={{ background: "#f9fafb" }} />
+                  <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-3 py-2"
+                    style={{ background: "linear-gradient(transparent, rgba(0,0,0,0.6))" }}>
+                    <div className="flex items-center gap-1.5">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#00C48C" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span className="text-[10px] font-semibold text-white/90">{t("photoAttached")}</span>
+                    </div>
+                    <motion.button whileTap={{ scale: 0.9 }} onClick={removeImage}
+                      className="px-2.5 py-1 rounded-[8px] text-[10px] font-semibold text-white/80"
+                      style={{ background: "rgba(255,255,255,0.15)" }}>
+                      {t("removePhoto")}
+                    </motion.button>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.label key="upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  className="flex items-center gap-3 py-3.5 px-4 rounded-[14px] cursor-pointer transition-all active:scale-[0.98]"
+                  style={{ background: "rgba(124,92,252,0.03)", border: "1.5px dashed rgba(124,92,252,0.15)" }}>
+                  <input type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
+                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0" style={{ background: "rgba(124,92,252,0.06)" }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.5">
+                      <rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="text-[12px] font-semibold text-[#7C5CFC]">{t("attachPhotoAnalyze")}</div>
+                    <div className="text-[9px] text-[#9ca3af] mt-0.5">{t("photoAnalyzeDesc")}</div>
+                  </div>
+                </motion.label>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div>
+            <label className="text-[12px] font-semibold text-[#6b7280] mb-1.5 block">{t("reportLength")}</label>
+            <div className="flex gap-1.5 p-1 rounded-[14px]" style={{ background: "rgba(0,0,0,0.03)" }}>
+              {LENGTH_OPTIONS.map(opt => (
+                <motion.button key={opt.id} whileTap={{ scale: 0.96 }}
+                  onClick={() => { hapticSelection(); setLength(opt.id); }}
+                  className="flex-1 py-2.5 rounded-[10px] text-center transition-all"
+                  style={{
+                    color: length === opt.id ? "#1a1a2e" : "#9ca3af",
+                    background: length === opt.id ? "white" : "transparent",
+                    boxShadow: length === opt.id ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
+                  }}>
+                  <div className="text-[11px] font-bold">{opt.label}</div>
+                  <div className="text-[9px] font-bold mt-1" style={{ color: length === opt.id ? "#10B981" : "#c4c4d0" }}>
+                    {user && !user.freeReportsUsed ? "🎁 Free" : `💎 ${opt.cost}`}
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {!canGenerate && user?.freeReportsUsed && (
+          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+            className="mt-3.5 rounded-[14px] p-3 text-[12px] flex items-center gap-2.5"
+            style={{ background: "rgba(255,107,107,0.06)", border: "1px solid rgba(255,107,107,0.1)" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+            <span className="text-[#FF6B6B]">{t("noBalance")} (💎 {currentCost}). <button onClick={() => setLocation("/balance")} className="underline font-semibold">{t("topUpBalance")}</button></span>
+          </motion.div>
+        )}
+
+        <motion.button whileTap={{ scale: 0.97 }} onClick={handleGenerate} disabled={!topic.trim() || !canGenerate}
+          className="mt-4 w-full py-[16px] rounded-[18px] text-[15px] font-bold flex items-center justify-center gap-2.5 disabled:opacity-30"
+          style={{
+            background: (!topic.trim() || !canGenerate) ? "rgba(42,171,238,0.3)" : "linear-gradient(145deg, #2AABEE 0%, #229ED9 100%)",
+            color: "white",
+            boxShadow: (!topic.trim() || !canGenerate) ? "none" : "0 10px 30px rgba(42,171,238,0.35), 0 2px 6px rgba(0,0,0,0.06)",
+          }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+          </svg>
+          {t("generate")} {user && !user.freeReportsUsed ? "🎁" : `· 💎 ${currentCost}`}
+        </motion.button>
+      </motion.div>
+    );
+  }
+
   if (step === "type") {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pt-6 pb-4">
         <h2 className="text-[22px] font-extrabold tracking-tight mb-0.5">{t("newDocument")}</h2>
         <p className="text-[11px] text-[#9ca3af] mb-3">{t("chooseDocType")}</p>
-        <StepBar step={step} />
+
+        <motion.button
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, ease }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => { hapticFeedback("medium"); setReportType("freeform"); setSubject("any"); setStep("freeform"); }}
+          className="w-full rounded-[20px] p-4 mb-3 text-left relative overflow-hidden"
+          style={{
+            background: "linear-gradient(145deg, rgba(124,92,252,0.06), rgba(59,130,246,0.04))",
+            border: "1.5px solid rgba(124,92,252,0.12)",
+          }}>
+          <div className="absolute top-0 right-0 w-28 h-28 rounded-full opacity-30"
+            style={{ background: "radial-gradient(circle, rgba(124,92,252,0.15) 0%, transparent 70%)", transform: "translate(30%, -40%)" }} />
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0"
+              style={{ background: "linear-gradient(135deg, #7C5CFC, #3B82F6)", boxShadow: "0 4px 12px rgba(124,92,252,0.3)" }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
+                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+              </svg>
+            </div>
+            <div className="flex-1">
+              <div className="text-[15px] font-extrabold leading-tight">{t("anyTask")}</div>
+              <div className="text-[11px] text-[#9ca3af] mt-0.5 leading-snug">{t("anyTaskShort")}</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </motion.button>
+
+        <div className="flex items-center gap-2 mb-2.5 px-0.5">
+          <div className="flex-1 h-px" style={{ background: "rgba(0,0,0,0.06)" }} />
+          <span className="text-[9px] font-semibold text-[#c4c4d0] uppercase tracking-wider">{t("orChooseType")}</span>
+          <div className="flex-1 h-px" style={{ background: "rgba(0,0,0,0.06)" }} />
+        </div>
+
         <div className="grid grid-cols-2 gap-2">
           {TYPES.map((type, i) => (
             <motion.button key={type.id}
@@ -813,7 +1084,7 @@ export default function NewReport() {
     );
   }
 
-  const selType = TYPES.find(rt => rt.id === reportType);
+  const selType = getTypeMeta();
   const selSubj = getSubjectName(subject);
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pt-6 pb-4">

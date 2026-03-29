@@ -272,6 +272,33 @@ export default function Home() {
         </TiltCard>
       </motion.div>
 
+      <motion.div {...anim(1.3)} className="mb-3">
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={() => { hapticFeedback("medium"); go("/new?type=freeform&subject=any"); }}
+          className="w-full rounded-[20px] p-4 text-left relative overflow-hidden"
+          style={{
+            background: "linear-gradient(145deg, rgba(124,92,252,0.08), rgba(59,130,246,0.05))",
+            border: "1.5px solid rgba(124,92,252,0.12)",
+          }}>
+          <div className="absolute top-0 right-0 w-28 h-28 rounded-full opacity-25"
+            style={{ background: "radial-gradient(circle, rgba(124,92,252,0.2) 0%, transparent 70%)", transform: "translate(30%, -40%)" }} />
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
+              style={{ background: "linear-gradient(135deg, #7C5CFC, #3B82F6)", boxShadow: "0 4px 12px rgba(124,92,252,0.3)" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
+                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[14px] font-extrabold leading-tight">{t("anyTask")}</div>
+              <div className="text-[10px] text-[#9ca3af] mt-0.5 leading-snug">{t("anyTaskShort")}</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="2" className="shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </motion.button>
+      </motion.div>
+
       <motion.div {...anim(1.5)} className="mb-3">
         <div className="flex items-center gap-1.5 mb-2 px-0.5">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="2">
