@@ -188,6 +188,8 @@ export default function NewReport() {
   const [structureLoading, setStructureLoading] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [showFormatPicker, setShowFormatPicker] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState("");
   const [genStartTime, setGenStartTime] = useState<number>(0);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [finalGenTime, setFinalGenTime] = useState(savedResult?.finalGenTime || 0);
@@ -284,7 +286,7 @@ export default function NewReport() {
     if (!user || !topic.trim()) return;
     if (!canGenerate) { hapticError(); setLocation("/balance"); return; }
     setStep("generating"); setProgress(0); hapticFeedback("medium");
-    setTypingDone(false); setDisplayedResult("");
+    setTypingDone(false); setDisplayedResult(""); setIsEditing(false); setEditContent("");
     const startTs = Date.now(); setGenStartTime(startTs); setElapsedSeconds(0);
     const iv = setInterval(() => { setProgress(p => Math.min(p + Math.random() * 5 + 1.5, 92)); }, 700);
 
@@ -427,7 +429,7 @@ ${markdownToHtml(result)}
       .replace(/<p><\/p>/g, "");
   }
 
-  function reset() { clearLastResult(); setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); setLength("medium"); setTypingDone(false); setDisplayedResult(""); setStructureText(""); setShowFormatPicker(false); }
+  function reset() { clearLastResult(); setStep("type"); setReportType(""); setCategory(""); setSubject(""); setTopic(""); setGroup(""); setResult(""); setSearchQ(""); setCopied(false); setImageData(null); setImagePreview(null); setLength("medium"); setTypingDone(false); setDisplayedResult(""); setStructureText(""); setShowFormatPicker(false); setIsEditing(false); setEditContent(""); }
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -798,10 +800,52 @@ ${markdownToHtml(result)}
           </motion.button>
         )}
 
-        <div className="g-card rounded-[16px] p-4 max-h-[60vh] overflow-y-auto scrollbar-hide select-text relative">
-          {!typingDone && <span className="typing-cursor" />}
-          <MarkdownRenderer content={displayedResult || result} />
+        <div className="flex items-center justify-between mb-2 px-0.5">
+          <span className="text-[10px] font-bold text-[#8b90a0] uppercase tracking-[0.08em]">{isEditing ? t("editing") : t("preview")}</span>
+          <motion.button whileTap={{ scale: 0.92 }}
+            onClick={() => {
+              if (isEditing) {
+                setResult(editContent);
+                setDisplayedResult(editContent);
+                setTypingDone(true);
+                const newWc = editContent.split(/\s+/).filter(Boolean).length;
+                setWordCount(newWc);
+                saveLastResult({ result: editContent, reportType, subject, topic, wordCount: newWc, finalGenTime, ts: Date.now() });
+                hapticSuccess();
+              } else {
+                setEditContent(result);
+              }
+              setIsEditing(!isEditing);
+              hapticFeedback("medium");
+            }}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-[8px] text-[10px] font-bold"
+            style={{
+              background: isEditing ? "rgba(16,185,129,0.08)" : "rgba(124,92,252,0.06)",
+              color: isEditing ? "#10B981" : "#7C5CFC",
+              border: isEditing ? "1px solid rgba(16,185,129,0.15)" : "1px solid rgba(124,92,252,0.1)"
+            }}>
+            {isEditing ? (
+              <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>{t("saveEdit")}</>
+            ) : (
+              <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>{t("editText")}</>
+            )}
+          </motion.button>
         </div>
+
+        {isEditing ? (
+          <textarea
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+            className="w-full g-card rounded-[16px] p-4 text-[13px] leading-relaxed resize-none outline-none"
+            style={{ minHeight: "50vh", maxHeight: "65vh", fontFamily: "monospace", color: "#12122a" }}
+            autoFocus
+          />
+        ) : (
+          <div className="g-card rounded-[16px] p-4 max-h-[60vh] overflow-y-auto scrollbar-hide select-text relative">
+            {!typingDone && <span className="typing-cursor" />}
+            <MarkdownRenderer content={displayedResult || result} />
+          </div>
+        )}
       </motion.div>
     );
   }

@@ -55,6 +55,7 @@ artifacts-monorepo/
 - **Trust Indicators**: "10,000+ students" / "4.8 ⭐ rating" social proof on home
 - **Free-form "Any Task" Mode**: ChatGPT-like direct input — describe any task + optional photo upload, skips type/category/subject selection. Accessible from home page and type selection screen via `/new?type=freeform&subject=any`
 - **File Format Download Picker**: TXT (plain text, stripped markdown), MD (raw markdown), HTML (professionally styled with tables, headings, code blocks). HTML export sanitizes user content to prevent XSS
+- **Manual Text Editing**: Edit button on done-screen toggles between preview and editing mode — users can manually modify the generated text in a monospace textarea before downloading. Saves updated text + word count to localStorage
 - **Share Options**: Copy result / Download file (multi-format) / Share via Telegram / Copy as post / Share as card
 - **11 document types + freeform**: Report, Summary, Database, Lab Work, Essay, Tasks, Course Work, Diploma, Presentation, Test Paper, Notes, + Any Task (freeform)
 - **150+ subjects** in **17 categories**: School Math (7-11), Ukrainian Language & Lit (7-11), Sciences (7-11), History & Geography (7-11), Foreign Languages, Other School; College IT, College Tech; University Math, IT, Humanities, Business, Law, Engineering, Medicine; Other

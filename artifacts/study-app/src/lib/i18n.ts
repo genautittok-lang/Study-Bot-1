@@ -307,6 +307,10 @@ type TranslationKeys = {
   copyAsPost: string;
   shareAsCard: string;
   skipTyping: string;
+  editText: string;
+  saveEdit: string;
+  editing: string;
+  preview: string;
   structurePreview: string;
   approveStructure: string;
   regenerateStructure: string;
@@ -606,6 +610,10 @@ const translations: Record<string, Partial<TranslationKeys>> & { en: Translation
     copyAsPost: "Copy as post",
     shareAsCard: "Share as card",
     skipTyping: "Show all",
+    editText: "Edit",
+    saveEdit: "Save",
+    editing: "Editing",
+    preview: "Preview",
     structurePreview: "Document structure",
     approveStructure: "Generate by this plan",
     regenerateStructure: "Regenerate plan",
@@ -903,6 +911,10 @@ const translations: Record<string, Partial<TranslationKeys>> & { en: Translation
     copyAsPost: "Скопировать как пост",
     shareAsCard: "Поделиться карточкой",
     skipTyping: "Показать всё",
+    editText: "Редактировать",
+    saveEdit: "Сохранить",
+    editing: "Редактирование",
+    preview: "Просмотр",
     structurePreview: "Структура документа",
     approveStructure: "Генерировать по плану",
     regenerateStructure: "Перегенерировать план",
@@ -1200,6 +1212,10 @@ const translations: Record<string, Partial<TranslationKeys>> & { en: Translation
     copyAsPost: "Скопіювати як пост",
     shareAsCard: "Поділитися карткою",
     skipTyping: "Показати все",
+    editText: "Редагувати",
+    saveEdit: "Зберегти",
+    editing: "Редагування",
+    preview: "Перегляд",
     structurePreview: "Структура документа",
     approveStructure: "Згенерувати за планом",
     regenerateStructure: "Перегенерувати план",
