@@ -49,6 +49,7 @@ export const bot = new Telegraf<BotContext>(process.env.TELEGRAM_BOT_TOKEN);
 bot.use(session({ defaultSession: (): SessionData => ({}) }));
 
 function getWebAppUrl(): string {
+  if (process.env.WEBAPP_URL) return process.env.WEBAPP_URL;
   const domains = process.env.REPLIT_DOMAINS || process.env.REPLIT_DEV_DOMAIN || "";
   const domain = domains.split(",")[0]?.trim();
   if (domain) return `https://${domain}`;
