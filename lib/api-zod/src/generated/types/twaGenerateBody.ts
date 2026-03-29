@@ -14,4 +14,6 @@ export interface TwaGenerateBody {
   group?: string;
   /** Base64-encoded image of the task/assignment */
   imageData?: string;
+  /** Language code for AI output (e.g. en, ru, uk, de, fr) */
+  language?: string;
 }

@@ -160,6 +160,9 @@ components:
         imageData:
           type: string
           description: Base64-encoded image of the task/assignment
+        language:
+          type: string
+          description: Language code for AI output (e.g. en, ru, uk, de, fr)
       required:
         - telegramId
         - reportType

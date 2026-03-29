@@ -136,6 +136,18 @@ export function hideBackButton(cb: () => void) {
   } catch {}
 }
 
+export function useBackButton(callback: () => void) {
+  const { useEffect, useRef } = require("react");
+  const cbRef = useRef(callback);
+  cbRef.current = callback;
+
+  useEffect(() => {
+    const handler = () => cbRef.current();
+    showBackButton(handler);
+    return () => hideBackButton(handler);
+  }, []);
+}
+
 export function openTelegramLink(url: string) {
   const tg = getTelegramWebApp();
   if (tg && typeof tg.openTelegramLink === "function") {

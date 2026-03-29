@@ -9,131 +9,322 @@ const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
 });
 
-const REPORT_TYPE_NAMES: Record<string, string> = {
-  report: "Звіт",
-  summary: "Конспект",
-  database: "База даних",
-  lab: "Лабораторна робота",
-  essay: "Реферат",
-  tasks: "Задачі",
-  coursework: "Курсова робота",
-  diploma: "Дипломна робота",
-  presentation: "Презентація",
-  test: "Контрольна робота",
-  notes: "Конспект лекцій",
+const REPORT_TYPE_NAMES: Record<string, Record<string, string>> = {
+  report: { en: "Report", ru: "Звіт", uk: "Звіт", kk: "Есеп", uz: "Hisobot", ky: "Отчёт", tg: "Ҳисобот", tk: "Hasabat", az: "Hesabat", hy: "Զեdelays", ka: "ანგარიში", be: "Справаздача", md: "Raport", mn: "Тайлан", tr: "Rapor", pl: "Raport", de: "Bericht", fr: "Rapport", es: "Informe", pt: "Relatório", it: "Relazione", ro: "Raport", cs: "Zpráva", bg: "Доклад", sr: "Извештај", hr: "Izvještaj", ar: "تقرير", hi: "रिपोर्ट", zh: "报告", ja: "レポート" },
+  summary: { en: "Summary", ru: "Конспект", uk: "Конспект", tr: "Özet", pl: "Streszczenie", de: "Zusammenfassung", fr: "Résumé", es: "Resumen", pt: "Resumo", it: "Riassunto", ro: "Rezumat", cs: "Shrnutí", bg: "Резюме", sr: "Резиме", hr: "Sažetak", ar: "ملخص", hi: "सारांश", zh: "摘要", ja: "要約" },
+  database: { en: "Database", ru: "База даних", uk: "База даних", tr: "Veritabanı", pl: "Baza danych", de: "Datenbank", fr: "Base de données", es: "Base de datos", pt: "Banco de dados", it: "Database", ro: "Bază de date", cs: "Databáze", ar: "قاعدة بيانات", hi: "डेटाबेस", zh: "数据库", ja: "データベース" },
+  lab: { en: "Lab Work", ru: "Лабораторна робота", uk: "Лабораторна робота", tr: "Laboratuvar çalışması", pl: "Praca laboratoryjna", de: "Laborarbeit", fr: "Travail de laboratoire", es: "Trabajo de laboratorio", pt: "Trabalho de laboratório", it: "Lavoro di laboratorio", ro: "Lucrare de laborator", cs: "Laboratorní práce", ar: "عمل مختبري", hi: "प्रयोगशाला कार्य", zh: "实验报告", ja: "実験レポート" },
+  essay: { en: "Essay", ru: "Реферат", uk: "Реферат", tr: "Makale", pl: "Esej", de: "Aufsatz", fr: "Dissertation", es: "Ensayo", pt: "Ensaio", it: "Saggio", ro: "Eseu", cs: "Esej", ar: "مقال", hi: "निबंध", zh: "论文", ja: "エッセイ" },
+  tasks: { en: "Problem Solving", ru: "Задачі", uk: "Задачі", tr: "Problem çözme", pl: "Zadania", de: "Aufgaben", fr: "Exercices", es: "Ejercicios", pt: "Exercícios", it: "Esercizi", ro: "Exerciții", cs: "Úlohy", ar: "تمارين", hi: "अभ्यास", zh: "习题", ja: "演習問題" },
+  coursework: { en: "Course Work", ru: "Курсова робота", uk: "Курсова робота", tr: "Dönem ödevi", pl: "Praca kursowa", de: "Kursarbeit", fr: "Travail de cours", es: "Trabajo de curso", pt: "Trabalho de curso", it: "Lavoro di corso", ro: "Lucrare de curs", cs: "Kurz práce", ar: "عمل مقرر", hi: "कोर्स वर्क", zh: "课程论文", ja: "コースワーク" },
+  diploma: { en: "Diploma Thesis", ru: "Дипломна робота", uk: "Дипломна робота", tr: "Diploma tezi", pl: "Praca dyplomowa", de: "Diplomarbeit", fr: "Mémoire de diplôme", es: "Trabajo de diploma", pt: "Trabalho de diploma", it: "Tesi di diploma", ro: "Lucrare de diplomă", cs: "Diplomová práce", ar: "مشروع تخرج", hi: "डिप्लोमा कार्य", zh: "毕业论文", ja: "卒業論文" },
+  presentation: { en: "Presentation", ru: "Презентація", uk: "Презентація", tr: "Sunum", pl: "Prezentacja", de: "Präsentation", fr: "Présentation", es: "Presentación", pt: "Apresentação", it: "Presentazione", ro: "Prezentare", cs: "Prezentace", ar: "عرض تقديمي", hi: "प्रस्तुति", zh: "演示文稿", ja: "プレゼンテーション" },
+  test: { en: "Test Paper", ru: "Контрольна робота", uk: "Контрольна робота", tr: "Sınav", pl: "Sprawdzian", de: "Klausur", fr: "Examen", es: "Examen", pt: "Prova", it: "Esame", ro: "Lucrare de control", cs: "Kontrolní práce", ar: "اختبار", hi: "परीक्षा", zh: "考试", ja: "テスト" },
+  notes: { en: "Lecture Notes", ru: "Конспект лекцій", uk: "Конспект лекцій", tr: "Ders notları", pl: "Notatki z wykładów", de: "Vorlesungsnotizen", fr: "Notes de cours", es: "Apuntes", pt: "Notas de aula", it: "Appunti", ro: "Note de curs", cs: "Poznámky z přednášek", ar: "ملاحظات محاضرة", hi: "व्याख्यान नोट्स", zh: "课堂笔记", ja: "講義ノート" },
 };
 
-const SUBJECT_NAMES: Record<string, string> = {
-  programming: "Програмування",
-  math: "Математика",
-  physics: "Фізика",
-  chemistry: "Хімія",
-  biology: "Біологія",
-  history: "Історія",
-  geography: "Географія",
-  databases: "Бази Даних",
-  networks: "Комп'ютерні мережі",
-  economics: "Економіка",
-  other: "Загальний предмет",
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English", ru: "Russian", uk: "Ukrainian", kk: "Kazakh", uz: "Uzbek",
+  ky: "Kyrgyz", tg: "Tajik", tk: "Turkmen", az: "Azerbaijani", hy: "Armenian",
+  ka: "Georgian", be: "Belarusian", md: "Moldovan/Romanian", mn: "Mongolian",
+  tr: "Turkish", pl: "Polish", de: "German", fr: "French", es: "Spanish",
+  pt: "Portuguese", it: "Italian", ro: "Romanian", cs: "Czech", bg: "Bulgarian",
+  sr: "Serbian", hr: "Croatian", ar: "Arabic", hi: "Hindi", zh: "Chinese", ja: "Japanese",
 };
 
-const SYSTEM_PROMPT = `Ти — преміальний AI-асистент для генерації академічних робіт найвищої якості для студентів університетів, коледжів, технікумів, ПТУ та учнів шкіл з будь-якої країни.
+function getSystemPrompt(language: string): string {
+  const langName = LANGUAGE_NAMES[language] || "the language of the user's request";
+  
+  if (language === "uk" || language === "ru") {
+    return `Ти — преміальний AI-асистент для генерації академічних робіт найвищої якості для студентів університетів, коледжів, технікумів, ПТУ та учнів шкіл з будь-якої країни.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ГОЛОВНІ ПРАВИЛА (ОБОВ'ЯЗКОВІ):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. МОВА: Пиши мовою запиту. Якщо тема/запит українською — пиши українською. Якщо в темі вказана інша мова — пиши нею.
+1. МОВА: Пиши ${language === "uk" ? "УКРАЇНСЬКОЮ" : "РОСІЙСЬКОЮ"} мовою. ВСЕ — заголовки, текст, висновки, таблиці — ${language === "uk" ? "українською" : "російською"}.
 2. РЕАЛЬНИЙ КОНТЕНТ: Ніяких заглушок "тут має бути...", "[вставити текст]", "[опис]". ТІЛЬКИ конкретні дані.
 3. ОСВІТНІЙ РІВЕНЬ: Автоматично адаптуй складність під тип установи та предмет:
    - Університет/ВНЗ: академічний стиль, наукові джерела ДСТУ, термінологія фахівця
    - Коледж/Технікум: практична спрямованість, виробничі приклади, прикладні задачі
    - Школа: доступна мова, шкільна програма, вікова адаптація
-4. ПОВНИЙ ШАБЛОН: Кожна робота має мати ПОВНЕ оформлення (титульна сторінка, зміст, всі розділи, список джерел). Якщо тип файлу вказаний в темі — зазнач вимоги до формату.
-5. ЧИСЛОВІ ДАНІ: Якщо потрібні дані — ГЕНЕРУЙ реальні числа, не "Х грн" чи "N одиниць". Наприклад: "47 320 грн", "3,14 кг/м³".
+4. ПОВНИЙ ШАБЛОН: Кожна робота має мати ПОВНЕ оформлення (титульна сторінка, зміст, всі розділи, список джерел).
+5. ЧИСЛОВІ ДАНІ: Якщо потрібні дані — ГЕНЕРУЙ реальні числа, не "Х грн" чи "N одиниць".
 6. ЗАДАЧІ: Розв'язуй ПОВНІСТЮ крок за кроком з підстановкою конкретних чисел у формули.
 7. КОД: Пиши РОБОЧИЙ, повний код з коментарями. Без скорочень типу "// решта коду".
 8. ТАБЛИЦІ: Використовуй Markdown таблиці | з реальними даними, не плейсхолдерами.
-9. ГРАФІКИ/РОЗКЛАДИ: Якщо потрібний графік, розклад, діаграма — МАЛЮЙ текстово за допомогою таблиць або ASCII.
-10. ФОРМУЛИ: x² + 2x + 1 = 0, √(a²+b²), Σ(i=1..n)xᵢ, F = ma, PV = nRT тощо.
-11. MARKDOWN: Строго дотримуйся:
-    - # ## ### для заголовків
-    - **жирний** для термінів і ключових понять
-    - *курсив* для назв та акцентів
-    - \`код\` для інлайн коду
-    - \`\`\`мова ... \`\`\` для блоків коду
-    - | таблиця | для таблиць
-    - > для цитат, аксіом, визначень
-    - --- для розділювачів
-    - 1. 2. 3. для нумерованих списків
-    - - або * для маркованих
-12. ОБСЯГ: МАКСИМАЛЬНИЙ. Розгорнуто та детально.
-13. ЯКІСТЬ: Робота має виглядати так, ніби це зробив реальний студент-відмінник вручну.
+9. ФОРМУЛИ: x² + 2x + 1 = 0, √(a²+b²), Σ(i=1..n)xᵢ, F = ma, PV = nRT тощо.
+10. MARKDOWN: # ## ### для заголовків, **жирний**, *курсив*, \`код\`, таблиці, списки.
+11. ОБСЯГ: МАКСИМАЛЬНИЙ. Розгорнуто та детально.
+12. ЯКІСТЬ: Робота має виглядати так, ніби це зробив реальний студент-відмінник вручну.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 СПЕЦІАЛЬНІ СЦЕНАРІЇ:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
-РОЗКЛАД/ГРАФІК: Якщо в темі є слова "розклад", "графік занять", "plan", "schedule" — генеруй реальну таблицю з днями тижня, годинами, предметами/завданнями.
-ФОТО/СКАН ЗАВДАННЯ: Якщо прикріплено зображення — УВАЖНО прочитай ВСЕ, що на ньому зображено. Розв'яж саме ті задачі, що там написані. Скопіюй умови дослівно перед розв'язком.
-НЕСТАНДАРТНИЙ ПРЕДМЕТ: Якщо предмет не є стандартним — виконуй роботу якнайкраще, спираючись на назву теми.
-КРАЇНА/УНІВЕРСИТЕТ: Якщо в темі або групі вказано університет, коледж, місто чи країну — адаптуй зміст, приклади та джерела відповідно. Наприклад: КПІ → ДСТУ, MIT → APA/IEEE, польський університет → польські норми.
-БУДЬ-ЯКЕ ЗАВДАННЯ: Незалежно від формулювання — виконуй те, що просить студент. Якщо незрозуміло — роби найкраще припущення та виконуй.`;
+ФОТО/СКАН ЗАВДАННЯ: Якщо прикріплено зображення — УВАЖНО прочитай ВСЕ, що на ньому. Розв'яжи саме ті задачі.
+НЕСТАНДАРТНИЙ ПРЕДМЕТ: Виконуй роботу якнайкраще, спираючись на назву теми.
+КРАЇНА/УНІВЕРСИТЕТ: Адаптуй зміст, приклади та джерела відповідно.
+БУДЬ-ЯКЕ ЗАВДАННЯ: Незалежно від формулювання — виконуй те, що просить студент.`;
+  }
 
+  return `You are a premium AI assistant for generating top-quality academic papers for university students, college students, vocational school students, and school pupils from any country worldwide.
 
-export async function generateReport(
-  reportType: string,
-  subject: string,
-  topic: string,
-  group?: string | null,
-  imageData?: string | null
-): Promise<string> {
-  const reportTypeName = REPORT_TYPE_NAMES[reportType] || reportType;
-  const subjectName = SUBJECT_NAMES[subject] || subject;
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CRITICAL RULES (MANDATORY):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. LANGUAGE: Write EVERYTHING in ${langName}. ALL headings, body text, conclusions, tables, references — must be in ${langName}. Never mix languages unless quoting foreign terms.
+2. REAL CONTENT: No placeholders like "insert here...", "[description]", "[text goes here]". ONLY concrete data.
+3. EDUCATION LEVEL: Automatically adapt complexity to the institution type and subject:
+   - University: academic style, scientific sources, professional terminology
+   - College/Vocational: practical focus, industry examples, applied problems
+   - School: accessible language, school curriculum, age-appropriate
+4. COMPLETE TEMPLATE: Every paper must have FULL formatting (title page, table of contents, all sections, references list).
+5. NUMERICAL DATA: If data is needed — GENERATE real numbers, not "X units" or "N items". E.g.: "47,320 EUR", "3.14 kg/m³".
+6. PROBLEM SOLVING: Solve COMPLETELY step by step with concrete number substitutions in formulas.
+7. CODE: Write WORKING, complete code with comments. No shortcuts like "// rest of code".
+8. TABLES: Use Markdown tables | with real data, not placeholders.
+9. FORMULAS: x² + 2x + 1 = 0, √(a²+b²), Σ(i=1..n)xᵢ, F = ma, PV = nRT etc.
+10. MARKDOWN: # ## ### for headings, **bold**, *italic*, \`code\`, tables, lists.
+11. VOLUME: MAXIMUM. Detailed and comprehensive.
+12. QUALITY: The paper should look like it was done by a real top student manually.
+13. LOCAL STANDARDS: Use citation and formatting standards appropriate for the country/region where ${langName} is spoken. E.g.: German → DIN, French → AFNOR, Spanish → APA adapted, etc.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SPECIAL SCENARIOS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHOTO/SCAN: If an image is attached — carefully read EVERYTHING on it. Solve exactly those problems.
+NON-STANDARD SUBJECT: Do the best work based on the topic title.
+COUNTRY/UNIVERSITY: Adapt content, examples, and sources accordingly.
+ANY TASK: Regardless of how it's phrased — do what the student asks. If unclear, make the best assumption and execute.`;
+}
+
+function getReportTypeName(reportType: string, language: string): string {
+  const names = REPORT_TYPE_NAMES[reportType];
+  if (!names) return reportType;
+  return names[language] || names.en || reportType;
+}
+
+function buildUserPrompt(reportType: string, subject: string, topic: string, group: string | null | undefined, language: string): string {
+  const reportTypeName = getReportTypeName(reportType, language);
   const groupLower = (group || "").toLowerCase();
-  const isCollege = groupLower.includes("коледж") || groupLower.includes("college") || groupLower.includes("технікум") || groupLower.includes("ptу") || groupLower.includes("ptu");
-  const isSchool = groupLower.includes("школа") || groupLower.includes("school") || /^\d{1,2}[абвгґдеєжзиіїйклмнопрстуфхцчшщюя]/i.test(groupLower);
-  const isUniversity = !isCollege && !isSchool && (groupLower.includes("унів") || groupLower.includes("university") || groupLower.includes("інститут") || groupLower.includes("академія") || /^[а-яіїєa-z]{1,4}-\d{2}/i.test(groupLower));
-  const institutionHint = isCollege ? " (студент коледжу/технікуму)" : isSchool ? " (учень школи)" : isUniversity ? " (студент університету)" : "";
-  const groupLine = group ? `\nДля групи/класу: ${group}${institutionHint}` : "";
+  const isCollege = /коледж|college|технікум|техникум|ptu|vocational/i.test(groupLower);
+  const isSchool = /школа|school|lyceum|ліцей|гімназія|gymnasium/i.test(groupLower) || /^\d{1,2}[абвгґдеєжзиіїйклмнопрстуфхцчшщюяa-z]/i.test(groupLower);
+  const isUniversity = !isCollege && !isSchool && (/унів|university|інститут|академія|academy|universität|université|universidad|università|universidade|üniversite/i.test(groupLower) || /^[а-яіїєa-z]{1,4}-\d{2}/i.test(groupLower));
 
-  let userPrompt = "";
+  const isUkRu = language === "uk" || language === "ru";
+
+  if (isUkRu) {
+    const institutionHint = isCollege ? " (студент коледжу/технікуму)" : isSchool ? " (учень школи)" : isUniversity ? " (студент університету)" : "";
+    const groupLine = group ? `\nДля групи/класу: ${group}${institutionHint}` : "";
+    return buildUkRuPrompt(reportType, reportTypeName, subject, topic, groupLine, group);
+  }
+
+  const langName = LANGUAGE_NAMES[language] || language;
+  const institutionHint = isCollege ? " (college/vocational student)" : isSchool ? " (school pupil)" : isUniversity ? " (university student)" : "";
+  const groupLine = group ? `\nFor group/class: ${group}${institutionHint}` : "";
+
+  const intro = `IMPORTANT: Write the ENTIRE response in ${langName}. Every heading, paragraph, table, and conclusion must be in ${langName}.`;
 
   if (reportType === "database") {
-    userPrompt = `Створи повну базу даних з предмету "${subjectName}" на тему: "${topic}"${groupLine}
+    return `${intro}
+
+Create a complete database project on the subject "${subject}" with topic: "${topic}"${groupLine}
+
+MUST include ALL of these sections (in ${langName}):
+1. Domain description (detailed, min 10 sentences)
+2. Conceptual model (ER diagram in text form) — entities, attributes, types, PKs, relationships
+3. SQL creation script — min 5-7 tables with PK, FK, NOT NULL, UNIQUE, CHECK, indexes
+4. Data population — INSERT statements for each table with 5-10 realistic records
+5. Queries of varying complexity (min 10): simple SELECTs, JOINs, GROUP BY + HAVING, subqueries
+6. Result tables in Markdown for each query
+7. Conclusion`;
+  }
+
+  if (reportType === "lab") {
+    return `${intro}
+
+Write a COMPLETE lab work for subject "${subject}" on topic: "${topic}"${groupLine}
+
+Structure (all in ${langName}):
+- Title, subject, topic, objective
+- Theoretical background (min 20 sentences with definitions, formulas, classifications)
+- Equipment / Software (table)
+- Procedure — step-by-step with CONCRETE actions, full working code (if programming), formulas with number substitutions (if science/math)
+- Results — data tables with real numbers, analysis
+- Control questions — 5-7 with full answers
+- Conclusion — specific, point by point`;
+  }
+
+  if (reportType === "summary") {
+    return `${intro}
+
+Write a DETAILED summary/synopsis for subject "${subject}" on topic: "${topic}"${groupLine}
+
+Structure (all in ${langName}):
+- Key concepts and definitions (min 10-15, each as a quoted block)
+- Theoretical material (min 30 sentences) with classifications in tables, formulas, real-life examples, comparative tables
+- Classifications and schemes (Markdown tables)
+- Formulas and laws (if applicable) with variable explanations
+- Practical examples (3-5 with solutions)
+- Self-check questions (10 questions)`;
+  }
+
+  if (reportType === "essay") {
+    return `${intro}
+
+Write an ACADEMIC essay/paper for subject "${subject}" on topic: "${topic}"${groupLine}
+
+Structure (all in ${langName}):
+- Table of contents
+- Introduction: relevance (5-7 sentences), objective, tasks (1-4), object, subject, methods
+- Chapter 1: Theoretical analysis (3 subsections, each 10-15 sentences, with citations [1, p.15])
+- Chapter 2: Main part (3 subsections with tables, comparisons, examples)
+- Chapter 3: Practical/analytical aspect (2 subsections)
+- Conclusions — point by point for each task from introduction
+- References — 15+ sources in proper format for the country`;
+  }
+
+  if (reportType === "tasks") {
+    return `${intro}
+
+Solve problems for subject "${subject}" on topic: "${topic}"${groupLine}
+
+Structure (all in ${langName}):
+- Theoretical reference: key formulas table (Formula | Description | Units)
+- Min 8 problems:
+  * 2 easy (basic formula application)
+  * 3 medium (formula combinations, 3-4 steps)
+  * 2 hard (multi-step with data tables)
+  * 1 advanced/olympiad level
+- Each problem: Condition → Given → Find → Solution (step by step with number substitutions) → Answer (with units)`;
+  }
+
+  if (reportType === "coursework") {
+    return `${intro}
+
+Write a FULL course work for subject "${subject}" on topic: "${topic}"${groupLine}
+
+Structure (all in ${langName}):
+- Table of contents with subsections
+- Introduction (min 1 page): relevance (7-10 sentences), objective, tasks (1-6), object, subject, methods, structure
+- Chapter 1: Theoretical foundations (4 subsections, each 15 sentences min)
+- Chapter 2: Practical part (3 subsections with real data tables, calculations, code if IT)
+- Chapter 3: Results and recommendations (2 subsections with analytics)
+- Conclusions — point by point
+- References — 20+ sources
+- Appendices`;
+  }
+
+  if (reportType === "diploma") {
+    return `${intro}
+
+Create a FULL diploma thesis structure for subject "${subject}" on topic: "${topic}"${groupLine}
+
+Structure (all in ${langName}):
+- Abstract (150 words in ${langName} + 150 words in English)
+- Table of contents
+- List of abbreviations
+- Introduction (2 pages): relevance, objective, tasks (1-8), object/subject, methods, scientific novelty, practical significance
+- Chapter 1: Domain analysis (4-5 subsections, 15-20 sentences each, literature review, comparative tables)
+- Chapter 2: Development and design (3-4 subsections, architecture, algorithms, diagrams, technology justification)
+- Chapter 3: Implementation and testing (3-4 subsections, code/calculations, results, testing tables)
+- Conclusions (1 page)
+- References — 25+ sources`;
+  }
+
+  if (reportType === "presentation") {
+    return `${intro}
+
+Create a FULL presentation for subject "${subject}" on topic: "${topic}"${groupLine}
+
+Format: 18-22 slides plan. For EACH slide (all text in ${langName}):
+---
+### Slide N — [Title]
+**Main text on slide:**
+- Point 1 (concise, 1 line)
+- Point 2-5
+
+**Visual:** [What to show: diagram/chart/scheme/table/image — describe specifically]
+
+**Speaker notes:** (what to say — 5-8 sentences, detailed)
+---
+
+MANDATORY slides: Title, Contents, Relevance & Goal, 10+ content slides with real data/tables/formulas, Practical significance, Comparative table, Conclusions, References, "Thank you! Questions?"`;
+  }
+
+  if (reportType === "test") {
+    return `${intro}
+
+Create FULL test/exam answers for subject "${subject}" on topic: "${topic}"${groupLine}
+
+Structure (all in ${langName}):
+Part 1: Theoretical questions (12) — each with detailed 5-10 sentence answer
+Part 2: Multiple choice (20 tests) — A) B) C) D) with correct answer + explanation
+Part 3: Practical problems (6) — full step-by-step solution for each
+Cheat sheet: key formulas table (Formula | Name | Variables)
+Key definitions: quoted blocks for each important term`;
+  }
+
+  if (reportType === "notes") {
+    return `${intro}
+
+Write DETAILED lecture notes for subject "${subject}" on topic: "${topic}"${groupLine}
+
+Structure (all in ${langName}):
+- Lecture plan (numbered)
+- For each section:
+  * Key definitions (min 8-10, as quoted blocks)
+  * Theoretical material with **bold** for key concepts, numbered and bulleted lists
+  * Classification/comparison tables
+  * Formulas with variable explanations (if applicable)
+- Key takeaways (5-8 main points)
+- Self-check questions (1-10)`;
+  }
+
+  return `${intro}
+
+Write a DETAILED report for subject "${subject}" on topic: "${topic}"${groupLine}
+
+Structure (all in ${langName}):
+- Introduction: objective, tasks (1-4), relevance (5-7 sentences)
+- Chapter 1: Theoretical part (2 subsections with definitions, classifications in tables, formulas)
+- Chapter 2: Practical part (2 subsections with concrete calculations/code/analysis, result tables)
+- Conclusions — specific conclusions for each task
+- References — 10+ sources`;
+}
+
+function buildUkRuPrompt(reportType: string, reportTypeName: string, subject: string, topic: string, groupLine: string, group?: string | null): string {
+  const subjectName = subject;
+
+  if (reportType === "database") {
+    return `Створи повну базу даних з предмету "${subjectName}" на тему: "${topic}"${groupLine}
 
 ОБОВ'ЯЗКОВО включи ВСЕ:
 
 ## 1. Опис предметної області
-Детальний аналіз предметної області (мінімум 10 речень). Що автоматизуємо, які процеси, які користувачі.
+Детальний аналіз предметної області (мінімум 10 речень).
 
 ## 2. Концептуальна модель (ER-діаграма текстово)
-Для кожної сутності вкажи: назву, атрибути з типами, первинний ключ, зв'язки (1:1, 1:M, M:N)
+Для кожної сутності: назву, атрибути з типами, первинний ключ, зв'язки (1:1, 1:M, M:N)
 
 ## 3. SQL-скрипт створення БД
-\`\`\`sql блок з мінімум 5-7 таблицями, з:
-- PRIMARY KEY, FOREIGN KEY, NOT NULL, UNIQUE, DEFAULT, CHECK constraints
-- Правильні типи даних (INT, VARCHAR, TEXT, DATE, DECIMAL, BOOLEAN)
-- ON DELETE CASCADE / SET NULL
-- CREATE INDEX для частих запитів
+\`\`\`sql блок з мінімум 5-7 таблицями, з PRIMARY KEY, FOREIGN KEY, NOT NULL, UNIQUE, DEFAULT, CHECK, CREATE INDEX
 
 ## 4. Заповнення даними
-\`\`\`sql INSERT для КОЖНОЇ таблиці — по 5-10 реалістичних записів з КОНКРЕТНИМИ даними (імена, дати, суми, описи)
+INSERT для КОЖНОЇ таблиці — по 5-10 реалістичних записів
 
 ## 5. Запити різної складності (мінімум 10)
 - 3 простих SELECT з WHERE
-- 3 з JOIN (INNER, LEFT, RIGHT)  
-- 2 з GROUP BY + HAVING + агрегатні функції (COUNT, SUM, AVG, MAX, MIN)
+- 3 з JOIN (INNER, LEFT, RIGHT)
+- 2 з GROUP BY + HAVING + агрегатні функції
 - 1 з підзапитом
 - 1 складний з кількома JOIN + GROUP BY + ORDER BY
-Для КОЖНОГО запиту: опис що робить + SQL код + таблиця з очікуваним результатом
 
 ## 6. Таблиця результатів
-Markdown таблиця з результатами кожного запиту
-
 ## 7. Висновок`;
-  } else if (reportType === "lab") {
-    userPrompt = `Напиши ПОВНУ лабораторну роботу з предмету "${subjectName}" на тему: "${topic}"${groupLine}
+  }
 
-ОБОВ'ЯЗКОВО включи ВСЕ (це має виглядати як реально виконана робота):
+  if (reportType === "lab") {
+    return `Напиши ПОВНУ лабораторну роботу з предмету "${subjectName}" на тему: "${topic}"${groupLine}
 
 ## Лабораторна робота
 **Тема:** ${topic}
@@ -141,387 +332,128 @@ Markdown таблиця з результатами кожного запиту
 ${group ? `**Група:** ${group}` : ""}
 **Мета:** (конкретна мета)
 
-## Теоретичні відомості
-Розгорнута теорія (мінімум 20 речень) з визначеннями, формулами, класифікаціями.
-Використовуй > для визначень, **жирний** для термінів.
+## Теоретичні відомості (мінімум 20 речень)
+## Обладнання / Програмне забезпечення (таблиця)
+## Хід роботи (покрокові інструкції з КОНКРЕТНИМИ діями, ПОВНИЙ код якщо програмування)
+## Результати (таблиці з числовими даними, графіки текстово, аналіз)
+## Відповіді на контрольні питання (5-7)
+## Висновок`;
+  }
 
-## Обладнання / Програмне забезпечення
-Таблиця з переліком
+  if (reportType === "summary") {
+    return `Напиши ДЕТАЛЬНИЙ конспект з предмету "${subjectName}" на тему: "${topic}"${groupLine}
 
-## Хід роботи
-Покрокові інструкції з КОНКРЕТНИМИ діями:
-- Якщо програмування: ПОВНИЙ робочий код з коментарями в \`\`\`блоках
-- Якщо фізика/хімія: конкретні виміри, формули, підстановки чисел
-- Якщо математика: повні розв'язки з проміжними кроками
-- Скріншоти описуй текстово: "Рис. 1 — Графік залежності y від x"
-
-## Результати
-- Markdown ТАБЛИЦІ з числовими даними результатів
-- Графіки описані текстово
-- Аналіз отриманих даних
-
-## Відповіді на контрольні питання
-5-7 питань з повними відповідями
-
-## Висновок
-Конкретний, по пунктах — що зробили, що отримали, чи досягнута мета`;
-  } else if (reportType === "summary") {
-    userPrompt = `Напиши ДЕТАЛЬНИЙ конспект з предмету "${subjectName}" на тему: "${topic}"${groupLine}
-
-Це має бути РЕАЛЬНИЙ конспект як у зошиті студента-відмінника:
-
-## Тема: ${topic}
-
-## 1. Основні поняття та визначення
-Кожне визначення в форматі:
-> **Термін** — це ... (повне визначення)
-
-Мінімум 10-15 ключових визначень
-
-## 2. Теоретичний матеріал
-Розгорнутий виклад (мінімум 30 речень) з:
-- Класифікаціями в таблицях
-- Формулами (якщо є): записуй як x = (-b ± √(b²-4ac)) / 2a
-- Схемами (текстово): A → B → C → D
-- Прикладами з реального життя
-- Порівняльними таблицями
-
-## 3. Класифікації та схеми
-Markdown таблиці для класифікацій:
-| Тип | Характеристика | Приклад |
-|-----|---------------|---------|
-
+## 1. Основні поняття та визначення (мінімум 10-15 ключових)
+## 2. Теоретичний матеріал (мінімум 30 речень з класифікаціями, формулами, прикладами)
+## 3. Класифікації та схеми (Markdown таблиці)
 ## 4. Формули та закони (якщо є)
-Кожна формула з поясненням змінних та одиницями вимірювання
+## 5. Практичні приклади (3-5 з розв'язками)
+## 6. Питання для самоперевірки (10 питань)`;
+  }
 
-## 5. Практичні приклади
-3-5 конкретних прикладів з розв'язками
-
-## 6. Питання для самоперевірки
-10 питань різної складності`;
-  } else if (reportType === "essay") {
-    userPrompt = `Напиши АКАДЕМІЧНИЙ реферат з предмету "${subjectName}" на тему: "${topic}"${groupLine}
-
-Це має бути повноцінний реферат академічного рівня:
+  if (reportType === "essay") {
+    return `Напиши АКАДЕМІЧНИЙ реферат з предмету "${subjectName}" на тему: "${topic}"${groupLine}
 
 # ${topic}
-
 ## ЗМІСТ
-(автоматичний нумерований зміст)
-
-## ВСТУП
-**Актуальність:** (чому ця тема важлива — 5-7 речень)
-**Мета:** 
-**Завдання:**
-1. Проаналізувати...
-2. Визначити...
-3. Дослідити...
-4. Обґрунтувати...
-**Об'єкт дослідження:**
-**Предмет дослідження:**
-**Методи:** аналіз, синтез, порівняння, узагальнення
-
-## РОЗДІЛ 1. [Теоретичний аналіз]
-### 1.1 [Підрозділ]
-### 1.2 [Підрозділ]
-### 1.3 [Підрозділ]
-(Кожен підрозділ — мінімум 10-15 речень. Використовуй цитування: [1, с.15])
-
-## РОЗДІЛ 2. [Основна частина]
-### 2.1 — 2.3 підрозділи з таблицями, порівняннями, прикладами
-
-## РОЗДІЛ 3. [Практичний/аналітичний аспект]
-### 3.1 — 3.2 підрозділи
-
-## ВИСНОВКИ
-По пунктах — висновок до кожного завдання з вступу
-
-## СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ
-15+ джерел в форматі:
-1. Прізвище І.І. Назва роботи. Місто: Видавництво, рік. С. ХХ.
-(Використовуй реалістичні українські та міжнародні джерела)`;
-  } else if (reportType === "tasks") {
-    userPrompt = `Розв'яжи задачі з предмету "${subjectName}" на тему: "${topic}"${groupLine}
-
-УВАГА: Розв'язуй ВСЕ ПОВНІСТЮ, крок за кроком. Кожна задача має повне розв'язання!
-
-## Теоретична довідка
-Ключові формули та визначення, потрібні для розв'язання:
-| Формула | Опис | Одиниці |
-|---------|------|---------|
-
----
-
-## Задача 1 (легка)
-**Умова:** (конкретна задача з числами)
-**Дано:** (що відомо)
-**Знайти:** (що потрібно знайти)
-**Розв'язання:**
-Крок 1: ...
-Крок 2: ...
-(кожен крок з підстановкою чисел у формулу)
-**Відповідь:** (конкретне число з одиницями)
-
----
-
-Створи мінімум 8 задач:
-- 2 легкі (базове застосування формул)
-- 3 середні (комбінація формул, 3-4 кроки)
-- 2 складні (багатокрокові, з таблицями даних)
-- 1 олімпіадна / підвищеної складності
-
-Якщо тема передбачає:
-- Математику: повні алгебраїчні перетворення
-- Фізику: малюнок описати текстово + числові підстановки в SI
-- Хімію: рівняння реакцій + молярні маси + розрахунки
-- Програмування: код розв'язку в \`\`\` блоках
-- Економіку: таблиці з фінансовими даними`;
-  } else if (reportType === "coursework") {
-    userPrompt = `Напиши ПОВНУ курсову роботу з предмету "${subjectName}" на тему: "${topic}"${groupLine}
-
-Це повноцінна курсова робота преміум-якості:
-
-# КУРСОВА РОБОТА
-**Тема:** ${topic}
-**Предмет:** ${subjectName}
-
-## ЗМІСТ
-(повний нумерований зміст з підрозділами)
-
-## ВСТУП (мінімум 1 сторінка)
-**Актуальність:** (7-10 речень з посиланнями на сучасний стан проблеми)
-**Мета роботи:**
-**Завдання:**
-1-6 конкретних завдань
-**Об'єкт дослідження:**
-**Предмет дослідження:**
-**Методи дослідження:** (перелічити конкретні наукові методи)
-**Структура роботи:** Курсова робота складається з вступу, 3 розділів, висновків, списку джерел та додатків.
-
-## РОЗДІЛ 1. ТЕОРЕТИЧНІ ЗАСАДИ [тема]
-### 1.1 [Підрозділ] — мінімум 15 речень
-### 1.2 [Підрозділ] — мінімум 15 речень
-### 1.3 [Підрозділ] — мінімум 15 речень
-### 1.4 [Підрозділ] — мінімум 10 речень
-Висновки до розділу 1.
-
-## РОЗДІЛ 2. ПРАКТИЧНА ЧАСТИНА
-### 2.1 — 2.3 підрозділи
-З ТАБЛИЦЯМИ реальних даних, порівняннями, розрахунками, діаграмами (текстово)
-Якщо IT/програмування — ПОВНИЙ код з коментарями
-Якщо математика — ПОВНІ розрахунки
-Якщо гуманітарний — АНАЛІЗ конкретних прикладів/кейсів
-Висновки до розділу 2.
-
-## РОЗДІЛ 3. РЕЗУЛЬТАТИ ТА РЕКОМЕНДАЦІЇ
-### 3.1 — 3.2 підрозділи з аналітикою
-Таблиці результатів, порівняння, рекомендації
-Висновки до розділу 3.
-
-## ВИСНОВКИ
-По пунктах — висновок на кожне завдання зі вступу.
-
-## СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ
-20+ джерел (книги, статті, веб-ресурси, закони) в ДСТУ форматі
-
-## ДОДАТКИ
-Додаток А — таблиці/графіки/код`;
-  } else if (reportType === "diploma") {
-    userPrompt = `Створи структуру та ПОВНИЙ текст дипломної роботи з предмету "${subjectName}" на тему: "${topic}"${groupLine}
-
-Це преміум дипломна робота:
-
-# ДИПЛОМНА РОБОТА
-**Тема:** ${topic}
-
-## АНОТАЦІЯ
-Українською (150 слів) + Англійською (150 слів)
-
-## ЗМІСТ (повний з підрозділами)
-
-## ПЕРЕЛІК УМОВНИХ ПОЗНАЧЕНЬ
-Таблиця скорочень та абревіатур
-
-## ВСТУП (2 сторінки)
-**Актуальність:** (10+ речень, чому ця тема критично важлива)
-**Мета:**
-**Завдання:** 1-8 конкретних
-**Об'єкт / Предмет:**
-**Методи:**
-**Наукова новизна:** (що нового дає ця робота)
-**Практичне значення:** (де можна застосувати)
-**Структура:** робота складається з вступу, 3 розділів, висновків...
-
-## РОЗДІЛ 1. АНАЛІЗ ПРЕДМЕТНОЇ ОБЛАСТІ (4-5 підрозділів)
-Кожен підрозділ 15-20 речень. Аналіз існуючих рішень, літературний огляд, порівняльні таблиці.
-
-## РОЗДІЛ 2. РОЗРОБКА ТА ПРОЕКТУВАННЯ (3-4 підрозділи)
-Архітектура, алгоритми, схеми, діаграми (текстово), формули, обґрунтування вибору технологій.
-
-## РОЗДІЛ 3. РЕАЛІЗАЦІЯ ТА ТЕСТУВАННЯ (3-4 підрозділи)
-Код (якщо IT), розрахунки, результати, таблиці тестування, скріншоти (описати текстово).
-
-## ВИСНОВКИ
-Розгорнутий висновок (1 сторінка)
-
-## СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ
-25+ джерел в ДСТУ 8302:2015`;
-  } else if (reportType === "presentation") {
-    userPrompt = `Створи ПОВНУ презентацію з предмету "${subjectName}" на тему: "${topic}"${groupLine}
-
-Формат: повний план 18-22 слайдів. Для КОЖНОГО слайду:
-
----
-### 📊 Слайд N — [Заголовок]
-**Основний текст на слайді:**
-- Теза 1 (коротко, 1 рядок)
-- Теза 2
-- Теза 3-5
-
-**Візуал:** [Що показати: діаграма/графік/схема/таблиця/зображення — описати конкретно]
-
-**Нотатки доповідача:** (що сказати усно — 5-8 речень розгорнуто)
----
-
-ОБОВ'ЯЗКОВІ слайди:
-1. Титульний (тема, автор, група, предмет, рік)
-2. Зміст / План
-3. Актуальність та мета
-4-15. Основний матеріал (з КОНКРЕТНИМИ даними, таблицями, формулами)
-16. Практичне значення / Приклади
-17. Порівняльна таблиця (якщо доречно)
-18. Висновки (по пунктах)
-19. Список джерел (5-7 основних)
-20. "Дякую за увагу! Запитання?"
-
-В слайдах з даними використовуй РЕАЛЬНІ числа, таблиці, факти.`;
-  } else if (reportType === "test") {
-    userPrompt = `Створи ПОВНІ відповіді на контрольну/екзамен з предмету "${subjectName}" на тему: "${topic}"${groupLine}
-
-## Частина 1: Теоретичні питання (12 питань)
-Для кожного:
-**Питання N:** [формулювання]
-**Відповідь:** (розгорнута, 5-10 речень з визначеннями, прикладами)
-
----
-
-## Частина 2: Тестові завдання (20 тестів)
-Для кожного:
-**N.** [Питання]
-А) варіант Б) варіант В) варіант Г) варіант
-**Відповідь: Б)** — [пояснення чому саме цей варіант]
-
----
-
-## Частина 3: Практичні завдання (6 задач)
-Для кожної задачі — ПОВНЕ розв'язання:
-**Задача N:** [умова з числами]
-**Розв'язання:**
-Крок 1: (формула + підстановка)
-Крок 2: ...
-**Відповідь:** [число з одиницями]
-
----
-
-## 📋 Шпаргалка (стислий довідник)
-### Ключові формули:
-| Формула | Назва | Змінні |
-|---------|-------|--------|
-
-### Ключові визначення:
-> **Термін** — визначення (для кожного важливого терміну)
-
-### Ключові дати / факти:
-(якщо гуманітарний предмет)`;
-  } else if (reportType === "notes") {
-    userPrompt = `Напиши ДЕТАЛЬНИЙ конспект лекцій з предмету "${subjectName}" на тему: "${topic}"${groupLine}
-
-Це має виглядати як конспект студента-відмінника в зошиті:
-
-# 📝 Конспект: ${topic}
-
-## План лекції:
-1. ...
-2. ...
-3. ...
-
----
-
-## 1. [Перша тема]
-
-### Ключові визначення:
-> **Термін 1** — повне визначення (2-3 речення)
-> **Термін 2** — ...
-(мінімум 8-10 визначень)
-
-### Теоретичний матеріал:
-Розгорнутий виклад з:
-- **Жирним** для ключових понять
-- Нумерованими списками для послідовностей
-- Маркованими списками для переліків
-
-### Класифікація / Порівняння:
-| Критерій | Тип A | Тип B | Тип C |
-|----------|-------|-------|-------|
-| ... | ... | ... | ... |
-
-### Формули (якщо є):
-- F = ma (сила = маса × прискорення)
-- Де: F — сила (Н), m — маса (кг), a — прискорення (м/с²)
-
----
-
-## 2. [Друга тема]
-(аналогічна структура)
-
----
-
-## 3. [Третя тема]
-(аналогічна структура)
-
----
-
-## 📌 Головне запам'ятати:
-1. ...
-2. ...
-(5-8 ключових тез)
-
-## ❓ Питання для самоконтролю:
-1-10 питань різної складності`;
-  } else {
-    userPrompt = `Напиши ДЕТАЛЬНИЙ звіт з предмету "${subjectName}" на тему: "${topic}"${groupLine}
-
-# ЗВІТ
-**Тема:** ${topic}
-**Предмет:** ${subjectName}
-
-## ВСТУП
-**Мета:** (2-3 речення)
-**Завдання:**
-1-4 конкретних завдання
-**Актуальність:** (5-7 речень)
-
-## 1. ТЕОРЕТИЧНА ЧАСТИНА
-### 1.1 [Підрозділ]
-Розгорнутий текст з визначеннями (**жирним**), класифікаціями (таблиці), формулами.
-### 1.2 [Підрозділ]
-
-## 2. ПРАКТИЧНА ЧАСТИНА
-### 2.1 [Підрозділ]
-Конкретні розрахунки / код / аналіз з РЕАЛЬНИМИ даними.
-Таблиці результатів:
-| Параметр | Значення | Одиниця |
-|----------|----------|---------|
-
-### 2.2 Аналіз результатів
-Що показали дані, порівняння, графіки (текстово)
-
-## 3. ВИСНОВКИ
-Конкретні висновки по кожному завданню зі вступу.
-
-## СПИСОК ДЖЕРЕЛ
-10+ джерел`;
+## ВСТУП (Актуальність, Мета, Завдання 1-4, Об'єкт, Предмет, Методи)
+## РОЗДІЛ 1. [Теоретичний аналіз] (3 підрозділи, кожен 10-15 речень)
+## РОЗДІЛ 2. [Основна частина] (3 підрозділи з таблицями, порівняннями)
+## РОЗДІЛ 3. [Практичний аспект] (2 підрозділи)
+## ВИСНОВКИ (по пунктах)
+## СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ (15+)`;
   }
+
+  if (reportType === "tasks") {
+    return `Розв'яжи задачі з предмету "${subjectName}" на тему: "${topic}"${groupLine}
+
+## Теоретична довідка (ключові формули)
+Мінімум 8 задач:
+- 2 легкі, 3 середні, 2 складні, 1 олімпіадна
+Для кожної: Умова → Дано → Знайти → Розв'язання (крок за кроком) → Відповідь`;
+  }
+
+  if (reportType === "coursework") {
+    return `Напиши ПОВНУ курсову роботу з предмету "${subjectName}" на тему: "${topic}"${groupLine}
+
+## ЗМІСТ
+## ВСТУП (Актуальність 7-10 речень, Мета, Завдання 1-6, Об'єкт, Предмет, Методи, Структура)
+## РОЗДІЛ 1. ТЕОРЕТИЧНІ ЗАСАДИ (4 підрозділи по 15 речень)
+## РОЗДІЛ 2. ПРАКТИЧНА ЧАСТИНА (3 підрозділи з таблицями, кодом, розрахунками)
+## РОЗДІЛ 3. РЕЗУЛЬТАТИ ТА РЕКОМЕНДАЦІЇ (2 підрозділи)
+## ВИСНОВКИ
+## СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ (20+)
+## ДОДАТКИ`;
+  }
+
+  if (reportType === "diploma") {
+    return `Створи ПОВНУ дипломну роботу з предмету "${subjectName}" на тему: "${topic}"${groupLine}
+
+## АНОТАЦІЯ (укр 150 слів + англ 150 слів)
+## ЗМІСТ
+## ПЕРЕЛІК УМОВНИХ ПОЗНАЧЕНЬ
+## ВСТУП (2 сторінки: Актуальність, Мета, Завдання 1-8, Об'єкт/Предмет, Методи, Наукова новизна, Практичне значення)
+## РОЗДІЛ 1. АНАЛІЗ ПРЕДМЕТНОЇ ОБЛАСТІ (4-5 підрозділів по 15-20 речень)
+## РОЗДІЛ 2. РОЗРОБКА ТА ПРОЕКТУВАННЯ (3-4 підрозділи)
+## РОЗДІЛ 3. РЕАЛІЗАЦІЯ ТА ТЕСТУВАННЯ (3-4 підрозділи)
+## ВИСНОВКИ (1 сторінка)
+## СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ (25+ ДСТУ 8302:2015)`;
+  }
+
+  if (reportType === "presentation") {
+    return `Створи ПОВНУ презентацію з предмету "${subjectName}" на тему: "${topic}"${groupLine}
+
+18-22 слайдів. Для КОЖНОГО:
+### Слайд N — [Заголовок]
+**Текст на слайді:** тези (3-5 пунктів)
+**Візуал:** [діаграма/графік/таблиця — описати конкретно]
+**Нотатки доповідача:** (5-8 речень)
+
+ОБОВ'ЯЗКОВО: Титульний, Зміст, Актуальність, 10+ слайдів контенту з даними, Висновки, Джерела, "Дякую! Запитання?"`;
+  }
+
+  if (reportType === "test") {
+    return `Створи ПОВНІ відповіді на контрольну/екзамен з предмету "${subjectName}" на тему: "${topic}"${groupLine}
+
+## Частина 1: Теоретичні питання (12) — розгорнуті відповіді 5-10 речень
+## Частина 2: Тестові завдання (20) — А) Б) В) Г) з правильною відповіддю + пояснення
+## Частина 3: Практичні завдання (6) — ПОВНЕ розв'язання крок за кроком
+## Шпаргалка: ключові формули + визначення`;
+  }
+
+  if (reportType === "notes") {
+    return `Напиши ДЕТАЛЬНИЙ конспект лекцій з предмету "${subjectName}" на тему: "${topic}"${groupLine}
+
+## План лекції (нумерований)
+Для кожної теми:
+### Ключові визначення (мін 8-10)
+### Теоретичний матеріал
+### Класифікації / Порівняння (таблиці)
+### Формули (якщо є)
+## Головне запам'ятати (5-8 тез)
+## Питання для самоконтролю (1-10)`;
+  }
+
+  return `Напиши ДЕТАЛЬНИЙ звіт з предмету "${subjectName}" на тему: "${topic}"${groupLine}
+
+## ВСТУП (Мета, Завдання 1-4, Актуальність 5-7 речень)
+## 1. ТЕОРЕТИЧНА ЧАСТИНА (2 підрозділи з визначеннями, таблицями, формулами)
+## 2. ПРАКТИЧНА ЧАСТИНА (2 підрозділи з реальними даними, розрахунками, таблицями результатів)
+## 3. ВИСНОВКИ (по кожному завданню)
+## СПИСОК ДЖЕРЕЛ (10+)`;
+}
+
+export async function generateReport(
+  reportType: string,
+  subject: string,
+  topic: string,
+  group?: string | null,
+  imageData?: string | null,
+  language?: string | null
+): Promise<string> {
+  const lang = language || "uk";
+  const systemPrompt = getSystemPrompt(lang);
+  const userPrompt = buildUserPrompt(reportType, subject, topic, group, lang);
 
   const userContent: any[] = [{ type: "text", text: userPrompt }];
 
@@ -536,17 +468,25 @@ Markdown таблиці для класифікацій:
       type: "image_url",
       image_url: { url: dataUrl },
     });
-    userContent[0].text += "\n\n⚠️ ВАЖЛИВО: До запиту прикріплено ФОТО завдання. Уважно розглянь зображення, прочитай ВСЕ що на ньому написано (текст, числа, формули, умови задач, таблиці) і використай цю інформацію для генерації роботи. Якщо на фото є задачі — розв'яжи саме їх. Якщо є текст — використай його як основу.";
+
+    const photoWarning = lang === "uk" || lang === "ru"
+      ? "\n\n⚠️ ВАЖЛИВО: До запиту прикріплено ФОТО завдання. Уважно розглянь зображення, прочитай ВСЕ що на ньому написано і використай цю інформацію для генерації роботи."
+      : `\n\n⚠️ IMPORTANT: A PHOTO of the assignment is attached. Carefully examine the image, read EVERYTHING written on it, and use this information to generate the work. Write the response in ${LANGUAGE_NAMES[lang] || lang}.`;
+    userContent[0].text += photoWarning;
   }
 
   const response = await openai.chat.completions.create({
     model: "gpt-5.2",
     max_completion_tokens: 16384,
     messages: [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: systemPrompt },
       { role: "user", content: userContent },
     ],
   });
 
-  return response.choices[0]?.message?.content ?? "Помилка генерації. Спробуй ще раз.";
+  const fallbackMsg = lang === "uk" || lang === "ru" 
+    ? "Помилка генерації. Спробуй ще раз." 
+    : "Generation error. Please try again.";
+
+  return response.choices[0]?.message?.content ?? fallbackMsg;
 }

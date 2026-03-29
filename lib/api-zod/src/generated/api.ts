@@ -49,6 +49,10 @@ export const TwaGenerateBody = zod.object({
     .string()
     .optional()
     .describe("Base64-encoded image of the task\/assignment"),
+  language: zod
+    .string()
+    .optional()
+    .describe("Language code for AI output (e.g. en, ru, uk, de, fr)"),
 });
 
 export const TwaGenerateResponse = zod.object({

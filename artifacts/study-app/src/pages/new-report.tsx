@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
 import { useUser, setUser, useLang, addRecentItem } from "@/lib/store";
 import { generateReport } from "@/lib/api";
-import { getReportTypes, getSubjectCategories, getSubjectName, getEduLevels, getCategoryEduLevel, t } from "@/lib/i18n";
+import { getReportTypes, getSubjectCategories, getSubjectName, getEduLevels, getCategoryEduLevel, t, getLang } from "@/lib/i18n";
 import type { EduLevel } from "@/lib/i18n";
 import { hapticFeedback, hapticSuccess, hapticError, hapticSelection, shareViaTelegram } from "@/lib/telegram";
 import { motion, AnimatePresence } from "framer-motion";
@@ -118,7 +118,7 @@ export default function NewReport() {
     const fullTopic = topic.trim() + lengthHint;
 
     try {
-      const res = await generateReport({ telegramId: user.telegramId, reportType, subject, topic: fullTopic, group: group.trim() || undefined, imageData: imageData || undefined });
+      const res = await generateReport({ telegramId: user.telegramId, reportType, subject, topic: fullTopic, group: group.trim() || undefined, imageData: imageData || undefined, language: getLang() });
       clearInterval(iv); setProgress(100);
       if (res.success && res.content) {
         hapticSuccess(); setResult(res.content);
