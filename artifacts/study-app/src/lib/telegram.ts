@@ -162,14 +162,7 @@ export function openTelegramLink(url: string) {
 
 export function shareViaTelegram(text: string) {
   const tg = getTelegramWebApp();
-  if (tg && typeof tg.switchInlineQuery === "function") {
-    try {
-      tg.switchInlineQuery(text, ["users"]);
-      return;
-    } catch {}
-  }
-  const encoded = encodeURIComponent(text);
-  const shareUrl = `https://t.me/share/url?url=${encodeURIComponent("https://t.me/studyflush_bot")}&text=${encoded}`;
+  const shareUrl = `https://t.me/share/url?url=${encodeURIComponent("https://t.me/studyflush_bot")}&text=${encodeURIComponent(text)}`;
   if (tg && typeof tg.openTelegramLink === "function") {
     try {
       tg.openTelegramLink(shareUrl);
