@@ -138,18 +138,18 @@ export default function Home() {
     getReports(user.telegramId).then(r => setRecent(r.reports.slice(0, 3))).catch(() => {});
   }, [user]);
 
-  const refLink = `https://t.me/studyflush_bot?start=ref_${user?.referralCode || "---"}`;
-  const hasRefCode = !!user?.referralCode && user.referralCode !== "---";
+  const refCode = user?.referralCode || "";
+  const refLink = refCode
+    ? `https://t.me/studyflush_bot?start=ref_${refCode}`
+    : "https://t.me/studyflush_bot";
 
   function copyRef() {
-    if (!hasRefCode) return;
     navigator.clipboard.writeText(refLink)
       .then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); })
       .catch(() => {});
   }
 
   function shareRefTelegram() {
-    if (!hasRefCode) return;
     hapticFeedback("medium");
     shareViaTelegram(`🎓 ${t("shareWithFriend")}!\n\n${t("referralStep3")}\n\n${refLink}`);
   }

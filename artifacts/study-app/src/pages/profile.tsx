@@ -48,6 +48,7 @@ export default function Profile() {
   const lvl = getUserLevel(total);
   const nxt = getNextLevel(total);
   const progress = nxt ? Math.min(((total - lvl.min) / (lvl.max - lvl.min + 1)) * 100, 100) : 100;
+  const refCode = user?.referralCode || "";
   const refCount = user?.referralCount || 0;
   const bal = user ? (!user.freeReportsUsed ? user.balance + 1 : user.balance) : 0;
 
@@ -60,17 +61,19 @@ export default function Profile() {
     { icon: "🏆", name: t("hundredReportsAch") || "Legend", ok: total >= 100, color: "#FFD700", p: Math.min((total / 100) * 100, 100) },
   ];
 
-  const botLink = "https://t.me/studyflush_bot";
+  const refLink = refCode
+    ? `https://t.me/studyflush_bot?start=ref_${refCode}`
+    : "https://t.me/studyflush_bot";
 
   function copyRef() {
-    navigator.clipboard.writeText(botLink)
+    navigator.clipboard.writeText(refLink)
       .then(() => { hapticSuccess(); setCopied(true); setTimeout(() => setCopied(false), 2000); })
       .catch(() => {});
   }
 
   function shareRefTelegram() {
     hapticFeedback("medium");
-    shareViaTelegram(`🎓 ${t("shareWithFriend")}!\n\n${t("referralStep3")}\n\n${botLink}`);
+    shareViaTelegram(`🎓 ${t("shareWithFriend")}!\n\n${t("referralStep3")}\n\n${refLink}`);
   }
 
   const a = (i: number) => ({
@@ -266,8 +269,8 @@ export default function Profile() {
           <div className="flex items-center gap-2 rounded-[14px] p-3 mb-4"
             style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
             <div className="flex-1 min-w-0">
-              <div className="text-[8px] text-white/30 font-bold uppercase tracking-wider mb-0.5">{t("inviteLink") || "Your link"}</div>
-              <div className="font-mono text-[13px] font-bold tracking-wide text-white truncate">t.me/studyflush_bot</div>
+              <div className="text-[8px] text-white/30 font-bold uppercase tracking-wider mb-0.5">{t("referralCode")}</div>
+              <div className="font-mono text-[15px] font-extrabold tracking-[0.1em] text-white truncate">{refCode || "..."}</div>
             </div>
             <motion.button whileTap={{ scale: 0.88 }} onClick={copyRef}
               className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
